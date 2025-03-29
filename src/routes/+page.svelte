@@ -3,7 +3,7 @@
   import Footer from "$lib/Footer.svelte";
   import Header from "$lib/Header.svelte"; 
   import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
-  import LoginForm from "$lib/ui/LoginForm.svelte";
+  import SplashScreen from "$lib/ui/SplashScreen.svelte";
 
     // @ts-ignore
     export const load = async ({ page }) => ({
@@ -13,7 +13,8 @@
     });
 
     import Transition from '$lib/ui/Transition.svelte';
-    import SplashScreen from "$lib/ui/SplashScreen.svelte";
+    import SignupForm from "$lib/ui/SignupForm.svelte";
+    import { fromStore } from "svelte/store";
     /**
      * @type {any}
      */
@@ -24,7 +25,8 @@
 <WelcomeMenu />
 <div class="container" >
   <Transition>
- <SplashScreen />
+ <!-- <SignupForm /> -->
+  <SplashScreen />
 </Transition>
 </div>
 <Footer />

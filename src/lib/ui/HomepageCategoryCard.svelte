@@ -2,7 +2,7 @@
     let { image = "https://i.ibb.co/v42p9nCY/restaurant.jpg", alt = "restaurant", category = "Restaurants"} = $props();
 </script>
 
-<section class="column is-6 p-4">
+
     <section class="card has-text-centered has-background-black">
       <header class="card-header">
         <p class="card-header-title is-size-4 is-centered has-text-white"></p>
@@ -23,4 +23,4 @@
         </div>
       </div>
     </section>
-  </section>
+ 
