@@ -8,9 +8,9 @@ bindings check Yes or No visited
 
 Placemark page, work on weather widget
 
-menu toggle on mobile to fix
+active double click to fix
 
-Login form icons not showing
+
 
 
 
@@ -21,8 +21,9 @@ Sources
 
 https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
 https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/main/docs/rules/label-has-associated-control.md
-
-
+https://www.npmjs.com/package/@sveltejs/adapter-auto
+https://bobbyhadz.com/blog/npm-err-code-enoent-syscall-open#:~:text=The%20error%20%22npm%20ERR%21%20code%20ENOENT%20syscall%20open%22,generate%20a%20new%20package.json%20file%20in%20the%20directory.
+https://www.npmjs.com/package/svelte-fa
 
 fa-id-card-o
 
