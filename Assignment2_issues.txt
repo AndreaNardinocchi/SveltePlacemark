@@ -1,0 +1,66 @@
+Donate
+loggedinUser.token issue
+
+
+Assignment 2
+===================
+bindings check Yes or No visited
+
+Placemark page, work on weather widget
+
+menu toggle on mobile to fix
+
+Login form icons not showing
+
+
+
+
+
+
+Sources
+
+https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
+https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/main/docs/rules/label-has-associated-control.md
+
+
+
+fa-id-card-o
+
+
+
+    
+         
+        
+      
+      
+      <!-- Second Placemark Section Starts Here -->
+      <main class="columns mb-4">
+        <div class="column is-6 mt-6">
+        <HomepageTextCard />
+      </div>
+    <div class="column is-6 mt-6">
+        <HomepageCategoryCard image={"https://i.ibb.co/xK9dvTd1/museum.jpg"}, alt = {"museum"}, category = {"Museums"}/>
+    </div>
+      
+      </main>
+      <!-- Second Placemark Section Ends Here -->
+      <main class="columns mb-4">
+        <div class="column is-6 mt-6">
+        <HomepageCategoryCard image={"https://i.ibb.co/pBN2Xs9y/park.jpg"}, alt = {"park"}, category = {"Parks"}/>
+      </div>
+        <div class="column is-6 mt-6">
+        <HomepageTextCard image = {"https://i.ibb.co/LhhGK9Qg/airplane1.png"}, text = {"...and to place your mark on your next..."}/>
+      </div>
+      </main>
+      <!-- Second Placemark Section Starts Here -->
+      <main class="columns ">
+        <div class="column is-6 mt-6">
+        <HomepageTextCard image = {"https://i.ibb.co/n8cmdzcS/aircraft.png"}, text = {"...wonderful journey!"}/>
+      </div>
+      <div class="column is-6 mt-6">
+        <HomepageCategoryCard image={"https://i.ibb.co/BKnZdnxF/beach.jpg"}, alt = {"beach"}, category = {"Beaches"}/>
+      </div>
+      </main>
+    </div>
+
+</section>
