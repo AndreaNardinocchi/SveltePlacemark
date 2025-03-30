@@ -2,6 +2,7 @@
     // https://www.npmjs.com/package/svelte-fa
     import Footer from "$lib/Footer.svelte";
     import Header from "$lib/Header.svelte"; 
+    import Lifestyle from "$lib/ui/Lifestyle.svelte";
     import LoginForm from "$lib/ui/LoginForm.svelte";
   
       // @ts-ignore
@@ -20,10 +21,10 @@
     
     
   </script>
-  <WelcomeMenu />
+  <Header />
   <div class="container" >
     <Transition>
-   <LoginForm />
+   <Lifestyle />
   </Transition>
   </div>
   <Footer />

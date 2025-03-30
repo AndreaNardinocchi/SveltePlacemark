@@ -22,7 +22,7 @@
   
   
 </script>
-<WelcomeMenu />
+<WelcomeMenu/>
 <div class="container" >
   <Transition>
  <!-- <SignupForm /> -->

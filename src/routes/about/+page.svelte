@@ -3,6 +3,8 @@
     import Footer from "$lib/Footer.svelte";
     import Header from "$lib/Header.svelte"; 
     import LoginForm from "$lib/ui/LoginForm.svelte";
+    import Account from "$lib/ui/Account.svelte";
+    import About from "$lib/ui/About.svelte";
   
       // @ts-ignore
       export const load = async ({ page }) => ({
@@ -20,10 +22,10 @@
     
     
   </script>
-  <WelcomeMenu />
+  <Header />
   <div class="container" >
     <Transition>
-   <LoginForm />
+   <About />
   </Transition>
   </div>
   <Footer />
