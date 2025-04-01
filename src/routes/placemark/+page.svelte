@@ -13,7 +13,6 @@
           },
       });
   
-      import Transition from '$lib/ui/Transition.svelte';
       /**
        * @type {any}
        */
@@ -23,9 +22,7 @@
   </script>
   <Header />
   <div class="container" >
-    <Transition>
     <Title  />
-  </Transition>
     <PlacemarkCard />
     <InstaGrid />
     

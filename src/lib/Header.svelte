@@ -1,82 +1,69 @@
-
 <script>
-    import CategoryBrand from "./ui/CategoryBrand.svelte";
-    let active = ""; // to track the active class on navigation buttons
-    let isMenuActive = false;
-  
-    // To handle the active link highlight, e.g. when the page is active
-    /**
-     * @param {string} linkId
-     */
-    function setActive(linkId) {
-      active = linkId;
-    }
-  </script>
-  
-  <nav class="navbar is-fixed-top" aria-label="main navigation">
-    <!-- role="navigation"  -->
-    <div class="navbar-brand pl-4">
-      <a href="/" on:click={() => setActive('home')}>
-        <!-- Assuming "category-brand" is a component or a placeholder -->
-        <CategoryBrand />
+  import CategoryBrand from './ui/CategoryBrand.svelte';
+  let loggedInUser = { email: "andrea.nardinocchi76@gmail.com" };
+
+  // Add a function to toggle the menu visibility
+  let isMenuActive = false;
+
+  const toggleMenu = () => {
+    isMenuActive = !isMenuActive;
+  };
+</script>
+
+<nav class="navbar is-fixed-top px-1" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a href="/dashboard">
+      <CategoryBrand />
+    </a>
+
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <span
+      class="navbar-burger"
+      data-target="navbarMenu"
+      on:click={toggleMenu}  
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </span>
+  </div>
+
+  <!-- Toggle mobile menu visibility based on isMenuActive -->
+  <div id="navbarMenu" class="navbar-menu" class:is-active={isMenuActive}> <!-- Conditional class -->
+    <div class="navbar-end">
+      <a class="navbar-item" id="dashboard" href="/dashboard">Home</a>
+      <a class="navbar-item" id="lifestyle" href="/lifestyle">Lifestyle</a>
+      <a class="navbar-item" id="news" href="/news">News</a>
+      <a class="navbar-item" id="about" href="/about">About</a>
+      <a class="navbar-item" id="account" href="/account">Account</a>
+      <a class="navbar-item" id="logout" href="/logout">
+        Logout <span class="is-size-7">[{loggedInUser.email}]</span>
       </a>
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <span 
-        class="navbar-burger" 
-        data-target="navbarMenu" 
-        aria-expanded={isMenuActive ? "true" : "false"}
-        on:click={() => isMenuActive = !isMenuActive}>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </span>
     </div>
-    
-    <div id="navbarMenu" class="navbar-menu pr-4" class:is-active={isMenuActive}>
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <a 
-              class="button" 
-              id="home" 
-              href="/dashboard" 
-              class:is-info={active === 'home'} 
-              on:click={() => setActive('home')}>Home</a>
-            <a 
-              class="button" 
-              id="lifestyle" 
-              href="/lifestyle" 
-              class:is-info={active === 'lifestyle'} 
-              on:click={() => setActive('lifestyle')}>Lifestyle</a>
-            <a 
-              class="button" 
-              id="news" 
-              href="/news" 
-              class:is-info={active === 'news'} 
-              on:click={() => setActive('news')}>News</a>
-              <a 
-              class="button" 
-              id="about" 
-              href="/about" 
-              class:is-info={active === 'about'} 
-              on:click={() => setActive('about')}>About</a>
-            <a 
-              class="button" 
-              id="account" 
-              href="/account" 
-              class:is-info={active === 'account'} 
-              on:click={() => setActive('account')}>Account</a>
-            <a 
-              class="button" 
-              id="logout" 
-              href="/logout" 
-              class:is-info={active === 'logout'} 
-              on:click={() => setActive('logout')}>Log out</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-  
+  </div>
+</nav>
+
+<style>
+  /* The following CSS rules will enable the menu to properly work for screen smaller than 768px
+https://www.codingeasypeasy.com/blog/create-a-responsive-navigation-bar-html-css-and-javascript-examples */
+/* Initially hide the menu on smaller screens */
+.navbar-menu {
+  display: none;
+}
+
+.navbar-menu.is-active {
+  display: block; /* Show the menu when is-active is applied */
+}
+
+/* Styles for larger screens */
+@media (min-width: 768px) {
+  .navbar-menu {
+    display: flex !important;
+  }
+  .navbar-burger {
+    display: none;
+  }
+}
+</style>

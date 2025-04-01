@@ -23,10 +23,11 @@
           <h2 class="subtitle is-4 mt-2">Add your next journey!</h2>
           <p class="has-text-centered">
             <a class="button is-medium" href="/signup">
-            <span class="icon"><i class="fas fa-plus"></i></span><span>Sign Up</span>
+            <span class="icon"><i class="fas fa-map-marker-alt"></i></span><span>Sign Up</span>
             </a>
             <a class="button is-medium is-info has-text-white" href="/login">
-            <span class="icon"><i class="fas fa-sign-in"></i></span><span>Login</span>
+            <span class="icon"><i class="fas fa-plane" aria-hidden="true" style="color: #ffffff;"></i>
+            </span><span>Login</span>
             </a>
           </p>
         </div>

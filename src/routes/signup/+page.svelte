@@ -11,7 +11,6 @@
           },
       });
   
-      import Transition from '$lib/ui/Transition.svelte';
     import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
       /**
        * @type {any}
@@ -22,8 +21,8 @@
   </script>
   <WelcomeMenu />
   <div class="container" >
-    <Transition>
+ 
    <SignupForm />
-  </Transition>
+
   </div>
   <Footer />

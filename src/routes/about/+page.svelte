@@ -12,8 +12,7 @@
               key: page.path,
           },
       });
-  
-      import Transition from '$lib/ui/Transition.svelte';
+
     import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
       /**
        * @type {any}
@@ -24,9 +23,7 @@
   </script>
   <Header />
   <div class="container" >
-    <Transition>
    <About />
-  </Transition>
   </div>
   <Footer />
   

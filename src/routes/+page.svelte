@@ -5,6 +5,7 @@
   import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
   import SplashScreen from "$lib/ui/SplashScreen.svelte";
 
+
     // @ts-ignore
     export const load = async ({ page }) => ({
         props: {
@@ -12,9 +13,9 @@
         },
     });
 
-    import Transition from '$lib/ui/Transition.svelte';
     import SignupForm from "$lib/ui/SignupForm.svelte";
     import { fromStore } from "svelte/store";
+    import Homepage from "$lib/ui/Homepage.svelte";
     /**
      * @type {any}
      */
@@ -24,10 +25,10 @@
 </script>
 <WelcomeMenu/>
 <div class="container" >
-  <Transition>
+  
  <!-- <SignupForm /> -->
-  <SplashScreen />
-</Transition>
+  <Homepage />
+
 </div>
 <Footer />
 
