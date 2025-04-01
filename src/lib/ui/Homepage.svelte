@@ -1,16 +1,14 @@
 <script lang="ts">
     // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
+    // https://www.npmjs.com/package/svelte-inview
     import HomeTrans1 from './HomeTrans1.svelte';
     import HomeTrans2 from './HomeTrans2.svelte';
     import HomeTrans3 from './HomeTrans3.svelte';
     import HomeTrans4 from './HomeTrans4.svelte';
-
-    import { fly } from 'svelte/transition';
     import { inview } from 'svelte-inview';
-    import HomepageCategoryCard from './HomepageCategoryCard.svelte';
-    import HomepageTextCard from './HomepageTextCard.svelte';
-    
+   
     let isInView: boolean = false;
+   
   </script>
   <div
   class="wrapper"

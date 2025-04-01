@@ -8,11 +8,7 @@
     import { faPlane } from '@fortawesome/free-solid-svg-icons';
 
 
-    import { fly } from 'svelte/transition';
-    import { inview } from 'svelte-inview';
-    import HomepageCategoryCard from './HomepageCategoryCard.svelte';
-    import HomepageTextCard from './HomepageTextCard.svelte';
-    
+
 
     
     let isInView: boolean = false;
@@ -21,14 +17,14 @@
   
 
   <!-- Image Section with Plane Icon -->
-  <div class="mt-3" in:fly={{ x: -200, duration: 1000 }}>
+
     <section class="image has-text-centered">
       <Fa style="font-size: 160px; color: #000000;" icon={faPlane} />
     </section>
 
     <p class="title is-size-1 mt-3 pl-4">PlaceMark</p>
     <p class="subtitle has-text-weight-bold pl-4">Place your mark on your next journey!</p>
-  </div>
+
 
 
 

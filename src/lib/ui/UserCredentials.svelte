@@ -9,7 +9,7 @@
           password = $bindable("")
         } = $props();
 
-    let isInView: boolean = false;
+    // let isInView: boolean = false;
     
   </script>
   
