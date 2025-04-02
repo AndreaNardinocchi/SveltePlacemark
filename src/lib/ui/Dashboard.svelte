@@ -1,8 +1,25 @@
-<script>
+<script lang="ts">
+  // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
+  // https://www.npmjs.com/package/svelte-inview
+  import { fly } from 'svelte/transition';
+  import { fade } from 'svelte/transition';
+  import { inview } from 'svelte-inview';
+ 
+  let isInView: boolean = false;
     import ListCategories from "./ListCategories.svelte";
     import AddCategory from "./AddCategory.svelte";
+ 
+   
 </script>
-
+<div
+      class="wrapper mb-5"
+      use:inview={{ unobserveOnEnter: true, rootMargin: '20%' }}
+      on:change={({ detail }) => {
+      isInView = detail.inView;
+      }}
+      >
+      {#if isInView}
+      <div in:fly={{ x: -200, duration: 1000 }}>
 <div class="has-background-grey box mt-6  pt-6 ml-6 pl-5 mr-6 pr-5 mb-2">
     <div class="card-image">
       <figure class="image 264x264 m-auto">
@@ -18,7 +35,22 @@
       </div>
     </div>
   </div>
+  </div>
+  {/if}
+  </div>
   <section class="section ">
+    <div
+      class="wrapper mb-5"
+      use:inview={{ unobserveOnEnter: true, rootMargin: '20%' }}
+      on:change={({ detail }) => {
+      isInView = detail.inView;
+      }}
+      >
+      {#if isInView}
+      <div in:fade={{ duration: 1000 }}>
     <ListCategories />
     <AddCategory />
+    </div>
+    {/if}
+    </div>
   </section>
