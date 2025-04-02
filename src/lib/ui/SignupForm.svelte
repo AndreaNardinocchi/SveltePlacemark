@@ -8,7 +8,7 @@
 
   let isInView: boolean = false;
 </script> 
-<section class="hero is-small is-dark mt-6 px-6">
+<section class="hero is-small has-background-grey mt-6 px-6">
   <div class="hero-body mt-6">
     <p class="title has-text-white">Sign up</p>
   </div>

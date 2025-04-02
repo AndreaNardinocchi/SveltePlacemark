@@ -1,4 +1,11 @@
-<script>
+<script lang="ts">
+  // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
+  // https://www.npmjs.com/package/svelte-inview
+  import { fly } from 'svelte/transition';
+  import { inview } from 'svelte-inview';
+ 
+  let isInView: boolean = false;
+  
     import ListPlacemarks from "./ListPlacemarks.svelte";
     import AddPlacemark from "./AddPlacemark.svelte";
     import CategoryImage from "./CategoryImage.svelte";
@@ -21,6 +28,15 @@
   </script>
   
   <section class="section mt-6">
+    <div
+      class="wrapper mb-5"
+      use:inview={{ unobserveOnEnter: true, rootMargin: '-10%' }}
+      on:change={({ detail }) => {
+      isInView = detail.inView;
+      }}
+      >
+      {#if isInView}
+      <div in:fly={{ x: 200, duration: 1000 }}>
     <div class={backgroundColor}>
       <div class="card-image">
         <figure class="image 264x264 m-auto">
@@ -36,9 +52,23 @@
         </div>
       </div>
     </div>
+    </div>
+    {/if}
+    </div>
   
-    <div class="box has-background-white">
-      <div class="columns">  
+    
+      
+        <div
+      class="wrapper mb-5"
+      use:inview={{ unobserveOnEnter: true, rootMargin: '-5%' }}
+      on:change={({ detail }) => {
+      isInView = detail.inView;
+      }}
+      >
+      {#if isInView}
+      <div in:fly={{ x: -200, duration: 1000 }}>
+        <div class="box has-background-white">
+        <div class="columns ">  
         <div class="column">
           <section>
             <header class="card-header"></header>
@@ -68,6 +98,9 @@
             </div>
           </section>
         </div>
+      
+    
+        
   
         <div class="column">
           <section>
@@ -98,14 +131,33 @@
             </div>
           </section>
         </div>
+        </div>
       </div>
+      </div>
+      {/if}
+    
+    
+    
     </div>
+    
   
     <img id="category-image" src={category.img} class="mb-5" style="border-radius: 10px; display: none;"  alt=""/>
   
     <!-- Assuming list-placemarks, add-placemark, and category-image are separate Svelte components -->
+    <div
+    class="wrapper mb-5"
+    use:inview={{ unobserveOnEnter: true, rootMargin: '-1%' }}
+    on:change={({ detail }) => {
+    isInView = detail.inView;
+    }}
+    >
+    {#if isInView}
+    <div in:fly={{ y: 200, duration: 2000 }}>
     <ListPlacemarks /> 
     <AddPlacemark />
     <CategoryImage /> 
+    </div>
+    {/if}
+    </div>
   </section>
   

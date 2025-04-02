@@ -3,11 +3,10 @@
   // https://www.npmjs.com/package/svelte-inview
   import { fly } from 'svelte/transition';
   import { inview } from 'svelte-inview';
-  import PlacemarkLogin from './PlacemarkLogin.svelte';
-  import UserCredentials from './UserCredentials.svelte';
+  import PlacemarkLogin from '../../lib/ui/PlacemarkLogin.svelte';
+  import UserCredentials from '../../lib/ui/UserCredentials.svelte';
   
-  let isInView: boolean = false;
-  
+  let isInView: boolean = false;  
 </script>
 <section class="hero is-small is-dark mt-6 px-6">
   <div class="hero-body mt-6">
