@@ -19,9 +19,9 @@
     
     
   </script>
-  <WelcomeMenu />
+  <!-- <WelcomeMenu /> -->
   <div class="container" >
    <LoginForm />
   </div>
-  <Footer />
+  <!-- <Footer /> -->
   
