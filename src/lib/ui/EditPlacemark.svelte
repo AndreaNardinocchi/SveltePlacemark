@@ -1,49 +1,182 @@
 <script>
-  // Define reactive variables for the form fields
-  let title = $state();
-  let lat = $state();
-  let long = $state();
-  let address = $state();
-  let country = $state();
-  let phone = $state();
-  let website = $state();
-  let visited = $state();
-  let description = $state();
+  import { onMount } from "svelte";
 
-  // // Handle form submission
-  // function handleSubmit(event) {
-  //   event.preventDefault();
+  let placemark = {
+    _id: "",
+    title: "",
+    lat: "",
+    long: "",
+    address: "",
+    country: "",
+    phone: "",
+    website: "",
+    visited: "",
+    description: ""
+  };
 
-  //   // Here you can handle the form data, e.g., sending it to a backend API.
-  //   const formData = {
-  //     title,
-  //     lat,
-  //     long,
-  //     address,
-  //     country,
-  //     phone,
-  //     website,
-  //     visited,
-  //     description
-  //   };
+  let category = {
+    _id: ""
+  };
 
-  //   // Example of logging the form data (replace this with actual logic to send data)
-  //   console.log(formData);
+  // You can fetch the data from an API or props when the component is mounted
+  onMount(async () => {
+    // Fetch the placemark data here, for example:
+    // const response = await fetch(`/api/placemark/${placemarkId}`);
+    // placemark = await response.json();
+  });
 
-  // You could submit the form using fetch or other methods
-  // fetch('/category/{category._id}/addplacemark', {
-  //   method: 'POST',
-  //   body: JSON.stringify(formData),
-  //   headers: { 'Content-Type': 'application/json' }
-  // });
+  // function handleSubmit() {
+  //   // Handle form submission, for example:
+  //   // fetch(`/category/${category._id}/updateplacemark/${placemark._id}`, {
+  //   //   method: 'POST',
+  //   //   body: JSON.stringify(placemark),
+  //   //   headers: { 'Content-Type': 'application/json' }
+  //   // });
   // }
-  async function placemark() {
-    console.log(`Just placemarking ${title} to ${lat} via ${long} payment`);
-  }
 </script>
 
-<!-- <form class="box" on:submit={handleSubmit}> -->
-<div class="box">
+<!--   
+  <form class="box" on:submit|preventDefault={handleSubmit}> -->
+<!-- <label
+  >Update Placemark Details:
+
+  <div class="field is-horizontal">
+    <div class="field-body">
+      <div class="field">
+        <label class="label"
+          >Title
+          <input class="input" type="text" placeholder="Enter Title" bind:value={placemark.title} />
+        </label>
+      </div>
+      <div class="field">
+        <label class="label"
+          >Latitude
+          <input
+            class="input"
+            type="number"
+            step="any"
+            placeholder="Enter Latitude"
+            bind:value={placemark.lat}
+          />
+        </label>
+      </div>
+      <div class="field">
+        <label class="label"
+          >Longitude
+          <input
+            class="input"
+            type="number"
+            step="any"
+            placeholder="Enter Longitude"
+            bind:value={placemark.long}
+          />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="field is-horizontal">
+    <div class="field-body">
+      <div class="field">
+        <label class="label"
+          >Address
+          <input
+            class="input"
+            type="text"
+            placeholder="Enter address"
+            bind:value={placemark.address}
+          />
+        </label>
+      </div>
+      <div class="field">
+        <label class="label"
+          >Country
+          <input
+            class="input"
+            type="text"
+            placeholder="Enter country"
+            bind:value={placemark.country}
+          />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="field is-horizontal">
+    <div class="field-body">
+      <div class="field">
+        <label class="label"
+          >Phone Number
+          <input
+            class="input"
+            type="number"
+            placeholder="Enter phone number"
+            bind:value={placemark.phone}
+          />
+        </label>
+      </div>
+      <div class="field">
+        <label class="label"
+          >Website
+          <input
+            class="input"
+            type="text"
+            placeholder="Enter website URL"
+            bind:value={placemark.website}
+          />
+        </label>
+      </div>
+      <div class="field">
+        <label class="label"
+          >Visited?
+          <select class="p-2" bind:value={placemark.visited}>
+            <option value="" disabled selected>Select your answer</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="field is-horizontal">
+    <div class="field-body">
+      <div class="field">
+        <label class="label"
+          >Description
+          <div class="control">
+            <textarea
+              class="textarea"
+              placeholder="Enter a description"
+              bind:value={placemark.description}
+            ></textarea>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="columns">
+    <div class="column is-6">
+      <button class="button is-info has-text-white" type="submit">Update your placemark</button>
+      <a class="button is-dark has-text-white" href={`/category/${category._id}`}>Do not update</a>
+    </div>
+    <div class="column is-6">
+      <p class="has-text-right">
+        *Find your exact placemarks coordinates on
+        <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"
+          >https://www.gps-coordinates.net/</a
+        >
+        <span class="ml-1 icon is-small">
+          <i class="fas fa-solid fa-folder-open"></i>
+        </span>
+      </p>
+    </div>
+  </div>
+</label> -->
+<!-- </form> -->
+
+<div class="box mt-6">
   <label>
     Enter Placemark Details:
     <div class="field is-horizontal">
@@ -52,7 +185,12 @@
           <label class="label">
             Title
             <p class="control is-expanded has-icons-left">
-              <input class="input" type="text" placeholder="Enter Title" bind:value={title} />
+              <input
+                class="input"
+                type="text"
+                placeholder="Enter Title"
+                bind:value={placemark.title}
+              />
               <span class="icon is-small is-left">
                 <i class="fa fa-plane" aria-hidden="true"></i>
               </span>
@@ -68,7 +206,7 @@
                 type="number"
                 step="any"
                 placeholder="Enter Latitude"
-                bind:value={lat}
+                bind:value={placemark.lat}
               />
               <span class="icon is-small is-left">
                 <i class="fas fa-compass" aria-hidden="true"></i>
@@ -85,7 +223,7 @@
                 type="number"
                 step="any"
                 placeholder="Enter longitude"
-                bind:value={long}
+                bind:value={placemark.long}
               />
               <span class="icon is-small is-left">
                 <i class="fas fa-compass" aria-hidden="true"></i>
@@ -105,7 +243,7 @@
                 class="input"
                 type="text"
                 placeholder="Enter our placemark address"
-                bind:value={address}
+                bind:value={placemark.address}
               />
               <span class="icon is-small is-left">
                 <i class="fa fa-address-card" aria-hidden="true"></i>
@@ -121,7 +259,11 @@
               <label class="label">
                 Country
                 <div class="select is-fullwidth">
-                  <select name="country" placeholder="Select your country" bind:value={country}>
+                  <select
+                    name="country"
+                    placeholder="Select your country"
+                    bind:value={placemark.country}
+                  >
                     <option class="has-text-grey-light" value="" disabled selected
                       >Select your country</option
                     >
@@ -410,7 +552,7 @@
                 class="input"
                 type="number"
                 placeholder="Enter phone number"
-                bind:value={phone}
+                bind:value={placemark.phone}
               />
               <span class="icon is-small is-left">
                 <i class="fa fa-phone" aria-hidden="true"></i>
@@ -426,7 +568,7 @@
                 class="input"
                 type="text"
                 placeholder="Enter webiste URL"
-                bind:value={website}
+                bind:value={placemark.website}
               />
               <span class="icon is-small is-left">
                 <i class="fa fa-info" aria-hidden="true"></i>
@@ -441,7 +583,7 @@
             <label class="label">
               Visited?
               <div class="select is-fullwidth">
-                <select name="country" bind:value={visited}>
+                <select name="country" bind:value={placemark.visited}>
                   <option class="has-text-grey-light" value="" disabled selected
                     >Select your answer</option
                   >
@@ -461,21 +603,42 @@
           <div class="control">
             <label class="label"
               >Description
-              <textarea class="textarea" placeholder="Enter a description" bind:value={description}
+              <textarea
+                class="textarea"
+                placeholder="Enter a description"
+                bind:value={placemark.description}
               ></textarea>
             </label>
           </div>
         </div>
       </div>
     </div>
-    <div class="columns">
+    <!-- <div class="columns">
       <div class="column is-3">
-        <!-- <button class="button is-info has-text-white" type="submit"> Add your placemark </button> -->
-        <button onclick={() => placemark()} class="button is-info has-text-white">
+        <button class="button is-info has-text-white" type="submit"> Add your placemark </button> -->
+    <!-- <button onclick={() => placemark()} class="button is-info has-text-white">
           Add your placemark
         </button>
       </div>
       <div class="column is-9">
+        <p class="has-text-right">
+          *Find your exact placemarks coordinates on
+          <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"
+            >https://www.gps-coordinates.net/</a
+          >
+          <span class="ml-1 icon is-small">
+            <i class="fas fa-solid fa-folder-open"></i>
+          </span>
+        </p>
+      </div>
+    </div> -->
+    <div class="columns">
+      <div class="column is-6">
+        <button class="button is-info has-text-white" type="submit">Update your placemark</button>
+        <a class="button is-dark has-text-white" href={`/category/${category._id}`}>Do not update</a
+        >
+      </div>
+      <div class="column is-6">
         <p class="has-text-right">
           *Find your exact placemarks coordinates on
           <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"

@@ -8,8 +8,22 @@ bindings check Yes or No visited
 
 Placemark page, work on weather widget
 
-active double click to fix
 
+Hashing and salting passwords
+Link: https://www.npmjs.com/package/bcrypt
+https://dev.to/dev_michael/login-magic-for-your-sveltekit-app-its-easier-than-you-think-51hh
+
+
+Sanitizing input
+https://svelte.dev/playground/cfbe400a07a14d63ad806734dcf99b4b?version=5.25.8 look at donation-svelte  UserCredentials and reproduce in all forms
+
+
+
+Adjust the Account page with bindings and $props ?? Pop up won't open with bindables
+
+Fix issues on category and placemark pages showing logout menu 
+
+Signup showing as unsuccessful but it is
 
 
 

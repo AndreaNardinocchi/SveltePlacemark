@@ -1,9 +1,18 @@
 <script context="module">
   // https://www.npmjs.com/package/svelte-fa
-  import Footer from "$lib/Footer.svelte";
-  import Header from "$lib/Header.svelte";
-  import LoginForm from "../login/LoginForm.svelte";
   import Account from "./Account.svelte";
+  // import { placemarkService } from "$lib/ui/services/placemark-service";
+  // import type { User } from "$lib/ui/types/placemark-types";
+  // import { loggedInUser } from "$lib/runes.svelte";
+  // import { onMount } from "svelte";
+
+  // let users: User[] = [];
+
+  // let { firstName = "John", lastName = "Doe", country = "United States" } = $props();
+
+  // onMount(async () => {
+  //   users = await placemarkService.getUser(loggedInUser.token);
+  // });
 
   // @ts-ignore
   export const load = async ({ page }) => ({
@@ -12,14 +21,13 @@
     }
   });
 
-  import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
   /**
    * @type {any}
    */
   export let key;
 </script>
 
-<Header />
+<!-- <Header /> -->
 <div class="container">
   <Account />
 </div>

@@ -2,8 +2,9 @@
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
   import { fly } from "svelte/transition";
-  import { fade } from "svelte/transition";
   import { inview } from "svelte-inview";
+  import { loggedInUser } from "$lib/runes.svelte";
+  import type { User } from "$lib/ui/types/placemark-types";
 
   let isInView: boolean = false;
   import UserDetails from "$lib/ui/UserDetails.svelte";

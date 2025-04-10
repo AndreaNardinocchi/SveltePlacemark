@@ -1,6 +1,7 @@
 <script lang="ts">
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
+
   import { fly } from "svelte/transition";
   import { inview } from "svelte-inview";
 
@@ -9,6 +10,8 @@
   import ListPlacemarks from "$lib/ui/ListPlacemarks.svelte";
   import AddPlacemark from "$lib/ui/AddPlacemark.svelte";
   import CategoryImage from "$lib/ui/CategoryImage.svelte";
+  import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
+  import { placemarkService } from "$lib/ui/services/placemark-service";
 
   // Props or reactive variables
   export let backgroundColor =
@@ -161,7 +164,9 @@
   >
     {#if isInView}
       <div in:fly={{ y: 200, duration: 2000 }}>
-        <ListPlacemarks />
+        <PlacemarkListCard>
+          <ListPlacemarks />
+        </PlacemarkListCard>
         <AddPlacemark />
         <CategoryImage />
       </div>

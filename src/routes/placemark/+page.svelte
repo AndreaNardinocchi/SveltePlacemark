@@ -18,7 +18,7 @@
   export let key;
 </script>
 
-<Header />
+<!-- <Header /> -->
 <div class="container">
   <Title />
   <PlacemarkCard />
