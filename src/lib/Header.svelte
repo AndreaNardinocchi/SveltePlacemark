@@ -1,6 +1,6 @@
 <script>
   import CategoryBrand from "./ui/CategoryBrand.svelte";
-  import { loggedInUser } from "$lib/runes.svelte";
+  import { loggedInUser } from "./runes.svelte";
 
   // Add a function to toggle the menu visibility
   let isMenuActive = false;
@@ -36,7 +36,7 @@
       <a class="navbar-item" id="about" href="/about">About</a>
       <a class="navbar-item" id="account" href="/account">Account</a>
       <a class="navbar-item" id="logout" href="/logout">
-        Logout <span class="is-size-7">[{loggedInUser.email}]</span>
+        Logout <span class="is-size-7">[{loggedInUser._id}]</span>
       </a>
     </div>
   </div>

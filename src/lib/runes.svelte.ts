@@ -16,11 +16,17 @@ export const loggedInUser = $state({
   _id: ""
 });
 
-// export const category = $state({
-//   title: "",
-//   notes: "",
-//   // img: "",
-//   image: "",
-//   userid: "",
-//   _id: ""
-// });
+export const user = $state({
+  firstName: "",
+  lastName: "",
+  userLat: "",
+  userLong: "",
+  country: "",
+  street: "",
+  addressCode: "",
+  DOB: "",
+  phoneNumber: "",
+  email: "",
+  password: ""
+  // _id: ""
+});

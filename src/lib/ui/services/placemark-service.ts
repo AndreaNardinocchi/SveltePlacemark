@@ -26,6 +26,17 @@ export const placemarkService = {
       if (response.data.success) {
         axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.token;
         const session: Session = {
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          userLat: response.data.userLat,
+          userLong: response.data.userLong,
+          country: response.data.country,
+          street: response.data.street,
+          addressCode: response.data.addressCode,
+          DOB: response.data.DOB,
+          phoneNumber: response.data.phoneNumber,
+          email: response.data.email,
+          password: response.data.password,
           name: response.data.name,
           token: response.data.token,
           _id: response.data._id
@@ -64,10 +75,46 @@ export const placemarkService = {
     }
   },
 
+  // async getUserById(userId: string): Promise<User | null> {
+  //   try {
+  //     const token = axios.defaults.headers.common["Authorization"];
+  //     if (!token) {
+  //       console.warn("No Authorization token found. User might not be logged in.");
+  //       return null;
+  //     }
+
+  //     const response = await axios.get(`${this.baseUrl}/api/users/${userId}`, {
+  //       headers: {
+  //         Authorization: token
+  //       }
+  //     });
+
+  //     return response.data as User;
+  //   } catch (error: any) {
+  //     if (error.response) {
+  //       console.error("Error fetching user:", error.response.status, error.response.data);
+  //     } else {
+  //       console.error("Error fetching user:", error.message);
+  //     }
+  //     return null;
+  //   }
+  // },
+
   async getAllCategories(token: string): Promise<Category[]> {
     try {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
       const response = await axios.get(this.baseUrl + "/api/categories");
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+  async getAllUsers(token: string): Promise<User[]> {
+    try {
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      const response = await axios.get(this.baseUrl + "/api/users");
       return response.data;
     } catch (error) {
       console.log(error);

@@ -20,10 +20,10 @@
   });
 
   let title = $state("");
-  let userid = $state("67f80b4d141d89cf2ded3ef5");
-  let notes = $state("This category is used to note down all parks I would like to visit");
+  // let userid = $state("67f80b4d141d89cf2ded3ef5");
+  // let notes = $state("This category is used to note down all parks I would like to visit");
   // let img = $state("https://i.ibb.co/TBx4BWR3/collage.jpg");
-  let image = $state("https://i.ibb.co/TBx4BWR3/collage.jpg");
+  // let image = $state("https://i.ibb.co/TBx4BWR3/collage.jpg");
 
   // let userid = loggedInUser._id;
   console.log("This is the userid", loggedInUser._id, loggedInUser.email, loggedInUser.password);
@@ -31,16 +31,16 @@
 
   async function addCategory() {
     const category: Category = {
-      title: title,
-      userid: userid,
-      notes: notes,
+      title: title
+      // userid: userid,
+      // notes: notes,
       // img: img,
-      image: image
+      // image: image
     };
 
     let success = await placemarkService.addCategory(category);
     if (success) {
-      console.log(`You are adding the category ${title}`);
+      console.log(`You are adding the category ${category.title}`);
       goto("/dashboard");
     } else {
       message = "Error Trying to sign up";
