@@ -75,6 +75,80 @@ export const placemarkService = {
     }
   },
 
+  async getAllCategories(token: string): Promise<Category[]> {
+    try {
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      const response = await axios.get(this.baseUrl + "/api/categories");
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+  async getAllUsers(token: string): Promise<User[]> {
+    try {
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      const response = await axios.get(this.baseUrl + "/api/users");
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+  async getCategoryById(id: string): Promise<Category | null> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return null;
+      }
+
+      const response = await axios.get(`${this.baseUrl}/api/categories/${id}`, {
+        headers: {
+          Authorization: token
+        }
+      });
+
+      console.log("Fetched category:", response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error fetching category:", error.response.status, error.response.data);
+      } else {
+        console.error("Error fetching category:", error.message);
+      }
+      return null;
+    }
+  },
+
+  async getPlacemarksByCategoryId(categoryId: string) {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return [];
+      }
+
+      const response = await axios.get(`${this.baseUrl}/api/categories/${categoryId}/placemarks`, {
+        headers: {
+          Authorization: token
+        }
+      });
+
+      console.log("Fetched placemarks:", response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error fetching placemarks:", error.response.status, error.response.data);
+      } else {
+        console.error("Error fetching placemarks:", error.message);
+      }
+      return [];
+    }
+  }
+
   // async getUserById(userId: string): Promise<User | null> {
   //   try {
   //     const token = axios.defaults.headers.common["Authorization"];
@@ -99,28 +173,6 @@ export const placemarkService = {
   //     return null;
   //   }
   // },
-
-  async getAllCategories(token: string): Promise<Category[]> {
-    try {
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      const response = await axios.get(this.baseUrl + "/api/categories");
-      return response.data;
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  },
-
-  async getAllUsers(token: string): Promise<User[]> {
-    try {
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      const response = await axios.get(this.baseUrl + "/api/users");
-      return response.data;
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  }
 
   // async getAllCategories(): Promise<Category[] | null> {
   //   try {

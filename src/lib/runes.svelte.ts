@@ -30,3 +30,21 @@ export const user = $state({
   password: ""
   // _id: ""
 });
+
+export const category = $state({
+  title: "",
+  _id: ""
+});
+
+export const placemark = $state({
+  title: "",
+  lat: "",
+  long: "",
+  address: "",
+  country: "",
+  phone: "",
+  website: "",
+  visited: "",
+  description: "",
+  _id: ""
+});

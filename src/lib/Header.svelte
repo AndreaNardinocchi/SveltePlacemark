@@ -36,7 +36,7 @@
       <a class="navbar-item" id="about" href="/about">About</a>
       <a class="navbar-item" id="account" href="/account">Account</a>
       <a class="navbar-item" id="logout" href="/logout">
-        Logout <span class="is-size-7">[{loggedInUser._id}]</span>
+        Logout <span class="is-size-7">[{loggedInUser.email}]</span>
       </a>
     </div>
   </div>

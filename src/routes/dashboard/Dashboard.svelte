@@ -12,7 +12,7 @@
 
   // let categories: Category[] = [];
 
-  // ✅ Use $state for reactive values
+  // // ✅ Use $state for reactive values
   let categories = $state<Category[]>([]);
 
   onMount(async () => {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { placemarkService } from "./services/placemark-service";
   import { onMount } from "svelte";
-  import type Category from "../../routes/category/Category.svelte";
+  // import type Category from "../../routes/category/Category.svelte";
 
   let { categories = [] } = $props();
   console.log("These are the categories: ", categories);

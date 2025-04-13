@@ -39,3 +39,16 @@ export interface Category {
   // userid: string;
   _id?: string;
 }
+
+export interface Placemark {
+  title: string;
+  lat: number;
+  long: number;
+  address: string;
+  country: string;
+  phone: number;
+  website: string;
+  visited: string;
+  description: string;
+  _id?: string;
+}

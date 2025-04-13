@@ -1,49 +1,62 @@
-<script>
-  // Defining category and placemarks as mock data
-  export let category = {
-    _id: "67f94c3b24596fbc45e8b79c3",
-    placemarks: [
-      {
-        _id: "12",
-        title: "Eiffel Tower",
-        lat: 48.8584,
-        long: 2.2945,
-        address: "Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France",
-        phone: "+33 892 70 12 39",
-        country: "France",
-        website: "https://www.toureiffel.paris/",
-        description: "An iconic landmark in Paris, France.",
-        visited: "Yes"
-      },
-      {
-        _id: "2",
-        title: "Great Wall of China",
-        lat: 40.4319,
-        long: 116.5704,
-        address: "Huairou, China",
-        phone: "+86 10 6162 1551",
-        country: "China",
-        website: "https://www.thegreatwallofchina.com/",
-        description: "A series of fortifications made of various materials.",
-        visited: "No"
-      },
-      {
-        _id: "3",
-        title: "Statue of Liberty",
-        lat: 40.6892,
-        long: -74.0445,
-        address: "New York, NY 10004, United States",
-        phone: "+1 212-363-3200",
-        country: "United States",
-        website: "https://www.nps.gov/stli/index.htm",
-        description: "A colossal neoclassical sculpture on Liberty Island.",
-        visited: "Yes"
+<script lang="ts">
+  // let { placemarks = [] } = $props();
+  // console.log("These are the categories: ", placemarks);
+
+  import { placemarkService } from "$lib/ui/services/placemark-service";
+  import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
+  import type { Category, Placemark } from "$lib/ui/types/placemark-types";
+  import { onMount } from "svelte";
+  import { loggedInUser } from "$lib/runes.svelte";
+
+  let category: Category | null = null;
+  // let placemarks: Placemark[] = [];
+
+  let placemarks = $state<Placemark[]>([]);
+
+  // onMount(async () => {
+  //   // Get category ID dynamically, maybe from route or context
+  //   const url = window.location.pathname;
+  //   const categoryId = url.split("/").pop();
+  //   // const categoryId =  //"67fad4fb3b977ce37158de76"; // Replace with actual category ID from the route
+  //   const token = loggedInUser.token;
+
+  //   if (categoryId && token) {
+  //     // Fetch category by ID
+  //     const result = await placemarkService.getPlacemarksByCategoryId(categoryId);
+
+  //     // If category is fetched, update the reactive variable
+  //     if (result) {
+  //       placemarks = result;
+  //     } else {
+  //       console.warn("Category not found.");
+  //     }
+  //   } else {
+  //     console.warn("Invalid category ID or token.");
+  //   }
+  // });
+
+  onMount(async () => {
+    const url = window.location.pathname;
+    const categoryId = url.split("/").pop();
+    const token = loggedInUser.token;
+
+    if (categoryId && token) {
+      // Fetch full category
+      const result = await placemarkService.getCategoryById(categoryId);
+
+      if (result) {
+        category = result;
+        placemarks = result.placemarks; // Make sure placemarks are part of the category object
+      } else {
+        console.warn("Category not found.");
       }
-    ]
-  };
+    } else {
+      console.warn("Invalid category ID or token.");
+    }
+  });
 </script>
 
-{#each category.placemarks as placemark}
+{#each placemarks as placemark}
   <div class="card has-text-dark-grey">
     <header class="card-header has-text-centered">
       <p class="card-header-title">
