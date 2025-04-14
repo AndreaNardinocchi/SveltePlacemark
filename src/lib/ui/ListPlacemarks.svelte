@@ -8,32 +8,11 @@
   import { onMount } from "svelte";
   import { loggedInUser } from "$lib/runes.svelte";
 
+  // svelte-ignore non_reactive_update
   let category: Category | null = null;
   // let placemarks: Placemark[] = [];
 
   let placemarks = $state<Placemark[]>([]);
-
-  // onMount(async () => {
-  //   // Get category ID dynamically, maybe from route or context
-  //   const url = window.location.pathname;
-  //   const categoryId = url.split("/").pop();
-  //   // const categoryId =  //"67fad4fb3b977ce37158de76"; // Replace with actual category ID from the route
-  //   const token = loggedInUser.token;
-
-  //   if (categoryId && token) {
-  //     // Fetch category by ID
-  //     const result = await placemarkService.getPlacemarksByCategoryId(categoryId);
-
-  //     // If category is fetched, update the reactive variable
-  //     if (result) {
-  //       placemarks = result;
-  //     } else {
-  //       console.warn("Category not found.");
-  //     }
-  //   } else {
-  //     console.warn("Invalid category ID or token.");
-  //   }
-  // });
 
   onMount(async () => {
     const url = window.location.pathname;

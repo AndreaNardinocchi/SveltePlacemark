@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Session, User } from "../types/placemark-types";
+import type { Placemark, Session, User } from "../types/placemark-types";
 // import type Category from "../../../routes/category/Category.svelte";
 import type { Category } from "../types/placemark-types";
 
@@ -75,6 +75,32 @@ export const placemarkService = {
     }
   },
 
+  async deleteCategory(categoryId: string): Promise<boolean> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return false;
+      }
+
+      const response = await axios.delete(`${this.baseUrl}/api/categories/${categoryId}`, {
+        headers: {
+          Authorization: token
+        }
+      });
+
+      console.log("Category deleted:", response.data);
+      return response.data.success === true; // Adjust depending on your API response
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error deleting category:", error.response.status, error.response.data);
+      } else {
+        console.error("Error deleting category:", error.message);
+      }
+      return false;
+    }
+  },
+
   async getAllCategories(token: string): Promise<Category[]> {
     try {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -146,6 +172,36 @@ export const placemarkService = {
         console.error("Error fetching placemarks:", error.message);
       }
       return [];
+    }
+  },
+
+  async addPlacemark(categoryId: string, placemark: Placemark): Promise<Placemark | null> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return null;
+      }
+
+      const response = await axios.post(
+        `${this.baseUrl}/api/categories/${categoryId}/placemarks`,
+        placemark,
+        {
+          headers: {
+            Authorization: token
+          }
+        }
+      );
+
+      console.log("Placemark added:", response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error adding placemark:", error.response.status, error.response.data);
+      } else {
+        console.error("Error adding placemark:", error.message);
+      }
+      return null;
     }
   }
 

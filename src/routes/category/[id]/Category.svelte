@@ -16,6 +16,70 @@
   import type { Category, Placemark } from "$lib/ui/types/placemark-types";
   import { onMount } from "svelte";
   import { loggedInUser } from "$lib/runes.svelte";
+  import { goto } from "$app/navigation";
+
+  // Define reactive variables for the form fields
+  let title = $state("");
+  let lat = $state("");
+  let long = $state("");
+  let address = $state("");
+  let country = $state("");
+  let phone = $state("");
+  let website = $state("");
+  let visited = $state("");
+  let description = $state("");
+
+  async function addPlacemark() {
+    const placemark: Placemark = {
+      title: title,
+      lat: lat,
+      long: long,
+      address: address,
+      country: country,
+      phone: phone,
+      website: website,
+      visited: visited,
+      description: description
+    };
+
+    const url = window.location.pathname;
+    const categoryId = url.split("/").pop();
+
+    console.log("This is the categoryId: ", categoryId);
+
+    if (!categoryId) {
+      console.warn("No category ID found in URL.");
+      return;
+    }
+
+    const category = await placemarkService.getCategoryById(categoryId);
+    if (!category) {
+      console.warn("Invalid category returned.");
+      return;
+    }
+
+    const result = await placemarkService.addPlacemark(categoryId, placemark);
+
+    if (result) {
+      console.log(`Placemark added: ${title}, lat: ${lat}, long: ${long}`);
+      console.log("Payload being sent:", placemark);
+      goto(`/category/${categoryId}`);
+    } else {
+      console.log("Payload being sent:", placemark);
+      console.warn("Failed to add placemark.");
+    }
+  }
+
+  //   const url = window.location.pathname;
+  //   const categoryId = url.split("/").pop();
+  //   let category = await placemarkService.getCategoryById(categoryId);
+  //   let success = await placemarkService.addPlacemark(categoryId);
+  //   // const success = true;
+  //   if (success) {
+  //     console.log(`You are signing up ${title} ${lat} ${long} `);
+  //     goto(`/category/${categoryId}`);
+  //   }
+  // }
 
   //   let placemarks: Placemark[] = [];
   //   let categoryId: string; // Pass this into the component or extract from route
@@ -200,7 +264,38 @@
   <PlacemarkListCard>
     <ListPlacemarks />
   </PlacemarkListCard>
-  <AddPlacemark />
+  <div class="box">
+    <AddPlacemark
+      bind:title
+      bind:lat
+      bind:long
+      bind:address
+      bind:country
+      bind:phone
+      bind:website
+      bind:visited
+      bind:description
+    />
+    <div class="columns">
+      <div class="column is-3">
+        <!-- <button class="button is-info has-text-white" type="submit"> Add your placemark </button> -->
+        <button onclick={() => addPlacemark()} class="button is-info has-text-white">
+          Add your placemark
+        </button>
+      </div>
+      <div class="column is-9">
+        <p class="has-text-right">
+          *Find your exact placemarks coordinates on
+          <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"
+            >https://www.gps-coordinates.net/</a
+          >
+          <span class="ml-1 icon is-small">
+            <i class="fas fa-solid fa-folder-open"></i>
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
   <CategoryImage />
   <!-- </div>
     {/if}

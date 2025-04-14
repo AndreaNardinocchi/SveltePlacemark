@@ -31,11 +31,12 @@
 
   async function addCategory() {
     const category: Category = {
-      title: title
+      title: title,
       // userid: userid,
       // notes: notes,
       // img: img,
       // image: image
+      placemarks: []
     };
 
     let success = await placemarkService.addCategory(category);

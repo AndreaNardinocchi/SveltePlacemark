@@ -32,6 +32,8 @@ export interface User {
 }
 
 export interface Category {
+  placemarks: Placemark[];
+  // placemarks: Placemark[];
   title: string;
   // notes: string;
   // // img: string;
@@ -42,11 +44,11 @@ export interface Category {
 
 export interface Placemark {
   title: string;
-  lat: number;
-  long: number;
+  lat: string;
+  long: string;
   address: string;
   country: string;
-  phone: number;
+  phone: string;
   website: string;
   visited: string;
   description: string;

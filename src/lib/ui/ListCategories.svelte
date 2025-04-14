@@ -1,10 +1,33 @@
 <script lang="ts">
   import { placemarkService } from "./services/placemark-service";
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+  import { loggedInUser } from "$lib/runes.svelte";
   // import type Category from "../../routes/category/Category.svelte";
 
   let { categories = [] } = $props();
   console.log("These are the categories: ", categories);
+
+  async function deleteCategory(categoryId: string) {
+    console.log("This is the categoryId: ", categoryId);
+
+    if (!categoryId) {
+      console.warn("No category ID provided.");
+      return;
+    }
+
+    const category = await placemarkService.getCategoryById(categoryId);
+    if (!category) {
+      console.warn("Invalid category returned.");
+      return;
+    }
+
+    const success = await placemarkService.deleteCategory(categoryId);
+    if (success) {
+      console.log(`You are deleting the category ${category.title}`);
+      goto("/dashboard"); // Optionally, you can refresh the list instead of full redirect
+    }
+  }
 </script>
 
 <section>
@@ -23,15 +46,19 @@
                   <i class="fas fa-solid fa-folder-open"></i>
                 </span>
               </a>
-              <a
+              <!-- <a
                 href={`/dashboard/deletecategory/${category._id}`}
                 class="button"
                 aria-label="Folder delete"
+              > -->
+              <button
+                onclick={() => deleteCategory(category._id)}
+                class="button is-info has-text-white mt-3">Delete Category</button
               >
-                <span class="icon is-small">
+              <!-- <span class="icon is-small">
                   <i class="fas fa-solid fa-trash"></i>
                 </span>
-              </a>
+              </a> -->
             </div>
           </div>
         </div>
