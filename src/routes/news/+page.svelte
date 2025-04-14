@@ -19,7 +19,7 @@
   export let key;
 </script>
 
-<Header />
+<!-- <Header /> -->
 <div class="container">
   <News />
 </div>

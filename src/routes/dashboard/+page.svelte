@@ -1,11 +1,6 @@
 <script context="module">
   // https://www.npmjs.com/package/svelte-fa
-  import Footer from "$lib/Footer.svelte";
-  import Header from "$lib/Header.svelte";
   import Dashboard from "./Dashboard.svelte";
-  import Lifestyle from "../lifestyle/Lifestyle.svelte";
-  import ListCategories from "$lib/ui/ListCategories.svelte";
-  import LoginForm from "../login/LoginForm.svelte";
 
   // @ts-ignore
   export const load = async ({ page }) => ({
@@ -14,14 +9,13 @@
     }
   });
 
-  import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
   /**
    * @type {any}
    */
   export let key;
 </script>
 
-<Header />
+<!-- <Header /> -->
 <div class="container">
   <Dashboard />
 </div>

@@ -1,9 +1,7 @@
 <script context="module">
+  import EditPoi from "./EditPOI.svelte";
+
   // https://www.npmjs.com/package/svelte-fa
-  import Footer from "$lib/Footer.svelte";
-  import Header from "$lib/Header.svelte";
-  import Lifestyle from "./Lifestyle.svelte";
-  import LoginForm from "../login/LoginForm.svelte";
 
   // @ts-ignore
   export const load = async ({ page }) => ({
@@ -12,7 +10,6 @@
     }
   });
 
-  import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
   /**
    * @type {any}
    */
@@ -21,6 +18,6 @@
 
 <!-- <Header /> -->
 <div class="container">
-  <Lifestyle />
+  <EditPoi />
 </div>
 <!-- <Footer /> -->

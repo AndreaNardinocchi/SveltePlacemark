@@ -1,82 +1,114 @@
-<script>
+<!-- <script>
   // Define reactive variables for the form fields
-  let title = '';
-  let lat = '';
-  let long = '';
-  let address = '';
-  let country = '';
-  let phone = '';
-  let website = '';
-  let visited = '';
-  let description = '';
-  
-  // Handle form submission
-  function handleSubmit(event) {
-    event.preventDefault();
-  
-    // Here you can handle the form data, e.g., sending it to a backend API.
-    const formData = {
-      title,
-      lat,
-      long,
-      address,
-      country,
-      phone,
-      website,
-      visited,
-      description
-    };
-  
-    // Example of logging the form data (replace this with actual logic to send data)
-    console.log(formData);
-  
-    // You could submit the form using fetch or other methods
-    // fetch('/category/{category._id}/addplacemark', {
-    //   method: 'POST',
-    //   body: JSON.stringify(formData),
-    //   headers: { 'Content-Type': 'application/json' }
-    // });
+  let title = $state();
+  let lat = $state();
+  let long = $state();
+  let address = $state();
+  let country = $state();
+  let phone = $state();
+  let website = $state();
+  let visited = $state();
+  ? -->
+
+<script lang="ts">
+  // import HomepageTextCard from "./HomepageTextCard.svelte";
+
+  let {
+    title = $bindable(""),
+    lat = $bindable(""),
+    long = $bindable(""),
+    address = $bindable(""),
+    country = $bindable(""),
+    phone = $bindable(""),
+    website = $bindable(""),
+    visited = $bindable(""),
+    description = $bindable("")
+  } = $props();
+
+  // // Handle form submission
+  // function handleSubmit(event) {
+  //   event.preventDefault();
+
+  //   // Here you can handle the form data, e.g., sending it to a backend API.
+  //   const formData = {
+  //     title,
+  //     lat,
+  //     long,
+  //     address,
+  //     country,
+  //     phone,
+  //     website,
+  //     visited,
+  //     description
+  //   };
+
+  //   // Example of logging the form data (replace this with actual logic to send data)
+  //   console.log(formData);
+
+  // You could submit the form using fetch or other methods
+  // fetch('/category/{category._id}/addplacemark', {
+  //   method: 'POST',
+  //   body: JSON.stringify(formData),
+  //   headers: { 'Content-Type': 'application/json' }
+  // });
+  // }
+  async function placemark() {
+    console.log(`Just placemarking ${title} to ${lat} via ${long} payment`);
   }
 </script>
-<form class="box" on:submit={handleSubmit}>
-  <label>
-    Enter Placemark Details:
-    <div class="field is-horizontal">
-      <div class="field-body">
-        <div class="field">
-  <label class="label">
-  Title
-  <p class="control is-expanded has-icons-left">
-  <input class="input" type="text" placeholder="Enter Title" bind:value={title} />
-  <span class="icon is-small is-left">
-  <i class="fa fa-plane" aria-hidden="true"></i>
-  </span>
-  </p>
-  </label>
-  </div>
-  <div class="field">
-  <label class="label">
-  Latitude
-  <p class="control is-expanded has-icons-left">
-  <input class="input" type="number" step="any" placeholder="Enter Latitude" bind:value={lat} />
-  <span class="icon is-small is-left">
-  <i class="fas fa-compass" aria-hidden="true"></i>
-  </span>
-  </p>
-  </label>
-  </div>
-  <div class="field">
-  <label class="label">
-  Longitude
-  <p class="control is-expanded has-icons-left">
-  <input class="input" type="number" step="any" placeholder="Enter longitude" bind:value={long} >
-  <span class="icon is-small is-left">
-  <i class="fas fa-compass" aria-hidden="true"></i>
-  </span>
-  </p>
-  </label>
-  </div>
-  </div>
+
+<!-- <form class="box" on:submit={handleSubmit}> -->
+
+<label>
+  Enter Placemark Details:
+  <div class="field is-horizontal">
+    <div class="field-body">
+      <div class="field">
+        <label class="label">
+          Title
+          <p class="control is-expanded has-icons-left">
+            <input class="input" type="text" placeholder="Enter Title" bind:value={title} />
+            <span class="icon is-small is-left">
+              <i class="fa fa-plane" aria-hidden="true"></i>
+            </span>
+          </p>
+        </label>
+      </div>
+      <div class="field">
+        <label class="label">
+          Latitude
+          <p class="control is-expanded has-icons-left">
+            <input
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Enter Latitude"
+              bind:value={lat}
+            />
+            <span class="icon is-small is-left">
+              <i class="fas fa-compass" aria-hidden="true"></i>
+            </span>
+          </p>
+        </label>
+      </div>
+      <div class="field">
+        <label class="label">
+          Longitude
+          <p class="control is-expanded has-icons-left">
+            <input
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Enter longitude"
+              bind:value={long}
+            />
+            <span class="icon is-small is-left">
+              <i class="fas fa-compass" aria-hidden="true"></i>
+            </span>
+          </p>
+        </label>
+      </div>
+    </div>
   </div>
   <div class="field is-horizontal">
     <div class="field-body">
@@ -84,9 +116,14 @@
         <label class="label">
           Address
           <p class="control is-expanded has-icons-left">
-            <input class="input" type="text" placeholder="Enter our placemark address" bind:value={address}>
+            <input
+              class="input"
+              type="text"
+              placeholder="Enter our placemark address"
+              bind:value={address}
+            />
             <span class="icon is-small is-left">
-            <i class="fa fa-address-card" aria-hidden="true"></i>
+              <i class="fa fa-address-card" aria-hidden="true"></i>
             </span>
           </p>
         </label>
@@ -100,7 +137,9 @@
               Country
               <div class="select is-fullwidth">
                 <select name="country" placeholder="Select your country" bind:value={country}>
-                  <option class="has-text-grey-light" value="" disabled selected>Select your country</option>
+                  <option class="has-text-grey-light" value="" disabled selected
+                    >Select your country</option
+                  >
                   <option value="Afghanistan">Afghanistan</option>
                   <option value="Åland Islands">Åland Islands</option>
                   <option value="Albania">Albania</option>
@@ -127,12 +166,16 @@
                   <option value="Benin">Benin</option>
                   <option value="Bermuda">Bermuda</option>
                   <option value="Bhutan">Bhutan</option>
-                  <option value="Bolivia (Plurinational State of)">Bolivia (Plurinational State of)</option>
+                  <option value="Bolivia (Plurinational State of)"
+                    >Bolivia (Plurinational State of)</option
+                  >
                   <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
                   <option value="Botswana">Botswana</option>
                   <option value="Bouvet Island">Bouvet Island</option>
                   <option value="Brazil">Brazil</option>
-                  <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+                  <option value="British Indian Ocean Territory"
+                    >British Indian Ocean Territory</option
+                  >
                   <option value="Brunei Darussalam">Brunei Darussalam</option>
                   <option value="Bulgaria">Bulgaria</option>
                   <option value="Burkina Faso">Burkina Faso</option>
@@ -152,7 +195,9 @@
                   <option value="Colombia">Colombia</option>
                   <option value="Comoros">Comoros</option>
                   <option value="Congo">Congo</option>
-                  <option value="Congo, Democratic Republic of the">Congo, Democratic Republic of the</option>
+                  <option value="Congo, Democratic Republic of the"
+                    >Congo, Democratic Republic of the</option
+                  >
                   <option value="Cook Islands">Cook Islands</option>
                   <option value="Costa Rica">Costa Rica</option>
                   <option value="Croatia">Croatia</option>
@@ -198,7 +243,9 @@
                   <option value="Guinea-Bissau">Guinea-Bissau</option>
                   <option value="Guyana">Guyana</option>
                   <option value="Haiti">Haiti</option>
-                  <option value="Heard Island and McDonald Islands">Heard Island and McDonald Islands</option>
+                  <option value="Heard Island and McDonald Islands"
+                    >Heard Island and McDonald Islands</option
+                  >
                   <option value="Honduras">Honduras</option>
                   <option value="Hong Kong">Hong Kong</option>
                   <option value="Hungary">Hungary</option>
@@ -223,7 +270,9 @@
                   <option value="Kosovo">Kosovo</option>
                   <option value="Kuwait">Kuwait</option>
                   <option value="Kyrgyzstan">Kyrgyzstan</option>
-                  <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+                  <option value="Lao People's Democratic Republic"
+                    >Lao People's Democratic Republic</option
+                  >
                   <option value="Latvia">Latvia</option>
                   <option value="Lebanon">Lebanon</option>
                   <option value="Lesotho">Lesotho</option>
@@ -293,7 +342,9 @@
                   <option value="Saint Lucia">Saint Lucia</option>
                   <option value="Saint Martin">Saint Martin</option>
                   <option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
-                  <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+                  <option value="Saint Vincent and the Grenadines"
+                    >Saint Vincent and the Grenadines</option
+                  >
                   <option value="Samoa">Samoa</option>
                   <option value="San Marino">San Marino</option>
                   <option value="Sao Tome and Principe">Sao Tome and Principe</option>
@@ -310,7 +361,9 @@
                   <option value="Solomon Islands">Solomon Islands</option>
                   <option value="Somalia">Somalia</option>
                   <option value="South Africa">South Africa</option>
-                  <option value="South Georgia and the South Sandwich Islands">South Georgia and the South Sandwich Islands</option>
+                  <option value="South Georgia and the South Sandwich Islands"
+                    >South Georgia and the South Sandwich Islands</option
+                  >
                   <option value="South Sudan">South Sudan</option>
                   <option value="Spain">Spain</option>
                   <option value="Sri Lanka">Sri Lanka</option>
@@ -322,7 +375,9 @@
                   <option value="Syrian Arab Republic">Syrian Arab Republic</option>
                   <option value="Taiwan">Taiwan</option>
                   <option value="Tajikistan">Tajikistan</option>
-                  <option value="Tanzania (United Republic of)">Tanzania (United Republic of)</option>
+                  <option value="Tanzania (United Republic of)"
+                    >Tanzania (United Republic of)</option
+                  >
                   <option value="Thailand">Thailand</option>
                   <option value="Timor-Leste">Timor-Leste</option>
                   <option value="Togo">Togo</option>
@@ -336,12 +391,16 @@
                   <option value="Uganda">Uganda</option>
                   <option value="Ukraine">Ukraine</option>
                   <option value="United Arab Emirates">United Arab Emirates</option>
-                  <option value="United Kingdom of Great Britain and Northern Ireland">United Kingdom of Great Britain and Northern Ireland</option>
+                  <option value="United Kingdom of Great Britain and Northern Ireland"
+                    >United Kingdom of Great Britain and Northern Ireland</option
+                  >
                   <option value="United States of America">United States of America</option>
                   <option value="Uruguay">Uruguay</option>
                   <option value="Uzbekistan">Uzbekistan</option>
                   <option value="Vanuatu">Vanuatu</option>
-                  <option value="Venezuela (Bolivarian Republic of)">Venezuela (Bolivarian Republic of)</option>
+                  <option value="Venezuela (Bolivarian Republic of)"
+                    >Venezuela (Bolivarian Republic of)</option
+                  >
                   <option value="Viet Nam">Viet Nam</option>
                   <option value="Western Sahara">Western Sahara</option>
                   <option value="Yemen">Yemen</option>
@@ -362,9 +421,14 @@
         <label class="label">
           Phone Number
           <div class="control has-icons-left">
-            <input class="input" type="number" placeholder="Enter phone number" bind:value={phone} />
+            <input
+              class="input"
+              type="number"
+              placeholder="Enter phone number"
+              bind:value={phone}
+            />
             <span class="icon is-small is-left">
-            <i class="fa fa-phone" aria-hidden="true"></i>
+              <i class="fa fa-phone" aria-hidden="true"></i>
             </span>
           </div>
         </label>
@@ -373,9 +437,9 @@
         <label class="label">
           Website
           <div class="control has-icons-left">
-            <input class="input" type="number" placeholder="Enter webiste URL" bind:value={website} />
+            <input class="input" type="text" placeholder="Enter webiste URL" bind:value={website} />
             <span class="icon is-small is-left">
-            <i class="fa fa-info" aria-hidden="true"></i>
+              <i class="fa fa-info" aria-hidden="true"></i>
             </span>
           </div>
         </label>
@@ -387,8 +451,10 @@
           <label class="label">
             Visited?
             <div class="select is-fullwidth">
-              <select name="country" bind:value={visited} >
-                <option class="has-text-grey-light" value="" disabled selected>Select your answer</option>
+              <select name="country" bind:value={visited}>
+                <option class="has-text-grey-light" value="" disabled selected
+                  >Select your answer</option
+                >
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
               </select>
@@ -403,28 +469,14 @@
     <div class="field-body">
       <div class="field">
         <div class="control">
-          <label class="label">Description
-          <textarea class="textarea" placeholder="Enter a description" bind:value={description}></textarea>
+          <label class="label"
+            >Description
+            <textarea class="textarea" placeholder="Enter a description" bind:value={description}
+            ></textarea>
           </label>
         </div>
       </div>
     </div>
   </div>
-  <div class="columns">
-    <div class="column is-3">
-      <button class="button is-info has-text-white" type="submit">
-      Add your placemark
-      </button>
-    </div>
-    <div class="column is-9">
-      <p class="has-text-right">
-        *Find your exact placemarks coordinates on
-        <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey">https://www.gps-coordinates.net/</a>
-        <span class="ml-1 icon is-small">
-        <i class="fas fa-solid fa-folder-open"></i>
-        </span>
-      </p>
-    </div>
-  </div>
-  </label>
-</form>
+</label>
+<!-- </form> -->
