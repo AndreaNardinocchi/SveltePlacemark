@@ -53,8 +53,9 @@ export const placemarkService = {
   async addCategory(category: Category): Promise<Category | null> {
     try {
       const token = axios.defaults.headers.common["Authorization"];
+      // The token verification will ensure the user is logged in
       if (!token) {
-        console.warn("User is not logged in. No Authorization token found.");
+        console.log("User is not logged in. No Authorization token found.");
         return null;
       }
       const response = await axios.post(`${this.baseUrl}/api/categories`, category, {
@@ -75,8 +76,10 @@ export const placemarkService = {
     }
   },
 
+  // This is to delete a category, we call in the category id to delete as a parameter
   async deleteCategory(categoryId: string): Promise<boolean> {
     try {
+      // The token verification will ensure the user is logged in
       const token = axios.defaults.headers.common["Authorization"];
       if (!token) {
         console.warn("No Authorization token found.");
@@ -101,6 +104,7 @@ export const placemarkService = {
     }
   },
 
+  // This is to fetch all categories, and we call in the loggedinUser token to ensure we are signed in
   async getAllCategories(token: string): Promise<Category[]> {
     try {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -112,6 +116,7 @@ export const placemarkService = {
     }
   },
 
+  // This is to fetch all users, NEEDS REVISITING
   async getAllUsers(token: string): Promise<User[]> {
     try {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -123,8 +128,10 @@ export const placemarkService = {
     }
   },
 
+  // This is to fetch a category by id, and we call in the id string
   async getCategoryById(id: string): Promise<Category | null> {
     try {
+      // The token verification will ensure the user is logged in
       const token = axios.defaults.headers.common["Authorization"];
       if (!token) {
         console.warn("No Authorization token found.");
@@ -149,9 +156,12 @@ export const placemarkService = {
     }
   },
 
+  // This is to fetch a placemark by id, and we call in the category id of the placemarks
   async getPlacemarksByCategoryId(categoryId: string) {
     try {
+      // The token verification will ensure the user is logged in
       const token = axios.defaults.headers.common["Authorization"];
+      // The token verification will ensure the user is logged in
       if (!token) {
         console.warn("No Authorization token found.");
         return [];
@@ -175,8 +185,10 @@ export const placemarkService = {
     }
   },
 
+  // This is to add a placemark to a category, and we pass in the category id and placemark
   async addPlacemark(categoryId: string, placemark: Placemark): Promise<Placemark | null> {
     try {
+      // The token verification will ensure the user is logged in
       const token = axios.defaults.headers.common["Authorization"];
       if (!token) {
         console.warn("No Authorization token found.");
