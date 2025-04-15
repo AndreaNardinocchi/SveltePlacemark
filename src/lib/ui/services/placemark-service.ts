@@ -215,6 +215,33 @@ export const placemarkService = {
       }
       return null;
     }
+  },
+
+  // This is to delete a placemark, and we call in the placemark id
+  async deletePlacemark(placemarkId: string): Promise<boolean> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return false;
+      }
+
+      const response = await axios.delete(`${this.baseUrl}/api/placemarks/${placemarkId}`, {
+        headers: {
+          Authorization: token
+        }
+      });
+
+      console.log("Placemark deleted:", response.data);
+      return response.data.success === true; // Adjust based on your backend response
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error deleting placemark:", error.response.status, error.response.data);
+      } else {
+        console.error("Error deleting placemark:", error.message);
+      }
+      return false;
+    }
   }
 
   // async getUserById(userId: string): Promise<User | null> {
