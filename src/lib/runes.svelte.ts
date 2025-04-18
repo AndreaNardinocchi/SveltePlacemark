@@ -27,8 +27,8 @@ export const user = $state({
   DOB: "",
   phoneNumber: "",
   email: "",
-  password: ""
-  // _id: ""
+  password: "",
+  _id: ""
 });
 
 export const category = $state({

@@ -2,6 +2,10 @@ import axios from "axios";
 import type { Placemark, Session, User } from "../types/placemark-types";
 // import type Category from "../../../routes/category/Category.svelte";
 import type { Category } from "../types/placemark-types";
+// import { goto } from "$app/navigation";
+import { placemark } from "$lib/runes.svelte";
+
+axios.defaults.withCredentials = true;
 
 export const placemarkService = {
   baseUrl: "http://localhost:3000",
@@ -49,6 +53,104 @@ export const placemarkService = {
       return null;
     }
   },
+
+  // This is to delete a user by their user ID
+  async deleteUser(userId: string): Promise<boolean> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.error("No Authorization token found.");
+        return false;
+      }
+
+      const response = await axios.delete(`${this.baseUrl}/api/users/${userId}`, {
+        headers: {
+          Authorization: token
+        }
+      });
+
+      console.log("User deleted:", response.data);
+      return response.data.success === true; // adjust if your API returns differently
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error deleting user:", error.response.status, error.response.data);
+      } else {
+        console.error("Error deleting user:", error.message);
+      }
+      return false;
+    }
+  },
+
+  async deleteAllUsers(): Promise<boolean> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return false;
+      }
+
+      const response = await axios.delete(`${this.baseUrl}/api/users`, {
+        headers: {
+          Authorization: token
+        }
+      });
+
+      console.log("All users deleted:", response.data);
+      return response.data.success === true; // Adjust if your API returns differently
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error deleting users:", error.response.status, error.response.data);
+      } else {
+        console.error("Error deleting users:", error.message);
+      }
+      return false;
+    }
+  },
+
+  // async getUserByToken() {
+  //   try {
+  //     // Retrieve the Authorization token from the headers
+  //     const token = axios.defaults.headers.common["Authorization"];
+
+  //     // Ensure the token is available, otherwise we cannot make the request
+  //     if (!token) {
+  //       console.warn("No Authorization token found.");
+  //       return null;
+  //     }
+
+  //     // Make the API request to fetch user details based on the token
+  //     const response = await axios.get(`${this.baseUrl}/api/users`, {
+  //       headers: {
+  //         Authorization: token // Pass the token for authorization
+  //       }
+  //     });
+
+  //     return response.data; // Return the fetched user data
+  //   } catch (error) {
+  //     console.error("Error fetching user data:", error);
+  //     return null; // Handle errors by returning null
+  //   }
+  // },
+
+  // async getUserById(userId: string) {
+  //   try {
+  //     const token = axios.defaults.headers.common["Authorization"]; // make sure this was set during login!
+  //     if (!token) {
+  //       console.warn("No Authorization token found.");
+  //       return null;
+  //     }
+
+  //     const response = await axios.get(`${this.baseUrl}/api/users/${userId}`, {
+  //       headers: {
+  //         Authorization: token
+  //       }
+  //     });
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("Error fetching user data:", error);
+  //     return null;
+  //   }
+  // },
 
   async addCategory(category: Category): Promise<Category | null> {
     try {
@@ -173,7 +275,7 @@ export const placemarkService = {
         }
       });
 
-      console.log("Fetched placemarks:", response.data);
+      console.log(`Fetching placemarks for categoryId: ${categoryId}`, response.data);
       return response.data;
     } catch (error: any) {
       if (error.response) {
@@ -241,6 +343,150 @@ export const placemarkService = {
         console.error("Error deleting placemark:", error.message);
       }
       return false;
+    }
+  },
+
+  async updatePlacemark(placemarkId: string, categoryId: string, placemark: any): Promise<boolean> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return false;
+      }
+
+      const response = await axios.post(
+        `${this.baseUrl}/api/category/${categoryId}/updateplacemark/${placemarkId}`,
+        placemark,
+        {
+          headers: {
+            Authorization: token
+          },
+          withCredentials: true,
+          // ⛔️ Stop axios from auto-following the 302 redirect to HTML
+          maxRedirects: 0
+          // ✅ Let it treat 3xx responses as "okay"
+          // validateStatus: (status) => status >= 200 && status < 400
+        }
+      );
+
+      // At this point, the update worked — backend is redirecting
+      console.log("✅ Placemark updated, redirecting manually...");
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        console.error("❌ Error updating placemark:", error.response.status, error.response.data);
+      } else {
+        console.error("❌ Unexpected error:", error.message);
+      }
+      return false;
+    }
+  },
+
+  // async updatePlacemark(categoryId: string, placemarkId: string, placemark: any): Promise<boolean> {
+  //   try {
+  //     const token = axios.defaults.headers.common["Authorization"];
+  //     if (!token) {
+  //       console.warn("No Authorization token found.");
+  //       return false;
+  //     }
+
+  //     const response = await axios.post(
+  //       `${this.baseUrl}/category/${categoryId}/updateplacemark/${placemarkId}`,
+  //       placemark,
+  //       {
+  //         headers: {
+  //           Authorization: token
+  //         },
+  //         withCredentials: true,
+  //         // ⛔️ Stop axios from auto-following the 302 redirect to HTML
+  //         maxRedirects: 0,
+  //         // ✅ Let it treat 3xx responses as "okay"
+  //         validateStatus: (status) => status >= 200 && status < 400
+  //       }
+  //     );
+
+  //     // At this point, the update worked — backend is redirecting
+  //     console.log("✅ Placemark updated, redirecting manually...");
+  //     return response.data;
+  //   } catch (error: any) {
+  //     if (error.response) {
+  //       console.error("❌ Error updating placemark:", error.response.status, error.response.data);
+  //     } else {
+  //       console.error("❌ Unexpected error:", error.message);
+  //     }
+  //     return false;
+  //   }
+  // },
+
+  // async updatePlacemark(categoryId: string, placemarkId: string, placemark: any) {
+  //   try {
+  //     const token = axios.defaults.headers.common["Authorization"];
+
+  //     if (!token) {
+  //       console.warn("No Authorization token found.");
+  //       return;
+  //     }
+
+  //     console.log(`Updating placemark with ID: ${placemarkId} in category: ${categoryId}`);
+
+  //     // Make the POST request to update the placemark
+  //     const response = await axios.post(
+  //       `${this.baseUrl}/category/${categoryId}/updateplacemark/${placemarkId}`,
+  //       placemark,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}` // Attach the token for authorization
+  //         },
+  //         withCredentials: true // If you need to send cookies or credentials
+  //       }
+  //     );
+
+  //     // Log the response to ensure everything is working correctly
+  //     console.log("This is the updated placemark:", response.data);
+
+  //     // If the response is successful, redirect the user to the category page
+  //     if (response.status === 200) {
+  //       goto(`/category/${categoryId}`);
+  //     } else {
+  //       alert("Failed to update placemark.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating placemark:", error);
+  //     alert("There was an error updating the placemark.");
+  //   }
+  // },
+
+  // This is to fetch a single placemark by its ID (and optionally the category ID, if your API requires it)
+  async getPlacemarkById(categoryId: string, placemarkId: string) {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return null;
+      }
+
+      const url = `${this.baseUrl}/api/placemarks/${placemarkId}`;
+      console.log(`Trying to fetch: ${url}`);
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      return response.data;
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+        console.error("Axios error in getPlacemarkById:", {
+          message: err.message,
+          status: err.response?.status,
+          data: err.response?.data,
+          url: err.config?.url
+        });
+      } else {
+        console.error("Unexpected error in getPlacemarkById:", err);
+      }
+      return undefined;
     }
   }
 

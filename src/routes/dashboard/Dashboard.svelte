@@ -48,40 +48,40 @@
     }
   }
 
-  async function deleteCategory() {
-    //   const category: Category = {
-    //   title: title,
-    //   // userid: userid,
-    //   // notes: notes,
-    //   // img: img,
-    //   // image: image
-    //   placemarks: []
-    // };
+  // async function deleteCategory() {
+  //   //   const category: Category = {
+  //   //   title: title,
+  //   //   // userid: userid,
+  //   //   // notes: notes,
+  //   //   // img: img,
+  //   //   // image: image
+  //   //   placemarks: []
+  //   // };
 
-    const url = window.location.pathname;
-    const categoryId = url.split("/").pop();
+  //   const url = window.location.pathname;
+  //   const categoryId = url.split("/").pop();
 
-    console.log("This is the categoryId: ", categoryId);
+  //   console.log("This is the categoryId: ", categoryId);
 
-    if (!categoryId) {
-      console.warn("No category ID found in URL.");
-      return;
-    }
+  //   if (!categoryId) {
+  //     console.warn("No category ID found in URL.");
+  //     return;
+  //   }
 
-    let category = await placemarkService.getCategoryById(categoryId);
-    if (!category) {
-      console.warn("Invalid category returned.");
-      return;
-    }
+  //   let category = await placemarkService.getCategoryById(categoryId);
+  //   if (!category) {
+  //     console.warn("Invalid category returned.");
+  //     return;
+  //   }
 
-    let success = await placemarkService.deleteCategory(categoryId);
-    if (success) {
-      console.log(`You are deleting the category ${category.title}`);
-      goto("/dashboard");
-    } else {
-      message = "Error Trying to sign up";
-    }
-  }
+  //   let success = await placemarkService.deleteCategory(categoryId);
+  //   if (success) {
+  //     console.log(`You are deleting the category ${category.title}`);
+  //     goto("/dashboard");
+  //   } else {
+  //     message = "Error Trying to sign up";
+  //   }
+  // }
 </script>
 
 <DashboardBanner />

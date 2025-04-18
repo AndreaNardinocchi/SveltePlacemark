@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { User } from "./types/placemark-types";
   // import HomepageTextCard from "./HomepageTextCard.svelte";
 
   let {
@@ -15,6 +16,8 @@
     password = $bindable("")
   } = $props();
 
+  // let user: User | null = null;
+
   // // https://www.geeksforgeeks.org/how-to-set-minimum-and-maximum-date-in-html-date-picker/
   // const datePicker =
   //     document.getElementById('date');
@@ -26,7 +29,9 @@
 </script>
 
 <!-- <section class="section">
-  <!-- <form action="/register" method="POST"> -->
+  <form action="/register" method="POST"> -->
+
+<!-- {#if user} -->
 <div class="field is-horizontal">
   <div class="field-body">
     <div class="field">
@@ -494,5 +499,6 @@
     </div>
   </label>
 </div>
+<!-- {/if} -->
 <!-- </form> -->
 <!-- </section> -->

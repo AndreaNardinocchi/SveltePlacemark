@@ -28,7 +28,7 @@ export interface User {
   email: string;
   password: string;
   // createdTimeStamp: string;
-  _id?: string;
+  _id: string;
 }
 
 export interface Category {
