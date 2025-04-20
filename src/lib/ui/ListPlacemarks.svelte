@@ -60,6 +60,7 @@
   }
 </script>
 
+<div class="mt-6"></div>
 {#each placemarks as placemark}
   <div class="card has-text-dark-grey">
     <header class="card-header has-text-centered">

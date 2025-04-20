@@ -33,6 +33,9 @@ export const user = $state({
 
 export const category = $state({
   title: "",
+  notes: "",
+  userId: "",
+  image: "",
   _id: ""
 });
 

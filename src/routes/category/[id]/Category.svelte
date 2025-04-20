@@ -13,10 +13,9 @@
   import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
-  import type { Category, Placemark } from "$lib/ui/types/placemark-types";
-  import { onMount } from "svelte";
-  import { loggedInUser } from "$lib/runes.svelte";
+  import type { Placemark } from "$lib/ui/types/placemark-types";
   import { goto } from "$app/navigation";
+  import PlacemarkStats from "$lib/ui/PlacemarkStats.svelte";
 
   // Define reactive variables for the form fields
   let title = $state("");
@@ -69,80 +68,9 @@
       console.warn("Failed to add placemark.");
     }
   }
-
-  //   const url = window.location.pathname;
-  //   const categoryId = url.split("/").pop();
-  //   let category = await placemarkService.getCategoryById(categoryId);
-  //   let success = await placemarkService.addPlacemark(categoryId);
-  //   // const success = true;
-  //   if (success) {
-  //     console.log(`You are signing up ${title} ${lat} ${long} `);
-  //     goto(`/category/${categoryId}`);
-  //   }
-  // }
-
-  //   let placemarks: Placemark[] = [];
-  //   let categoryId: string; // Pass this into the component or extract from route
-
-  // onMount(async () => {
-  //   placemarks = await placemarkService.getPlacemarksByCategoryId(categoryId);
-  // });
-  // import { onMount } from "svelte";
-  // import { placemarkService } from "$lib/ui/services/placemark-service";
-  // import type { Category, Placemark } from "./types/placemark-types";
-
-  // let category: Category | null = null; // received as prop
-  // let placemarks: <Placemark[]>
-
-  // onMount(async () => {
-  //   if (category) {
-  //     placemarks = await placemarkService.getPlacemarksByCategoryId(loggedInUser.token);
-  //   }
-  // });
-
-  // let { category }: { category: Category } = $props();
-  // let category: Category | null = null;
-  // // let placemarks: Placemark[] = [];
-
-  // let placemarks = $state<Placemark[]>([]);
-
-  // onMount(async () => {
-  //   // Get category ID dynamically, maybe from route or context
-  //   const url = window.location.pathname;
-  //   const categoryId = url.split("/").pop();
-  //   if (category && categoryId) {
-  //     placemarks = await placemarkService.getPlacemarksByCategoryId(categoryId);
-  //     console.log("Received category:", category);
-  //   } else {
-  //     console.warn("No valid category ID provided.");
-  //     console.log("Received category:", category);
-  //   }
-  // });
-
-  // let placemarks = $state<Placemark[]>([]);
-
-  // onMount(async () => {
-  //   placemarks = await placemarkService.getPlacemarksByCategoryId(loggedInUser.token);
-  // });
-
-  // Props or reactive variables
-  // export let backgroundColor =
-  // ("title box has-text-centered has-background-grey-dark has-text-white"); // Default example
-  //  export let imageCode = "https://i.ibb.co/qL14ZG2g/mossel-dish-7724006-1280.jpg"; // Image code (URL or base64)
-  // export let category = { title: "Restaurants", img: "" }; // Category object with title and image
-  let placemarkSum = $state(0);
-  let yesCounting = $state(0);
-  let noCounting = $state(0);
-  let resultMax = $state(0);
-  let resultMin = $state(0);
-  let localCounting = $state(0);
-  let abroadCounting = $state(0);
-  let localIcon = $state("");
-  let abroadIcon = $state("");
-  let localTravelIcon = $state("");
-  let abroadTravelIcon = $state("");
 </script>
 
+<!-- {#if user} -->
 <section class="section mt-6">
   <!-- <div
     class="wrapper mb-5"
@@ -167,81 +95,8 @@
   >
     {#if isInView}
       <div in:fly={{ x: -200, duration: 1000 }}> -->
-  <div class="box has-background-white">
-    <div class="columns">
-      <div class="column">
-        <section>
-          <header class="card-header"></header>
-          <div class="columns has-text-left">
-            <div class="column is-6 m-auto">
-              <div class="card-image">
-                <figure class="image is-264x264 p-2">
-                  <img src="https://i.ibb.co/G42MNvjz/placemark.jpg" alt="placemark" />
-                </figure>
-              </div>
-            </div>
-            <div class="column is-6 ml-3">
-              <header class="card-header pt-5">
-                <p class="subtitle has-text-weight-bold is-5">Your placemarks stats</p>
-              </header>
-              <hr class="mr-6 pr-4" />
-              <article class="card-content">
-                <p class="content is-size-6 pt-1">
-                  <span class="has-text-weight-bold is-size-6">Placemarks:</span>
-                  {placemarkSum}<br />
-                  <span class="has-text-weight-bold is-size-6">Visited:</span>
-                  {yesCounting}<br />
-                  <span class="has-text-weight-bold is-size-6">To visit:</span>
-                  {noCounting}<br />
-                  <span class="has-text-weight-bold is-size-6">Furthest placemark:</span><br />
-                  {resultMax}<br />
-                  <span class="has-text-weight-bold is-size-6">Closest placemark:</span><br />
-                  {resultMin}
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <div class="column">
-        <section>
-          <header class="card-header"></header>
-          <div class="columns has-text-left">
-            <div class="column m-auto is-6">
-              <div class="card-image">
-                <figure class="image is-264x264 pt-5">
-                  <img src="https://i.ibb.co/s98MdtnM/travel.jpg" alt="travel" />
-                </figure>
-              </div>
-            </div>
-            <div class="column is-6 ml-3">
-              <header class="card-header pt-5">
-                <p class="subtitle has-text-weight-bold is-5">Placemarks locations</p>
-              </header>
-              <hr class="mr-6 pr-6" />
-              <article class="card-content">
-                <p class="content is-size-6 pt-1">
-                  <span class="has-text-weight-bold is-size-6">Local:</span>
-                  {localCounting}
-                  <img src={localIcon} alt="" /> <i class={localTravelIcon}></i>
-                </p>
-                <p>
-                  <span class="has-text-weight-bold is-size-6">Abroad:</span>
-                  {abroadCounting}
-                  <img src={abroadIcon} class="mt-2" alt="" />
-                  <i class={abroadTravelIcon}></i>
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-  </div>
-  <!-- </div>
-    {/if}
-  </div> -->
+  <!-- {#if category} -->
+  <PlacemarkStats />
 
   <!-- <img
     id="category-image"
@@ -279,12 +134,12 @@
     <div class="columns">
       <div class="column is-3">
         <!-- <button class="button is-info has-text-white" type="submit"> Add your placemark </button> -->
-        <button onclick={() => addPlacemark()} class="button is-info has-text-white">
+        <button onclick={() => addPlacemark()} class="mt-3 button is-info has-text-white">
           Add your placemark
         </button>
       </div>
       <div class="column is-9">
-        <p class="has-text-right">
+        <p class="has-text-right mt-2">
           *Find your exact placemarks coordinates on
           <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"
             >https://www.gps-coordinates.net/</a
@@ -301,5 +156,6 @@
     {/if}
   </div> -->
 </section>
+<!-- {/if} -->
 
 <!-- {placemarks} -->

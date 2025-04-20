@@ -1,72 +1,66 @@
-<!-- <script lang="ts">
-  import { placemarkService } from "./services/placemark-service";
-  import { loggedInUser } from "$lib/runes.svelte";
-  // import Category from "../../routes/category/[id]/Category.svelte";
-  import type { Category } from "$lib/ui/types/placemark-types";
-  import { onMount } from "svelte";
-
-  // ✅ category should be a single object, not an array
-
-  // ✅ Use $state for reactive values
-  // svelte-ignore non_reactive_update
-  let category: Category | null = null;
-  //   let category = $state("");
-
-  // This is assuming `loggedInUser.token` is already defined and valid
-  onMount(async () => {
-    // Replace with the actual category ID, not the token
-    const categoryId = "some-category-id"; // You need to get this from the route or context
-    const token = loggedInUser.token;
-
-    const result = await placemarkService.getCategoryById(token);
-    category = result;
-    console.log("This is the category:", category);
-  });
-
-  let backgroundColor = $state(
-    "title box has-text-centered has-background-grey-dark has-text-white"
-  ); // Default example
-  let imageCode = $state("https://i.ibb.co/qL14ZG2g/mossel-dish-7724006-1280.jpg");
-</script>
-
-{#if category}
-  <div class={backgroundColor}>
-    <div class="card-image">
-      <figure class="image 264x264 m-auto">
-        <img src={imageCode} alt="placeholder" style="border-radius: 15px;" />
-      </figure>
-    </div>
-    <div class="columns">
-      <div class="column">
-        <article class="card-content pt-2">
-          <p class="card-header-title">- {category.title} -</p>
-          <p></p>
-        </article>
-      </div>
-    </div>
-  </div>
-{/if} -->
-
 <script lang="ts">
   import { placemarkService } from "./services/placemark-service";
   import { loggedInUser } from "$lib/runes.svelte";
   import type { Category } from "$lib/ui/types/placemark-types";
   import { onMount } from "svelte";
-  import { writable } from "svelte/store"; // Using writable store for reactive values
 
-  // Reactive state
-  let category: Category | null = null;
-  let backgroundColor = writable(
-    "title box has-text-centered has-background-grey-dark has-text-white"
-  );
-  let imageCode = writable("https://i.ibb.co/qL14ZG2g/mossel-dish-7724006-1280.jpg");
+  let category = $state<Category>({} as Category);
+
+  let backgroundColor = $state("");
+  async function getBackgroundColor(): Promise<string> {
+    const url = window.location.pathname;
+    const categoryId = url.split("/").pop();
+    if (!categoryId) {
+      console.warn("No category ID found in URL.");
+      return "";
+    }
+    const category = await placemarkService.getCategoryById(categoryId);
+
+    if (category) {
+      if (category.title === "Restaurants") {
+        backgroundColor = "title box has-text-centered has-background-grey-dark has-text-white";
+      } else if (category.title === "Museums") {
+        backgroundColor = "title box has-text-centered has-background-black-bis has-text-white";
+      } else if (category.title === "Beaches") {
+        backgroundColor = "title box has-text-centered has-background-grey-light has-text-white";
+      } else if (category.title === "Parks") {
+        backgroundColor = "title box has-text-centered has-background-grey-darker has-text-white";
+      }
+    }
+    return backgroundColor;
+  }
+
+  let imageCode = $state("");
+  async function getImageCode(): Promise<string> {
+    const url = window.location.pathname;
+    const categoryId = url.split("/").pop();
+    if (!categoryId) {
+      console.warn("No category ID found in URL.");
+      return "";
+    }
+    const category = await placemarkService.getCategoryById(categoryId);
+
+    if (category) {
+      if (category.title === "Restaurants") {
+        imageCode = "https://i.ibb.co/qL14ZG2g/mossel-dish-7724006-1280.jpg";
+      } else if (category.title === "Museums") {
+        imageCode = "https://i.ibb.co/C5hpYTW3/man-2590655-1280.jpg";
+      } else if (category.title === "Beaches") {
+        imageCode = "https://i.ibb.co/1YHM8FHt/coast-7366616-1280.jpg";
+      } else if (category.title === "Parks") {
+        imageCode = "https://i.ibb.co/jPnk3WxG/autumn-3731094-1280.jpg";
+      }
+    }
+    return imageCode;
+  }
 
   onMount(async () => {
     // Get category ID dynamically, maybe from route or context
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
-    // const categoryId =  //"67fad4fb3b977ce37158de76"; // Replace with actual category ID from the route
     const token = loggedInUser.token;
+    backgroundColor = await getBackgroundColor();
+    imageCode = await getImageCode();
 
     if (categoryId && token) {
       // Fetch category by ID
@@ -85,12 +79,12 @@
 </script>
 
 {#if category}
-  <div class={$backgroundColor}>
+  <div class={backgroundColor}>
     <div class="card-image">
       <figure class="image 264x264 m-auto">
         <!-- Use a fallback image in case category does not have a valid image link -->
         <!-- svelte-ignore a11y_img_redundant_alt -->
-        <img src={$imageCode} alt="Category image" style="border-radius: 15px;" />
+        <img src={imageCode} alt="Category image" style="border-radius: 15px;" />
       </figure>
     </div>
     <div class="columns">

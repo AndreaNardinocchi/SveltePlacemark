@@ -33,12 +33,11 @@ export interface User {
 
 export interface Category {
   placemarks: Placemark[];
-  // placemarks: Placemark[];
   title: string;
-  // notes: string;
+  notes: string;
   // // img: string;
-  // image: string;
-  // userid: string;
+  image: string;
+  userid: string;
   _id?: string;
 }
 
