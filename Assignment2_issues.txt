@@ -10,6 +10,7 @@ Assignment 2
 - Adjust the Account page with bindings and $props ?? Pop up won't open with bindables
 - Signup showing as unsuccessful but it is
 - Issues updating placemarks
+- Delete user not working
 
       ##########################  Version 1 CORS ERROR ##########################################  
 

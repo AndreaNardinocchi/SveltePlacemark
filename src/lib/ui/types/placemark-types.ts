@@ -27,7 +27,7 @@ export interface User {
   phoneNumber: string;
   email: string;
   password: string;
-  // createdTimeStamp: string;
+  createdTimeStamp: string;
   _id: string;
 }
 

@@ -4,13 +4,16 @@
   import { fly } from "svelte/transition";
   import { inview } from "svelte-inview";
   import { loggedInUser } from "$lib/runes.svelte";
-  import type { User } from "$lib/ui/types/placemark-types";
+  import type { Category, User } from "$lib/ui/types/placemark-types";
   import UserDetails from "$lib/ui/UserDetails.svelte";
   import StatsAccount from "$lib/ui/StatsAccount.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { onMount } from "svelte";
 
   // let isInView: boolean = false;
+
+  // // ✅ Use $state for reactive values
+  let categories = $state<Category[]>([]);
 
   // ✅ Use $state for reactive values
   // let users = $state<User[]>([]);
@@ -51,7 +54,7 @@
     >
       {#if isInView}
         <div in:fly={{ y: 200, duration: 3000 }}> -->
-    <StatsAccount />
+    <StatsAccount {categories} />
     <!-- </div>
       {/if}
     </div> -->

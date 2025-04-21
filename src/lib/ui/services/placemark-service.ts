@@ -258,27 +258,34 @@ export const placemarkService = {
     }
   },
 
-  async getPlacemarksByCategoryId(categoryId: string) {
+  async getPlacemarksByCategoryId(categoryId: string, token: string) {
     try {
       if (!categoryId) {
         console.error("No categoryId provided!");
         return [];
       }
 
-      const token = axios.defaults.headers.common["Authorization"];
       if (!token) {
-        console.warn("No Authorization token found.");
+        console.warn("No Authorization token provided.");
         return [];
       }
 
-      const response = await axios.get(`${this.baseUrl}/api/categories/${categoryId}/placemarks`, {
+      const url = `${this.baseUrl}/api/categories/${categoryId}/placemarks`; // <- Correct endpoint based on RESTful design
+      console.log("Requesting placemarks from URL:", url);
+
+      const response = await axios.get(url, {
         headers: {
-          Authorization: token
+          Authorization: `Bearer ${token}`
         }
       });
 
-      console.log(`Fetched placemarks for categoryId: ${categoryId}`, response.data);
-      return response.data; // Will be [] if no placemarks exist
+      if (response.status === 200) {
+        console.log(`Fetched placemarks for categoryId ${categoryId}:`, response.data);
+        return response.data;
+      } else {
+        console.error(`Unexpected status code: ${response.status}`);
+        return [];
+      }
     } catch (error: any) {
       if (error.response) {
         console.error(
@@ -286,14 +293,50 @@ export const placemarkService = {
           error.response.data
         );
       } else if (error.request) {
-        console.error(`No response received while fetching placemarks. Request:`, error.request);
+        console.error("No response received while fetching placemarks:", error.request);
       } else {
-        console.error(`Unexpected error occurred while fetching placemarks: ${error.message}`);
+        console.error("Unexpected error:", error.message);
       }
-
       return [];
     }
   },
+
+  // async getPlacemarksByCategoryId(categoryId: string, token: string) {
+  //   try {
+  //     if (!categoryId) {
+  //       console.error("No categoryId provided!");
+  //       return [];
+  //     }
+
+  //     const token = axios.defaults.headers.common["Authorization"];
+  //     if (!token) {
+  //       console.warn("No Authorization token found.");
+  //       return [];
+  //     }
+
+  //     const response = await axios.get(`${this.baseUrl}/api/categories/${categoryId}/placemarks`, {
+  //       headers: {
+  //         Authorization: token
+  //       }
+  //     });
+
+  //     console.log(`Fetched placemarks for categoryId: ${categoryId}`, response.data);
+  //     return response.data; // Will be [] if no placemarks exist
+  //   } catch (error: any) {
+  //     if (error.response) {
+  //       console.error(
+  //         `Error fetching placemarks for categoryId: ${categoryId}. Status: ${error.response.status}`,
+  //         error.response.data
+  //       );
+  //     } else if (error.request) {
+  //       console.error(`No response received while fetching placemarks. Request:`, error.request);
+  //     } else {
+  //       console.error(`Unexpected error occurred while fetching placemarks: ${error.message}`);
+  //     }
+
+  //     return [];
+  //   }
+  // },
 
   // This is to fetch placemarks by id, and we call in the category id of the placemarks
   // async getPlacemarksByCategoryId(categoryId: string) {
@@ -501,7 +544,7 @@ export const placemarkService = {
         console.warn("No Authorization token found.");
         return null;
       }
-
+      //////////////////////// NEED TOCHECK WHY WE ARE NOT ADDING ${CATEGORYId} ////////////
       const url = `${this.baseUrl}/api/placemarks/${placemarkId}`;
       console.log(`Trying to fetch: ${url}`);
 

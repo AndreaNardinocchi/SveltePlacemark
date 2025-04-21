@@ -5,6 +5,7 @@
   import PlacemarkCard from "$lib/ui/PlacemarkCard.svelte";
   import InstaGrid from "$lib/ui/InstaGrid.svelte";
   import { loggedInUser } from "$lib/runes.svelte";
+  import InstHeader from "$lib/ui/InstHeader.svelte";
 
   // // @ts-ignore
   // export const load = async ({ page }) => ({
@@ -22,6 +23,7 @@
 <!-- <Header /> -->
 <div class="container">
   <Title />
+  <InstHeader />
   <PlacemarkCard />
   <InstaGrid />
 </div>

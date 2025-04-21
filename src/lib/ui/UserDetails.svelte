@@ -203,7 +203,7 @@
 
     const success = await placemarkService.deleteUser(userId);
     console.log("This is the userId: ", userId, success);
-    if (success) {
+    if (success && token) {
       console.log(`User ${userId} deleted successfully.`);
       goto("/"); // Redirect to home or login page
     } else {
@@ -256,7 +256,13 @@
               <hr />
               <p><strong>Phone Number:</strong><br />{user.phoneNumber}</p>
               <hr />
-              <p><strong>Email:</strong><br />{user.email}</p>
+              <p>
+                <span class="has-text-weight-bold">Email:</span><br /><span
+                  style="word-wrap: break-word;"
+                >
+                  {user.email}</span
+                >
+              </p>
               <hr />
               <p><strong>Password:</strong><br />{user.password}</p>
               <hr />
