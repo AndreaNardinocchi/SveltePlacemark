@@ -27,6 +27,7 @@
       const reader = new FileReader();
       reader.onload = () => {
         previewUrl = reader.result as string;
+        // console.log("This is the previewURL: ", previewUrl);
       };
       reader.readAsDataURL(selectedFile);
     }
@@ -59,12 +60,7 @@
 <div class="box p-4 pt-5 card-content">
   <div class="file has-name is-fullwidth">
     <label class="file-label">
-      <input
-        class="file-input"
-        type="file"
-        accept="image/*"
-        on:change={handleFileChange}
-      />
+      <input class="file-input" type="file" accept="image/*" on:change={handleFileChange} />
       <span class="file-cta has-text-white has-background-grey-dark">
         <span class="file-icon"><i class="fas fa-upload"></i></span>
         <span class="file-label">Choose an image…</span>
@@ -89,6 +85,7 @@
 
   {#if previewUrl}
     <div class="mt-4">
+      <!-- svelte-ignore a11y_img_redundant_alt -->
       <img src={previewUrl} alt="Preview Image" style="max-width: 100%; display: block;" />
     </div>
   {/if}
@@ -105,9 +102,11 @@
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>
-
-

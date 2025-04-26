@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3000/api"; // Change if needed
+const baseUrl = "http://localhost:3000"; // Change if needed
 
 const imageService = {
   async uploadImage(categoryId: string, placemarkId: string, imageFile: File): Promise<boolean> {
@@ -35,7 +35,7 @@ const imageService = {
       console.log("FormData content after append:", formDataEntries);
 
       // Log the upload URL and request details
-      const uploadUrl = `${baseUrl}/categories/${categoryId}/placemark/${placemarkId}/uploadimage`;
+      const uploadUrl = `${baseUrl}/category/${categoryId}/placemark/${placemarkId}/uploadimage`;
       console.log("Uploading to URL:", uploadUrl);
 
       // Send the POST request to the backend API
