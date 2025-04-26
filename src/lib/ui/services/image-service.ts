@@ -51,6 +51,7 @@ const imageService = {
       console.log("Response status:", response.status);
       if (response.status >= 200 && response.status < 300) {
         console.log("Image uploaded successfully.");
+        console.log("Imeg url: ");
         return true;
       } else {
         console.error("Unexpected response status:", response.status);
@@ -77,11 +78,10 @@ const imageService = {
         return false;
       }
 
-      const deleteUrl = `${baseUrl}/categories/${categoryId}/placemark/${placemarkId}/deleteimage/${index}`;
-      console.log("Sending delete request to URL:", deleteUrl);
+      const deleteUrl = `${baseUrl}/category/${categoryId}/placemark/${placemarkId}/deleteimage/${index}`;
+      console.log("Sending GET request to URL:", deleteUrl);
 
-      // Send the DELETE request to the backend API
-      const response = await axios.delete(deleteUrl, {
+      const response = await axios.get(deleteUrl, {
         headers: {
           Authorization: token
         }
@@ -96,14 +96,55 @@ const imageService = {
       }
     } catch (err) {
       console.error("Delete failed:", err);
-      if (err.response) {
-        console.error("Error response:", err.response.data);
-      } else {
-        console.error("Error message:", err.message);
-      }
       return false;
     }
   }
+
+  // async deleteImage(categoryId: string, placemarkId: string, index: number): Promise<boolean> {
+  //   try {
+  //     console.log("Deleting image at index:", index);
+
+  //     const token = axios.defaults.headers.common["Authorization"];
+  //     if (!token) {
+  //       console.warn("No Authorization token set.");
+  //       return false;
+  //     }
+
+  //     const deleteUrl = `${baseUrl}/category/${categoryId}/placemark/${placemarkId}/deleteimage/${index}`;
+  //     console.log("Sending delete request to URL:", deleteUrl);
+
+  //     // 1. Make a preflight OPTIONS request
+  //     await axios.options(deleteUrl, {
+  //       headers: {
+  //         Authorization: token,
+  //         "Content-Type": "application/json"
+  //       }
+  //     });
+
+  //     // 2. Send the DELETE request
+  //     const response = await axios.delete(deleteUrl, {
+  //       headers: {
+  //         Authorization: token
+  //       }
+  //     });
+
+  //     if (response.status >= 200 && response.status < 300) {
+  //       console.log("Image deleted successfully.");
+  //       return true;
+  //     } else {
+  //       console.error("Unexpected response status:", response.status);
+  //       return false;
+  //     }
+  //   } catch (err) {
+  //     console.error("Delete failed:", err);
+  //     if (err.response) {
+  //       console.error("Error response:", err.response.data);
+  //     } else {
+  //       console.error("Error message:", err.message);
+  //     }
+  //     return false;
+  //   }
+  // }
 };
 
 export default imageService;

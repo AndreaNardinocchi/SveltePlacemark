@@ -502,74 +502,74 @@ export const placemarkService = {
       }
       return undefined;
     }
-  },
+  }
 
   // Function to upload an image for a placemark
-  async uploadImage(categoryId: string, placemarkId: string, imageFile: File): Promise<boolean> {
-    try {
-      const token = axios.defaults.headers.common["Authorization"];
-      if (!token) {
-        console.warn("No Authorization token found.");
-        return false;
-      }
+  // async uploadImage(categoryId: string, placemarkId: string, imageFile: File): Promise<boolean> {
+  //   try {
+  //     const token = axios.defaults.headers.common["Authorization"];
+  //     if (!token) {
+  //       console.warn("No Authorization token found.");
+  //       return false;
+  //     }
 
-      const formData = new FormData();
-      formData.append("imagefile", imageFile);
+  //     const formData = new FormData();
+  //     formData.append("imagefile", imageFile);
 
-      const response = await axios.post(
-        `${this.baseUrl}/api/categories/${categoryId}/placemark/${placemarkId}/uploadimage`,
-        formData,
-        {
-          headers: {
-            Authorization: token
-            // Do not set Content-Type here
-          }
-        }
-      );
+  //     const response = await axios.post(
+  //       `${this.baseUrl}/api/categories/${categoryId}/placemark/${placemarkId}/uploadimage`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           Authorization: token
+  //           // Do not set Content-Type here
+  //         }
+  //       }
+  //     );
 
-      if (response.status === 200) {
-        console.log("Image uploaded successfully:", response.data);
-        return true;
-      } else {
-        console.error("Failed to upload image:", response.status);
-        return false;
-      }
-    } catch (error: any) {
-      console.error("Error uploading image:", error);
-      return false;
-    }
-  },
+  //     if (response.status === 200) {
+  //       console.log("Image uploaded successfully:", response.data);
+  //       return true;
+  //     } else {
+  //       console.error("Failed to upload image:", response.status);
+  //       return false;
+  //     }
+  //   } catch (error: any) {
+  //     console.error("Error uploading image:", error);
+  //     return false;
+  //   }
+  // },
 
-  // Function to delete an image from a placemark
-  async deleteImage(categoryId: string, placemarkId: string, imageIndex: number): Promise<boolean> {
-    try {
-      const token = axios.defaults.headers.common["Authorization"];
-      if (!token) {
-        console.warn("No Authorization token found.");
-        return false;
-      }
+  // // Function to delete an image from a placemark
+  // async deleteImage(categoryId: string, placemarkId: string, imageIndex: number): Promise<boolean> {
+  //   try {
+  //     const token = axios.defaults.headers.common["Authorization"];
+  //     if (!token) {
+  //       console.warn("No Authorization token found.");
+  //       return false;
+  //     }
 
-      // Send the delete request to the backend API with the category ID, placemark ID, and image index
-      const response = await axios.delete(
-        `${this.baseUrl}/api/categories/${categoryId}/placemark/${placemarkId}/deleteimage/${imageIndex}`,
-        {
-          headers: {
-            Authorization: token
-          }
-        }
-      );
+  //     // Send the delete request to the backend API with the category ID, placemark ID, and image index
+  //     const response = await axios.delete(
+  //       `${this.baseUrl}/api/categories/${categoryId}/placemark/${placemarkId}/deleteimage/${imageIndex}`,
+  //       {
+  //         headers: {
+  //           Authorization: token
+  //         }
+  //       }
+  //     );
 
-      // Check if the image was successfully deleted
-      if (response.status === 200) {
-        console.log("Image deleted successfully:", response.data);
-        return true;
-      } else {
-        console.error("Failed to delete image:", response.status);
-        return false;
-      }
-    } catch (error: any) {
-      console.error("Error deleting image:", error);
-      return false;
-    }
-  }
+  //     // Check if the image was successfully deleted
+  //     if (response.status === 200) {
+  //       console.log("Image deleted successfully:", response.data);
+  //       return true;
+  //     } else {
+  //       console.error("Failed to delete image:", response.status);
+  //       return false;
+  //     }
+  //   } catch (error: any) {
+  //     console.error("Error deleting image:", error);
+  //     return false;
+  //   }
+  // }
 };

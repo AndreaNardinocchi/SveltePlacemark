@@ -3,10 +3,11 @@
   import { loggedInUser } from "$lib/runes.svelte";
   import { placemarkService } from "./services/placemark-service";
   import type { Placemark } from "./types/placemark-types";
-    import PlacemarkImage from "./PlacemarkImage.svelte";
+  import PlacemarkImage from "./PlacemarkImage.svelte";
+  import imageService from "./services/image-service";
 
   // Use Svelte's reactive assignment here
-  let title = $state(""); 
+  let title = $state("");
   let img: string[] = [];
   let placemark: Placemark | null = $state(null); // Reactive variable
 
@@ -39,10 +40,33 @@
       if (placemarkData) {
         placemark = placemarkData; // Reactive update
         title = placemark.title;
-        img = placemark.img;  // Ensure this is an array
+        img = placemark.img; // Ensure this is an array
       } else {
         console.error("Placemark not found.");
       }
+    }
+  }
+
+  // Delete image function
+  async function deleteImage(index: number) {
+    const token = loggedInUser.token;
+
+    if (!token) {
+      console.error("Missing token.");
+      return;
+    }
+
+    try {
+      // Call the deleteImage function in placemarkService
+      const result = await imageService.deleteImage(categoryId, placemarkId, index);
+      if (result) {
+        // If the deletion is successful, remove the image from the UI (local state)
+        img.splice(index, 1); // Remove image from the img array
+      } else {
+        console.error("Failed to delete the image.");
+      }
+    } catch (error) {
+      console.error("Error while deleting the image:", error);
     }
   }
 
@@ -69,9 +93,21 @@
                 </figure>
                 <footer class="card-footer">
                   <!-- svelte-ignore a11y_consider_explicit_label -->
-                  <a
+                  <!-- <a
                     href={`/category/${categoryId}/placemark/${placemarkId}/deleteimage/${index}`}
                     class="button card-footer-item has-text-gray"
+                  >
+                    <span class="icon is-small">
+                      <i class="fas fa-solid fa-trash"></i>
+                    </span>
+                  </a> -->
+                  <!-- svelte-ignore event_directive_deprecated -->
+                  <!-- svelte-ignore a11y_invalid_attribute -->
+                  <a
+                    href="#"
+                    on:click|preventDefault={() => deleteImage(index)}
+                    class="button card-footer-item"
+                    aria-label="delete icon"
                   >
                     <span class="icon is-small">
                       <i class="fas fa-solid fa-trash"></i>
@@ -101,9 +137,6 @@
     <PlacemarkImage />
   </div>
 </section>
-
-
-
 
 <!-- <script lang="ts">
   import { onMount } from "svelte";
@@ -203,7 +236,6 @@
     <PlacemarkImage />
   </div>
 </section> -->
-
 
 <!-- CONTENTE TO PUT BACK IN-->
 <!-- <button class="mb-6 px-6 button is-info has-text-white" onclick={() => (visible = !visible)}>
@@ -375,7 +407,6 @@
       </div>
     {/if} -->
 <!-- </div> -->
-
 
 <!-- <script lang="ts">
   import { onMount } from "svelte";
