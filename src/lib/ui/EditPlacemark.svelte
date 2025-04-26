@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   /****************** Version 1 **********************************************************************************/
   import { placemarkService } from "./services/placemark-service";
   import { goto } from "$app/navigation";
@@ -88,103 +88,102 @@
       alert("Failed to update placemark.");
     }
   }
-</script>
+</script> -->
 
-<!-- <script lang="ts">
+<script lang="ts">
   /************************************ Version 2 *****************************************/
-    import { placemarkService } from "./services/placemark-service";
-    import { goto } from "$app/navigation";
-    import { onMount } from "svelte";
-    import type { Category, Placemark } from "./types/placemark-types";
-    import { loggedInUser } from "$lib/runes.svelte";
-  
-     let categoryId = "";
-    let placemarkId = "";
-    // svelte-ignore non_reactive_update
-    let category: Category | null = null;
-  
-  
-    let placemark: Placemark = {
-      title: "",
-      lat: "",
-      long: "",
-      address: "",
-      country: "",
-      phone: "",
-      website: "",
-      visited: "",
-      description: ""
-    };
-  
+  import { placemarkService } from "./services/placemark-service";
+  import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
+  import type { Category, Placemark } from "./types/placemark-types";
+  import { loggedInUser } from "$lib/runes.svelte";
+
+  let categoryId = "";
+  let placemarkId = "";
+  // svelte-ignore non_reactive_update
+  let category: Category | null = null;
+
+  let placemark: Placemark = {
+    title: "",
+    lat: "",
+    long: "",
+    address: "",
+    country: "",
+    phone: "",
+    website: "",
+    visited: "",
+    description: ""
+  };
+
   onMount(async () => {
-      // Split the current URL to get categoryId and placemarkId
-      const pathParts = window.location.pathname.split("/");
-      console.log("Path parts:", pathParts); // Log the full path to see if it's what you expect
-  
-      // Try to get categoryId and placemarkId from the URL
-      categoryId = pathParts[pathParts.indexOf("category") + 1];
-      placemarkId = pathParts[pathParts.indexOf("editplacemark") + 1];
-      const token = loggedInUser.token;
-  
-      // Check if the values are correctly set
-      console.log("categoryId:", categoryId);
-      console.log("placemarkId:", placemarkId);
-  
-      // If either ID is missing, log an error, or token
-      if (!categoryId || !placemarkId || !token) {
-        console.error("Invalid categoryId or placemarkId", { categoryId, placemarkId });
-        return; // Stop the rest of the logic if IDs are invalid
-      }
-  
-      if (categoryId && placemarkId && token) {
-        try {
-          console.log("categoryId and placemarkId:", categoryId, placemarkId);
-          // Fetch the category and placemark data
-          category = await placemarkService.getCategoryById(categoryId);
-          console.log("Fetched category:", category);
-          console.log("This is the token:", token);
-  
-          const myPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
-          console.log("This is myPlacemark :", myPlacemark);
-          if (placemark) {
-            placemark = myPlacemark;
-          } else {
-            console.error("Placemark not found for ID:", placemarkId);
-          }
-        } catch (error) {
-          console.error("Error fetching placemarks:", error);
+    // Split the current URL to get categoryId and placemarkId
+    const pathParts = window.location.pathname.split("/");
+    console.log("Path parts:", pathParts); // Log the full path to see if it's what you expect
+
+    // Try to get categoryId and placemarkId from the URL
+    categoryId = pathParts[pathParts.indexOf("category") + 1];
+    placemarkId = pathParts[pathParts.indexOf("editplacemark") + 1];
+    const token = loggedInUser.token;
+
+    // Check if the values are correctly set
+    console.log("categoryId:", categoryId);
+    console.log("placemarkId:", placemarkId);
+
+    // If either ID is missing, log an error, or token
+    if (!categoryId || !placemarkId || !token) {
+      console.error("Invalid categoryId or placemarkId", { categoryId, placemarkId });
+      return; // Stop the rest of the logic if IDs are invalid
+    }
+
+    if (categoryId && placemarkId && token) {
+      try {
+        console.log("categoryId and placemarkId:", categoryId, placemarkId);
+        // Fetch the category and placemark data
+        category = await placemarkService.getCategoryById(categoryId);
+        console.log("Fetched category:", category);
+        console.log("This is the token:", token);
+
+        const myPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        console.log("This is myPlacemark :", myPlacemark);
+        if (placemark) {
+          placemark = myPlacemark;
+        } else {
+          console.error("Placemark not found for ID:", placemarkId);
         }
-      }
-    });
-  
-   async function updatePlacemark() {
-      const updatedPlacemark = {
-        title: placemark.title,
-        lat: placemark.lat,
-        long: placemark.long,
-        address: placemark.address,
-        country: placemark.country,
-        phone: placemark.phone,
-        website: placemark.website,
-        visited: placemark.visited,
-        description: placemark.description
-      };
-  
-      const success = await placemarkService.updatePlacemark(
-        placemarkId,
-        categoryId,
-        updatedPlacemark
-      );
-      console.log("This is the updatedPlacemark: ", success);
-  
-      if (success) {
-        console.log("Placemark updated successfully");
-        goto(`/category/${categoryId}`);
-      } else {
-        alert("Failed to update placemark.");
+      } catch (error) {
+        console.error("Error fetching placemarks:", error);
       }
     }
-  </script> -->
+  });
+
+  async function updatePlacemark(placemark: Placemark) {
+    const updatedPlacemark = {
+      title: placemark.title,
+      lat: placemark.lat,
+      long: placemark.long,
+      address: placemark.address,
+      country: placemark.country,
+      phone: placemark.phone,
+      website: placemark.website,
+      visited: placemark.visited,
+      description: placemark.description
+    };
+
+    const success = await placemarkService.updatePlacemark(
+      placemarkId,
+      categoryId,
+      updatedPlacemark
+    );
+    console.log("This is the updatedPlacemark: ", updatedPlacemark);
+
+    if (success) {
+      console.log("Placemark updated successfully");
+      goto(`/category/${categoryId}`);
+    } else {
+      alert("Failed to update placemark.");
+    }
+  }
+</script>
 
 <div class="box mt-6">
   <label>
@@ -646,7 +645,7 @@
       <div class="column is-6">
         {#if category && placemark}
           <button onclick={() => updatePlacemark(placemark)} class="button is-info has-text-white">
-            Add your placemark
+            Update your placemark
           </button>
           <a class="button is-dark has-text-white" href={`/category/${category._id}`}
             >Do not update</a

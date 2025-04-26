@@ -10,14 +10,25 @@ axios.defaults.withCredentials = true;
 export const placemarkService = {
   baseUrl: "http://localhost:3000",
 
-  async signup(user: User): Promise<boolean> {
+  // async signup(user: User): Promise<boolean> {
+  //   try {
+  //     const response = await axios.post(`${this.baseUrl}/api/users`, user);
+  //     console.log("Signup response:", response.data); // Log full response to inspect
+  //     return response.data.success === true;
+  //   } catch (error) {
+  //     console.log(error);
+  //     return false;
+  //   }
+  // },
+
+  async signup(user: User): Promise<User | null> {
     try {
       const response = await axios.post(`${this.baseUrl}/api/users`, user);
-      console.log("Signup response:", response.data); // Log full response to inspect
-      return response.data.success === true;
+      console.log("Signup response:", response.data); // Should contain _id and more
+      return response.data; // ✅ Return the full user object
     } catch (error) {
       console.log(error);
-      return false;
+      return null;
     }
   },
 
@@ -52,6 +63,31 @@ export const placemarkService = {
       console.log(error);
       return null;
     }
+  },
+
+  async updateUser(updatedUser: User, token: string) {
+    console.log(`This is the fetch: ${this.baseUrl}/api/users/${updatedUser._id}`);
+    console.log(`Token: ${token}`);
+
+    const response = await fetch(`${this.baseUrl}/api/users/${updatedUser._id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+
+      body: JSON.stringify(updatedUser)
+    });
+
+    // Directly check if the response is ok and parse the JSON
+    if (!response.ok) {
+      // If not, throw an error with the status text
+      const errorText = await response.text(); // Optionally, read the text to debug
+      throw new Error(`Failed to update user: ${errorText}`);
+    }
+
+    // Since the response is OK, parse the JSON
+    return await response.json();
   },
 
   // This is to delete a user by their user ID
@@ -360,7 +396,11 @@ export const placemarkService = {
     }
   },
 
-  async updatePlacemark(placemarkId: string, categoryId: string, placemark: any): Promise<boolean> {
+  async updatePlacemark(
+    placemarkId: string,
+    categoryId: string,
+    placemark: unknown
+  ): Promise<boolean> {
     try {
       const token = axios.defaults.headers.common["Authorization"];
       if (!token) {
@@ -368,23 +408,25 @@ export const placemarkService = {
         return false;
       }
 
+      console.log(
+        `This is the placemark being updated: ${this.baseUrl}/api/category/${categoryId}/updateplacemark/${placemarkId}`
+      );
+
       const response = await axios.post(
-        `${this.baseUrl}/api/category/${categoryId}/updateplacemark/${placemarkId}`,
+        `${this.baseUrl}/category/${categoryId}/updateplacemark/${placemarkId}`,
         placemark,
         {
           headers: {
             Authorization: token
           },
           withCredentials: true,
-          // ⛔️ Stop axios from auto-following the 302 redirect to HTML
-          maxRedirects: 0
-          // ✅ Let it treat 3xx responses as "okay"
-          // validateStatus: (status) => status >= 200 && status < 400
+          maxRedirects: 0, // Prevent Axios from following redirects
+          validateStatus: (status) => status >= 200 && status < 400 // Treat 3xx as successful
         }
       );
 
       // At this point, the update worked — backend is redirecting
-      console.log("✅ Placemark updated, redirecting manually...");
+      console.log("✅ Placemark updated, redirecting manually...", response);
       return response.data;
     } catch (error: any) {
       if (error.response) {

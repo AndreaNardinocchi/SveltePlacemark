@@ -302,6 +302,7 @@
   import { onMount } from "svelte";
   import { loggedInUser } from "$lib/runes.svelte";
   import { goto } from "$app/navigation";
+  import { fly } from "svelte/transition";
 
   let user: User;
   let categoryId = "";
@@ -534,8 +535,8 @@
   }
 </script>
 
-{#if placemark}
-  <main class="columns box container">
+{#if placemark.title}
+  <main class="columns box container" in:fly={{ x: -200, duration: 2000 }}>
     <section class="column is-8 m-2">
       <p class="title is-size-4">{placemark.title}, {placemark.country}</p>
       <p>

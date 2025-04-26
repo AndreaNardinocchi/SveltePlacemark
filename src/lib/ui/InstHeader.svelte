@@ -78,7 +78,7 @@
   <div class="container mt-6">
     <div class="columns">
       <div class="column">
-        <p class="title has-text-centered is-2 pt-4 pb-2" in:fly={{ y: 200, duration: 500 }}>
+        <p class="title has-text-centered is-2 pt-4 pb-2" in:fly={{ x: 200, duration: 3000 }}>
           {title}
           {titleShort}!<!--  {{titleShort}}! -->
         </p>

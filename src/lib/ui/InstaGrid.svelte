@@ -5,6 +5,7 @@
   import type { Placemark } from "./types/placemark-types";
   import PlacemarkImage from "./PlacemarkImage.svelte";
   import imageService from "./services/image-service";
+  import { fly } from "svelte/transition";
 
   // Use Svelte's reactive assignment here
   let title = $state("");
@@ -80,16 +81,17 @@
 
 <section class="section">
   <div class="container has-text-centered">
+    <p class="title has-text-centered is-size-5">@{title}</p>
     <!-- Check if placemark is not null and has images -->
     {#if placemark && placemark.img && placemark.img.length > 0}
-      <div class="columns is-multiline pt-3">
+      <div class="columns is-multiline pt-3" in:fly={{ y: 200, duration: 4000 }}>
         {#each placemark.img as image, index}
           <div class="column is-4">
             <div class="card">
               <div class="card-image">
                 <figure class="image">
                   <!-- svelte-ignore a11y_img_redundant_alt -->
-                  <img src={image} style="border-radius: 10px;" alt="Placemark Image" />
+                  <img src={image} style="" alt="Placemark Image" />
                 </figure>
                 <footer class="card-footer">
                   <!-- svelte-ignore a11y_consider_explicit_label -->

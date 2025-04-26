@@ -13,7 +13,12 @@
    * @type {any}
    */
   export let key;
+  let pageTitle = "Dashboard | PlaceMark"; // This can be dynamic
 </script>
+
+<svelte:head>
+  <title>{pageTitle}</title>
+</svelte:head>
 
 <!-- <Header /> -->
 <div class="container">

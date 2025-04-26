@@ -1,11 +1,13 @@
 <script lang="ts">
-  import PlacemarkSignup from "$lib/ui/PlacemarkSignup.svelte";
-  import PlacemarkSignupImage from "$lib/ui/PlacemarkSignupImage.svelte";
+  import { placemarkService } from "$lib/ui/services/placemark-service";
   import { goto } from "$app/navigation";
   import type { User } from "$lib/ui/types/placemark-types";
+  // import { $state } from "svelte/store"; // Assuming you're using reactive stores
   import Message from "$lib/ui/Message.svelte";
-  import { placemarkService } from "$lib/ui/services/placemark-service";
+  import PlacemarkSignup from "$lib/ui/PlacemarkSignup.svelte";
+  import PlacemarkSignupImage from "$lib/ui/PlacemarkSignupImage.svelte";
 
+  // Form state variables
   let firstName = $state("");
   let lastName = $state("");
   let userLat = $state("");
@@ -17,9 +19,12 @@
   let phoneNumber = $state("");
   let email = $state("");
   let password = $state("");
-  let message = $state("");
+  let message = $state(""); // To show error or success messages
 
+  // Function to handle the signup process
   async function signup() {
+    console.log("Signup function triggered");
+
     const user: User = {
       firstName: firstName,
       lastName: lastName,
@@ -33,13 +38,30 @@
       email: email,
       password: password
     };
-    let success = await placemarkService.signup(user);
-    // const success = true;
-    if (success) {
-      console.log(`You are signing up ${firstName} ${lastName} ${email} and ${password}`);
-      goto("/login");
-    } else {
-      message = "Error Trying to sign up";
+
+    try {
+      // Log the user object being sent for signup
+      console.log("Signing up user with data:", user);
+
+      // Make the API call to the signup service
+      const addedUser = await placemarkService.signup(user);
+
+      // Log the backend response to verify
+      console.log("Signup response:", addedUser);
+
+      // Check if the response has an _id (indicating successful signup)
+      if (addedUser) {
+        console.log(`Successfully signed up ${user.firstName} ${user.lastName} ${user.email}`);
+        // Redirect to login page after successful signup
+        goto("/login");
+      } else {
+        console.error("Signup failed on the backend: No user _id returned");
+        message = "Error trying to sign up";
+      }
+    } catch (error) {
+      // Log the error in case of failure
+      console.error("Error during signup:", error);
+      message = "Error trying to sign up";
     }
   }
 </script>
