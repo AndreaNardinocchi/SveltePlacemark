@@ -301,72 +301,6 @@ export const placemarkService = {
     }
   },
 
-  // async getPlacemarksByCategoryId(categoryId: string, token: string) {
-  //   try {
-  //     if (!categoryId) {
-  //       console.error("No categoryId provided!");
-  //       return [];
-  //     }
-
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     if (!token) {
-  //       console.warn("No Authorization token found.");
-  //       return [];
-  //     }
-
-  //     const response = await axios.get(`${this.baseUrl}/api/categories/${categoryId}/placemarks`, {
-  //       headers: {
-  //         Authorization: token
-  //       }
-  //     });
-
-  //     console.log(`Fetched placemarks for categoryId: ${categoryId}`, response.data);
-  //     return response.data; // Will be [] if no placemarks exist
-  //   } catch (error: any) {
-  //     if (error.response) {
-  //       console.error(
-  //         `Error fetching placemarks for categoryId: ${categoryId}. Status: ${error.response.status}`,
-  //         error.response.data
-  //       );
-  //     } else if (error.request) {
-  //       console.error(`No response received while fetching placemarks. Request:`, error.request);
-  //     } else {
-  //       console.error(`Unexpected error occurred while fetching placemarks: ${error.message}`);
-  //     }
-
-  //     return [];
-  //   }
-  // },
-
-  // This is to fetch placemarks by id, and we call in the category id of the placemarks
-  // async getPlacemarksByCategoryId(categoryId: string) {
-  //   try {
-  //     // The token verification will ensure the user is logged in
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     // The token verification will ensure the user is logged in
-  //     if (!token) {
-  //       console.warn("No Authorization token found.");
-  //       return [];
-  //     }
-
-  //     const response = await axios.get(`${this.baseUrl}/api/categories/${categoryId}/placemarks`, {
-  //       headers: {
-  //         Authorization: token
-  //       }
-  //     });
-
-  //     console.log(`Fetching placemarks for categoryId: ${categoryId}`, response.data);
-  //     return response.data;
-  //   } catch (error: any) {
-  //     if (error.response) {
-  //       console.error("Error fetching placemarks:", error.response.status, error.response.data);
-  //     } else {
-  //       console.error("Error fetching placemarks:", error.message);
-  //     }
-  //     return [];
-  //   }
-  // },
-
   // This is to add a placemark to a category, and we pass in the category id and placemark
   async addPlacemark(categoryId: string, placemark: Placemark): Promise<Placemark | null> {
     try {
@@ -544,7 +478,7 @@ export const placemarkService = {
         console.warn("No Authorization token found.");
         return null;
       }
-      //////////////////////// NEED TOCHECK WHY WE ARE NOT ADDING ${CATEGORYId} ////////////
+      //////////////////////// NEED TO CHECK WHY WE ARE NOT ADDING ${CATEGORYId} ////////////
       const url = `${this.baseUrl}/api/placemarks/${placemarkId}`;
       console.log(`Trying to fetch: ${url}`);
 
@@ -568,134 +502,74 @@ export const placemarkService = {
       }
       return undefined;
     }
+  },
+
+  // Function to upload an image for a placemark
+  async uploadImage(categoryId: string, placemarkId: string, imageFile: File): Promise<boolean> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return false;
+      }
+
+      const formData = new FormData();
+      formData.append("imagefile", imageFile);
+
+      const response = await axios.post(
+        `${this.baseUrl}/api/categories/${categoryId}/placemark/${placemarkId}/uploadimage`,
+        formData,
+        {
+          headers: {
+            Authorization: token
+            // Do not set Content-Type here
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Image uploaded successfully:", response.data);
+        return true;
+      } else {
+        console.error("Failed to upload image:", response.status);
+        return false;
+      }
+    } catch (error: any) {
+      console.error("Error uploading image:", error);
+      return false;
+    }
+  },
+
+  // Function to delete an image from a placemark
+  async deleteImage(categoryId: string, placemarkId: string, imageIndex: number): Promise<boolean> {
+    try {
+      const token = axios.defaults.headers.common["Authorization"];
+      if (!token) {
+        console.warn("No Authorization token found.");
+        return false;
+      }
+
+      // Send the delete request to the backend API with the category ID, placemark ID, and image index
+      const response = await axios.delete(
+        `${this.baseUrl}/api/categories/${categoryId}/placemark/${placemarkId}/deleteimage/${imageIndex}`,
+        {
+          headers: {
+            Authorization: token
+          }
+        }
+      );
+
+      // Check if the image was successfully deleted
+      if (response.status === 200) {
+        console.log("Image deleted successfully:", response.data);
+        return true;
+      } else {
+        console.error("Failed to delete image:", response.status);
+        return false;
+      }
+    } catch (error: any) {
+      console.error("Error deleting image:", error);
+      return false;
+    }
   }
-
-  // async getUserById(userId: string): Promise<User | null> {
-  //   try {
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     if (!token) {
-  //       console.warn("No Authorization token found. User might not be logged in.");
-  //       return null;
-  //     }
-
-  //     const response = await axios.get(`${this.baseUrl}/api/users/${userId}`, {
-  //       headers: {
-  //         Authorization: token
-  //       }
-  //     });
-
-  //     return response.data as User;
-  //   } catch (error: any) {
-  //     if (error.response) {
-  //       console.error("Error fetching user:", error.response.status, error.response.data);
-  //     } else {
-  //       console.error("Error fetching user:", error.message);
-  //     }
-  //     return null;
-  //   }
-  // },
-
-  // async getAllCategories(): Promise<Category[] | null> {
-  //   try {
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     if (!token) {
-  //       console.warn("User is not logged in. No Authorization token found.");
-  //       return null;
-  //     }
-
-  //     const response = await axios.get(`${this.baseUrl}/api/categories`, {
-  //       headers: {
-  //         Authorization: token
-  //       }
-  //     });
-
-  //     console.log("Fetched categories:", response.data);
-  //     return response.data as Category[];
-  //   } catch (error: any) {
-  //     if (error.response) {
-  //       console.error("Error fetching categories:", error.response.status, error.response.data);
-  //     } else {
-  //       console.error("Error fetching categories:", error.message);
-  //     }
-  //     return null;
-  //   }
-  // }
-
-  // async addCategory(category: Category): Promise<Category | null> {
-  //   // Promise<Category | null>
-  //   try {
-  //     const response = await axios.post(`${this.baseUrl}/api/categories`, category);
-  //     console.log("Category added:", response.data);
-  //     // return response.data.success === true;
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log("Error adding category:", error);
-  //     return null;
-  //   }
-  // }
-
-  // async addCategory(category: Category) {
-  //   // token: string
-  //   try {
-  //     // axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-  //     const response = await axios.post(this.baseUrl + "/api/categories/", category);
-  //     console.log("Signup response:", response.data);
-  //     // return response.status == 200;
-  //     return response.data.success === true;
-  //   } catch (error) {
-  //     console.log(error);
-  //     return false;
-  //   }
-  // }
-
-  // async getUser(userId: string): Promise<User | null> {
-  //   try {
-  //     const response = await axios.get(`${this.baseUrl}/api/users/${userId}`);
-  //     if (response.data.success) {
-  //       const user: User = response.data.user;
-  //       return user;
-  //     }
-  //     return null;
-  //   } catch (error) {
-  //     console.log(error);
-  //     return null;
-  //   }
-  // }
 };
-
-//   async donate(donation: Donation, token: string) {
-//     try {
-//       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-//       const response = await axios.post(
-//         this.baseUrl + "/api/candidates/" + donation.candidate + "/donations",
-//         donation
-//       );
-//       return response.status == 200;
-//     } catch (error) {
-//       console.log(error);
-//       return false;
-//     }
-//   },
-
-//   async getCandidates(token: string): Promise<Candidate[]> {
-//     try {
-//       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-//       const response = await axios.get(this.baseUrl + "/api/candidates");
-//       return response.data;
-//     } catch (error) {
-//       console.log(error);
-//       return [];
-//     }
-//   },
-
-//   async getDonations(token: string): Promise<Donation[]> {
-//     try {
-//       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-//       const response = await axios.get(this.baseUrl + "/api/donations");
-//       return response.data;
-//     } catch (error) {
-//       console.log(error);
-//       return [];
-//     }
-//   }
-// };

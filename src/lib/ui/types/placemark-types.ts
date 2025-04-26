@@ -33,9 +33,10 @@ export interface User {
 
 export interface Category {
   placemarks: Placemark[];
+  // placemarks?: Placemark[];
   title: string;
   notes: string;
-  // // img: string;
+  // img: string;
   image: string;
   userid: string;
   _id?: string;
@@ -51,5 +52,7 @@ export interface Placemark {
   website: string;
   visited: string;
   description: string;
+  // https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#arrays
+  img?: string[]; // img is optional and can be undefined
   _id?: string;
 }

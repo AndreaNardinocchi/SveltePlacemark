@@ -174,6 +174,7 @@
     const abroad: string[] = [];
 
     const userCountry = user.country.toLowerCase().trim();
+    console.log("Country: ", userCountry);
 
     for (let i = 0; i < category.placemarks.length; i++) {
       const destination = category.placemarks[i].country.toLowerCase().trim();

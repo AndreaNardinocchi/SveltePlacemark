@@ -26,6 +26,7 @@
   let phone = $state("");
   let website = $state("");
   let visited = $state("");
+  let img: string[] = [];
   let description = $state("");
 
   async function addPlacemark() {
@@ -38,7 +39,12 @@
       phone: phone,
       website: website,
       visited: visited,
+      // img: img,
+        img: img.length > 0 ? img : undefined, // Only send `img` if it has values
       description: description
+      // img: []
+      // Only add img if it's provided
+      // img: img || undefined
     };
 
     const url = window.location.pathname;
