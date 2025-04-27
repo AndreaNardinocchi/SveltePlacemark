@@ -6,6 +6,7 @@
   import Message from "$lib/ui/Message.svelte";
   import PlacemarkSignup from "$lib/ui/PlacemarkSignup.svelte";
   import PlacemarkSignupImage from "$lib/ui/PlacemarkSignupImage.svelte";
+  import { fly } from "svelte/transition";
 
   // Form state variables
   let firstName = $state("");
@@ -74,7 +75,7 @@
 <section class="px-3">
   <section class="columns is-multiple">
     <!-- Left Column for PlacemarkSignup -->
-    <section class="column is-8 px-4">
+    <section class="column is-8 px-4" in:fly={{ y: 200, duration: 3000 }}>
       {#if message}
         <Message {message} />
       {/if}

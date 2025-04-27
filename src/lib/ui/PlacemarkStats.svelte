@@ -222,7 +222,7 @@
   <!-- <div in:fly={{ x: -200, duration: 1000 }}> -->
   <div class="box has-background-white">
     <div class="columns">
-      <div class="column">
+      <div class="column" in:fly={{ y: -200, duration: 3000 }}>
         <section>
           <header class="card-header"></header>
           <div class="columns has-text-left">

@@ -1,10 +1,12 @@
-<script>
+<script lang="ts">
   // https://medium.com/@ravipatel.it/a-comprehensive-guide-to-fetching-weather-data-using-javascript-fetch-api-13133d0bc2e6
   // @ts-nocheck
-  // import  { titleLandingPage } from '../shared.svelte.js';
   import { titleLandingPage } from "$lib/shared.svelte";
-
   import { fly } from "svelte/transition";
+  import { placemarkService } from "./services/placemark-service";
+  import { placemark } from "$lib/runes.svelte";
+  import { onMount } from "svelte"; // ✅ Import onMount
+
   let visible = $state(true);
 
   let { title = "#instaPlaceMark", subtitle = "InstaMark your InstaPlaces" } = $props();
@@ -18,13 +20,18 @@
 
   // Function to fetch the weather data
   async function getWeather() {
+    const pathParts = window.location.pathname.split("/");
+    const categoryId = pathParts[pathParts.indexOf("category") + 1];
+    const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
+    const placemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+    city = city?.trim() || placemark.country;
+
     if (!city) {
-      alert("Please enter a city name.");
+      errorMessage = "City or country not found in placemark.";
       return;
     }
 
     try {
-      // Fetch current weather
       const weatherResponse = await fetch(
         `${BASE_URL}weather?q=${city}&appid=${API_KEY}&units=metric`
       );
@@ -35,20 +42,23 @@
 
       const data = await weatherResponse.json();
       weatherData = data;
-      errorMessage = ""; // Reset error message if successful
+      errorMessage = "";
     } catch (error) {
       console.error("Error fetching data:", error);
       errorMessage = "Failed to fetch weather data.";
-      weatherData = null; // Clear the previous weather data if error occurs
+      weatherData = null;
     }
   }
 
-  // Function to display weather forecast (not implemented fully here)
+  // Auto-fetch on component mount ✅
+  onMount(() => {
+    getWeather();
+  });
+
   function displayForecast(data) {
     const forecastBody = document.getElementById("forecastBody");
     forecastBody.innerHTML = "";
 
-    // Forecast data comes in 3-hour intervals, so we'll filter to get daily forecasts
     const dailyForecasts = data.list.filter((item) => item.dt_txt.includes("12:00:00"));
     dailyForecasts.forEach((forecast) => {
       const date = new Date(forecast.dt_txt).toLocaleDateString();
@@ -66,28 +76,31 @@
       <div class="column is-8">
         <div class="columns">
           <div class="column is-9">
-            <input class="input" type="text" bind:value={city} placeholder="Enter city name" />
+            <input
+              class="input"
+              type="text"
+              bind:value={city}
+              placeholder="Enter city or country"
+            />
           </div>
           <div class="column is-3">
             <!-- svelte-ignore event_directive_deprecated -->
             <button class="button is-info has-text-white" on:click={getWeather}>
-              <!-- onclick="getWeather()"> -->
               Get Weather
             </button>
           </div>
         </div>
       </div>
     </section>
+
     <section class="columns has-background-white-bis">
-      <!-- Display error message -->
       {#if errorMessage}
         <p style="color: red;">{errorMessage}</p>
       {/if}
 
-      <!-- Display current weather if available -->
-      {#if weatherData}
+      {#if weatherData && city}
         <div class="column has-text-centered is-4">
-          <p class="has-text-weight-bold">City</p>
+          <p class="has-text-weight-bold">Country or City</p>
           <p>{weatherData.name}</p>
         </div>
         <div class="column has-text-centered is-4">
@@ -102,26 +115,3 @@
     </section>
   </section>
 </section>
-
-<!-- <article class="content px-4">
-    <div class="container mt-6">
-      <div class="columns">
-        <div class="column" >
-
-          <label class="mt-2">
-            <input type="checkbox" bind:checked={visible} />
-            visible
-          </label>
-          
-          {#if visible}
-          <p class="title has-text-centered is-2 pt-4 pb-2" in:fly={{ y: 200, duration: 500 }} >
-            {title} {titleLandingPage.titleShort}  {{titleShort}}! 
-          </p>
-          <p class="subtitle has-text-centered mb-6" in:fly={{ y: 200, duration: 500 }}>
-            {subtitle}
-          </p>
-          {/if}
-        </div>
-      </div>
-    </div>
-    </article> -->

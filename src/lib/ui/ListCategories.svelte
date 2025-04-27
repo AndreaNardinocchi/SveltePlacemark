@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
   import { placemarkService } from "./services/placemark-service";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
@@ -32,7 +33,7 @@
 
 <section>
   {#each categories as category}
-    <section class="columns box pt-2 mx-1 mb-5">
+    <section class="columns box pt-2 mx-1 mb-5" in:fly={{ x: 200, duration: 3000 }}>
       <section class="column is-8">
         <div class="box-link-hover-shadow">
           <h2 class="title">

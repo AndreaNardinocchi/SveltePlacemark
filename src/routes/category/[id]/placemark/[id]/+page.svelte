@@ -28,7 +28,7 @@
     let placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
     const placemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
     if (placemark) {
-      pageTitle = `${placemark.title} | PlaceMark`; // This can be dynamic
+      pageTitle = `${placemark.title} | #instaPlaceMark!`; // This can be dynamic
     }
     console.log("PageTitle: ", pageTitle);
     return pageTitle;

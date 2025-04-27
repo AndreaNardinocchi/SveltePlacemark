@@ -3,6 +3,7 @@
   import { loggedInUser } from "$lib/runes.svelte";
   import type { Category } from "$lib/ui/types/placemark-types";
   import { onMount } from "svelte";
+  import { fly } from "svelte/transition";
 
   let category = $state<Category>({} as Category);
 
@@ -80,7 +81,7 @@
 
 {#if category}
   <div class={backgroundColor}>
-    <div class="card-image">
+    <div class="card-image" in:fly={{ x: -200, duration: 3000 }}>
       <figure class="image 264x264 m-auto">
         <!-- Use a fallback image in case category does not have a valid image link -->
         <!-- svelte-ignore a11y_img_redundant_alt -->

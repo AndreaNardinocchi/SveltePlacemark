@@ -159,6 +159,7 @@
   import { loggedInUser } from "$lib/runes.svelte";
   import type { User } from "./types/placemark-types";
   import { goto } from "$app/navigation";
+  import { fly } from "svelte/transition";
 
   let user: User;
   let showModal = false; // Controls modal visibility
@@ -227,7 +228,7 @@
   <section class="section">
     <div class="container">
       <div class="columns">
-        <div class="column is-6 mt-6 pt-6 pr-6 mb-5">
+        <div class="column is-6 mt-6 pt-6 pr-6 mb-5" in:fly={{ x: -200, duration: 3000 }}>
           <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mb-6" alt="Avatar" />
           <p class="is-size-4 pb-2">
             Hi <strong>{user.firstName}</strong> !!
@@ -235,7 +236,7 @@
           <p>Welcome to your profile page!</p>
           <p>Please, take a moment to check your details in the box...</p>
         </div>
-        <div class="column is-6 box p-6 is-size-5">
+        <div class="column is-6 box p-6 is-size-5" in:fly={{ x: 200, duration: 3000 }}>
           <p class="subtitle is-3 has-text-weight-bold has-text-centered">
             {user.firstName}'s account details
           </p>
@@ -258,11 +259,14 @@
               <hr />
               <p><strong>Phone Number:</strong><br />{user.phoneNumber}</p>
               <hr />
-              <p><strong>Email:</strong><br />{user.email}</p>
+              <p>
+                <strong>Email:</strong><br /><span style="word-wrap: break-word;">{user.email}</span
+                >
+              </p>
               <hr />
               <p><strong>Password:</strong><br />{user.password}</p>
               <hr />
-              <p><strong>Coordinates:</strong><br />{user.userLat}, {user.userLong}</p>
+              <p><strong>Coordinates:</strong><br />{user.userLat} / {user.userLong}</p>
               <hr />
             </div>
           </div>

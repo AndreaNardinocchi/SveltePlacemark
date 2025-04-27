@@ -1,7 +1,7 @@
 <script lang="ts">
   // let { placemarks = [] } = $props();
   // console.log("These are the categories: ", placemarks);
-
+  import { fly } from "svelte/transition";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
   import type { Category, Placemark } from "$lib/ui/types/placemark-types";
@@ -62,7 +62,7 @@
 
 <div class="mt-6"></div>
 {#each placemarks as placemark}
-  <div class="card has-text-dark-grey">
+  <div class="card has-text-dark-grey" in:fly={{ y: 200, duration: 3000 }}>
     <header class="card-header has-text-centered">
       <p class="card-header-title">
         <a href={`/category/${category._id}/placemark/${placemark._id}`} class="has-text-grey">

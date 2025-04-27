@@ -16,6 +16,45 @@
     password = $bindable("")
   } = $props();
 
+  /** Input sanitizing
+   * https://stackoverflow.com/questions/62426548/how-do-i-make-svelte-update-input-components-like-react-does#62431731
+   */
+
+  function sanitizeFirstName(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    firstName = e.target.value;
+  }
+
+  function sanitizeLastName(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    lastName = e.target.value;
+  }
+
+  function sanitizeStreet(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    street = e.target.value;
+  }
+
+  function sanitizeAddressCode(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    addressCode = e.target.value;
+  }
+
+  function sanitizePhoneNumber(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    phoneNumber = e.target.value;
+  }
+
+  function sanitizeEmail(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    email = e.target.value;
+  }
+
+  function sanitizePassword(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    password = e.target.value;
+  }
+
   // let user: User | null = null;
 
   // // https://www.geeksforgeeks.org/how-to-set-minimum-and-maximum-date-in-html-date-picker/
@@ -38,12 +77,14 @@
       <label class="label">
         First Name
         <p class="control is-expanded has-icons-left">
+          <!-- svelte-ignore event_directive_deprecated -->
           <input
             class="input"
             type="text"
             placeholder="Enter first name"
             name="firstName"
             bind:value={firstName}
+            on:input={sanitizeFirstName}
           />
           <span class="icon is-small is-left">
             <i class="fas fa-user"></i>
@@ -55,12 +96,14 @@
       <label class="label">
         Last Name
         <p class="control is-expanded has-icons-left">
+          <!-- svelte-ignore event_directive_deprecated -->
           <input
             class="input"
             type="text"
             placeholder="Enter last name"
             name="lastName"
             bind:value={lastName}
+            on:input={sanitizeLastName}
           />
           <span class="icon is-small is-left">
             <!-- <i class="fa fa-id-card-o" aria-hidden="true"></i> -->
@@ -396,7 +439,15 @@
       <label class="label">
         Street
         <p class="control is-expanded has-icons-left">
-          <input class="input" type="text" placeholder="Street" name="street" bind:value={street} />
+          <!-- svelte-ignore event_directive_deprecated -->
+          <input
+            class="input"
+            type="text"
+            placeholder="Street"
+            name="street"
+            bind:value={street}
+            on:input={sanitizeStreet}
+          />
           <span class="icon is-small is-left">
             <i class="fa fa-address-card" aria-hidden="true"></i>
           </span>
@@ -407,12 +458,14 @@
       <label class="label">
         Address Code
         <p class="control is-expanded has-icons-left">
+          <!-- svelte-ignore event_directive_deprecated -->
           <input
             class="input"
             type="text"
             placeholder="Address code"
             name="addressCode"
             bind:value={addressCode}
+            on:input={sanitizeAddressCode}
           />
           <span class="icon is-small is-left">
             <i class="fa fa-map-marker" aria-hidden="true"></i>
@@ -448,12 +501,14 @@
       <label class="label">
         Phone Number
         <div class="control has-icons-left">
+          <!-- svelte-ignore event_directive_deprecated -->
           <input
             class="input"
             type="number"
             placeholder="Enter your phone number"
             name="phoneNumber"
             bind:value={phoneNumber}
+            on:input={sanitizePhoneNumber}
           />
           <span class="icon is-small is-left">
             <i class="fa fa-phone" aria-hidden="true"></i>
@@ -467,12 +522,14 @@
   <label class="label">
     Email
     <div class="control has-icons-left">
+      <!-- svelte-ignore event_directive_deprecated -->
       <input
         class="input"
         type="email"
         placeholder="Enter your email"
         name="email"
         bind:value={email}
+        on:input={sanitizeEmail}
       />
       <span class="icon is-small is-left">
         <!-- FontAwesome icon for password -->
@@ -485,12 +542,14 @@
   <label class="label">
     Password
     <div class="control has-icons-left">
+      <!-- svelte-ignore event_directive_deprecated -->
       <input
         class="input"
         type="password"
         placeholder="Enter Password"
         name="password"
         bind:value={password}
+        on:input={sanitizePassword}
       />
       <span class="icon is-small is-left">
         <!-- FontAwesome icon for password -->
