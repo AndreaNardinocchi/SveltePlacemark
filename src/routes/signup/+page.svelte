@@ -16,7 +16,12 @@
    * @type {any}
    */
   export let key;
+  let pageTitle = "Sign Up for PlaceMark"; // This can be dynamic
 </script>
+
+<svelte:head>
+  <title>{pageTitle}</title>
+</svelte:head>
 
 <!-- <WelcomeMenu /> -->
 <div class="container">

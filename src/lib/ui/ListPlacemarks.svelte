@@ -1,12 +1,13 @@
 <script lang="ts">
   // let { placemarks = [] } = $props();
   // console.log("These are the categories: ", placemarks);
-
+  import { fly } from "svelte/transition";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
   import type { Category, Placemark } from "$lib/ui/types/placemark-types";
   import { onMount } from "svelte";
   import { loggedInUser } from "$lib/runes.svelte";
+  import { goto } from "$app/navigation";
 
   // svelte-ignore non_reactive_update
   let category: Category | null = null;
@@ -33,10 +34,35 @@
       console.warn("Invalid category ID or token.");
     }
   });
+
+  async function deletePlacemark(placemarkId: string) {
+    console.log("This is the placemarkId: ", placemarkId);
+
+    if (!placemarkId) {
+      console.warn("No placemark ID provided.");
+      return;
+    }
+
+    // Optional: You can fetch the placemark details first if needed
+    // const placemark = await placemarkService.getPlacemarkById(placemarkId);
+    // if (!placemark) {
+    //   console.warn("Invalid placemark returned.");
+    //   return;
+    // }
+
+    const success = await placemarkService.deletePlacemark(placemarkId);
+    if (success) {
+      console.log(`Placemark with ID ${placemarkId} was successfully deleted.`);
+      goto(`/category/${category?._id}`); // Or refresh the current route/list as needed
+    } else {
+      console.warn("Failed to delete placemark.");
+    }
+  }
 </script>
 
+<div class="mt-6"></div>
 {#each placemarks as placemark}
-  <div class="card has-text-dark-grey">
+  <div class="card has-text-dark-grey" in:fly={{ y: 200, duration: 3000 }}>
     <header class="card-header has-text-centered">
       <p class="card-header-title">
         <a href={`/category/${category._id}/placemark/${placemark._id}`} class="has-text-grey">
@@ -104,8 +130,15 @@
           <i class="fas fa-solid fa-edit"></i>
         </span>
       </a>
+      <!-- svelte-ignore event_directive_deprecated -->
+      <!-- svelte-ignore a11y_invalid_attribute -->
+      <!-- https://dev.to/umanghome/event-handlers-and-svelte-4f5k
+      https://stackoverflow.com/questions/77594143/svelte-how-to-prevent-default-action-of-reusable-button-component
+      https://github.com/bestguy/sveltestrap/blob/master/src/Button.svelte
+      https://svelte.dev/docs/svelte/legacy-on -->
       <a
-        href={`/category/${category._id}/deleteplacemark/${placemark._id}`}
+        href="#"
+        on:click|preventDefault={() => deletePlacemark(placemark._id)}
         class="button card-footer-item"
         aria-label="delete icon"
       >

@@ -27,12 +27,16 @@ export const user = $state({
   DOB: "",
   phoneNumber: "",
   email: "",
-  password: ""
-  // _id: ""
+  password: "",
+  _id: ""
 });
 
 export const category = $state({
   title: "",
+  notes: "",
+  userId: "",
+  image: "",
+  // img: "",
   _id: ""
 });
 
@@ -46,5 +50,6 @@ export const placemark = $state({
   website: "",
   visited: "",
   description: "",
+  img: "",
   _id: ""
 });

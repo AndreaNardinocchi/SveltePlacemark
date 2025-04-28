@@ -1,8 +1,17 @@
-<script>
+<!-- <script lang="ts">
+  /****************** Version 1 **********************************************************************************/
+  import { placemarkService } from "./services/placemark-service";
+  import { goto } from "$app/navigation";
   import { onMount } from "svelte";
+  import type { Category, Placemark } from "./types/placemark-types";
+  import { loggedInUser } from "$lib/runes.svelte";
 
-  let placemark = {
-    _id: "",
+  let categoryId = "";
+  let placemarkId = "";
+  // svelte-ignore non_reactive_update
+  let category: Category | null = null;
+
+  let placemark: Placemark = {
     title: "",
     lat: "",
     long: "",
@@ -14,167 +23,167 @@
     description: ""
   };
 
-  let category = {
-    _id: ""
-  };
-
-  // You can fetch the data from an API or props when the component is mounted
   onMount(async () => {
-    // Fetch the placemark data here, for example:
-    // const response = await fetch(`/api/placemark/${placemarkId}`);
-    // placemark = await response.json();
+    // Split the current URL to get categoryId and placemarkId
+    const pathParts = window.location.pathname.split("/");
+    console.log("Path parts:", pathParts); // Log the full path to see if it's what you expect
+
+    // Try to get categoryId and placemarkId from the URL
+    categoryId = pathParts[pathParts.indexOf("category") + 1];
+    placemarkId = pathParts[pathParts.indexOf("editplacemark") + 1];
+    const token = loggedInUser.token;
+
+    // Check if the values are correctly set
+    console.log("categoryId:", categoryId);
+    console.log("placemarkId:", placemarkId);
+
+    // If either ID is missing, log an error, or token
+    if (!categoryId || !placemarkId || !token) {
+      console.error("Invalid categoryId or placemarkId", { categoryId, placemarkId });
+      return; // Stop the rest of the logic if IDs are invalid
+    }
+
+    if (categoryId && placemarkId && token) {
+      try {
+        console.log("categoryId and placemarkId:", categoryId, placemarkId);
+        // Fetch the category and placemark data
+        category = await placemarkService.getCategoryById(categoryId);
+        console.log("Fetched category:", category);
+        console.log("This is the token:", token);
+
+        const myPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        console.log("This is myPlacemark :", myPlacemark);
+        if (placemark) {
+          placemark = myPlacemark;
+        } else {
+          console.error("Placemark not found for ID:", placemarkId);
+        }
+      } catch (error) {
+        console.error("Error fetching placemarks:", error);
+      }
+    }
   });
 
-  // function handleSubmit() {
-  //   // Handle form submission, for example:
-  //   // fetch(`/category/${category._id}/updateplacemark/${placemark._id}`, {
-  //   //   method: 'POST',
-  //   //   body: JSON.stringify(placemark),
-  //   //   headers: { 'Content-Type': 'application/json' }
-  //   // });
-  // }
+  async function updatePlacemark(updatedPlacemark: {
+    title: string;
+    lat: string;
+    long: string;
+    address: string;
+    country: string;
+    phone: string;
+    website: string;
+    visited: string;
+    description: string;
+  }) {
+    // Don’t fetch the placemark again — use the current form values
+    const newPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+
+    console.log("This is the updated placemark: ", updatedPlacemark);
+
+    console.log("This is the placemark returned by the database: ", newPlacemark); //  Correct object
+
+    if (updatedPlacemark) {
+      goto(`/category/${categoryId}`);
+    } else {
+      alert("Failed to update placemark.");
+    }
+  }
+</script> -->
+
+<script lang="ts">
+  /************************************ Version 2 *****************************************/
+  import { placemarkService } from "./services/placemark-service";
+  import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
+  import type { Category, Placemark } from "./types/placemark-types";
+  import { loggedInUser } from "$lib/runes.svelte";
+
+  let categoryId = "";
+  let placemarkId = "";
+  // svelte-ignore non_reactive_update
+  let category: Category | null = null;
+
+  let placemark: Placemark = {
+    title: "",
+    lat: "",
+    long: "",
+    address: "",
+    country: "",
+    phone: "",
+    website: "",
+    visited: "",
+    description: ""
+  };
+
+  onMount(async () => {
+    // Split the current URL to get categoryId and placemarkId
+    const pathParts = window.location.pathname.split("/");
+    console.log("Path parts:", pathParts); // Log the full path to see if it's what you expect
+
+    // Try to get categoryId and placemarkId from the URL
+    categoryId = pathParts[pathParts.indexOf("category") + 1];
+    placemarkId = pathParts[pathParts.indexOf("editplacemark") + 1];
+    const token = loggedInUser.token;
+
+    // Check if the values are correctly set
+    console.log("categoryId:", categoryId);
+    console.log("placemarkId:", placemarkId);
+
+    // If either ID is missing, log an error, or token
+    if (!categoryId || !placemarkId || !token) {
+      console.error("Invalid categoryId or placemarkId", { categoryId, placemarkId });
+      return; // Stop the rest of the logic if IDs are invalid
+    }
+
+    if (categoryId && placemarkId && token) {
+      try {
+        console.log("categoryId and placemarkId:", categoryId, placemarkId);
+        // Fetch the category and placemark data
+        category = await placemarkService.getCategoryById(categoryId);
+        console.log("Fetched category:", category);
+        console.log("This is the token:", token);
+
+        const myPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        console.log("This is myPlacemark :", myPlacemark);
+        if (placemark) {
+          placemark = myPlacemark;
+        } else {
+          console.error("Placemark not found for ID:", placemarkId);
+        }
+      } catch (error) {
+        console.error("Error fetching placemarks:", error);
+      }
+    }
+  });
+
+  async function updatePlacemark(placemark: Placemark) {
+    const updatedPlacemark = {
+      title: placemark.title,
+      lat: placemark.lat,
+      long: placemark.long,
+      address: placemark.address,
+      country: placemark.country,
+      phone: placemark.phone,
+      website: placemark.website,
+      visited: placemark.visited,
+      description: placemark.description
+    };
+
+    const success = await placemarkService.updatePlacemark(
+      placemarkId,
+      categoryId,
+      updatedPlacemark
+    );
+    console.log("This is the updatedPlacemark: ", updatedPlacemark);
+
+    if (success) {
+      console.log("Placemark updated successfully");
+      goto(`/category/${categoryId}`);
+    } else {
+      alert("Failed to update placemark.");
+    }
+  }
 </script>
-
-<!--   
-  <form class="box" on:submit|preventDefault={handleSubmit}> -->
-<!-- <label
-  >Update Placemark Details:
-
-  <div class="field is-horizontal">
-    <div class="field-body">
-      <div class="field">
-        <label class="label"
-          >Title
-          <input class="input" type="text" placeholder="Enter Title" bind:value={placemark.title} />
-        </label>
-      </div>
-      <div class="field">
-        <label class="label"
-          >Latitude
-          <input
-            class="input"
-            type="number"
-            step="any"
-            placeholder="Enter Latitude"
-            bind:value={placemark.lat}
-          />
-        </label>
-      </div>
-      <div class="field">
-        <label class="label"
-          >Longitude
-          <input
-            class="input"
-            type="number"
-            step="any"
-            placeholder="Enter Longitude"
-            bind:value={placemark.long}
-          />
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="field is-horizontal">
-    <div class="field-body">
-      <div class="field">
-        <label class="label"
-          >Address
-          <input
-            class="input"
-            type="text"
-            placeholder="Enter address"
-            bind:value={placemark.address}
-          />
-        </label>
-      </div>
-      <div class="field">
-        <label class="label"
-          >Country
-          <input
-            class="input"
-            type="text"
-            placeholder="Enter country"
-            bind:value={placemark.country}
-          />
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="field is-horizontal">
-    <div class="field-body">
-      <div class="field">
-        <label class="label"
-          >Phone Number
-          <input
-            class="input"
-            type="number"
-            placeholder="Enter phone number"
-            bind:value={placemark.phone}
-          />
-        </label>
-      </div>
-      <div class="field">
-        <label class="label"
-          >Website
-          <input
-            class="input"
-            type="text"
-            placeholder="Enter website URL"
-            bind:value={placemark.website}
-          />
-        </label>
-      </div>
-      <div class="field">
-        <label class="label"
-          >Visited?
-          <select class="p-2" bind:value={placemark.visited}>
-            <option value="" disabled selected>Select your answer</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="field is-horizontal">
-    <div class="field-body">
-      <div class="field">
-        <label class="label"
-          >Description
-          <div class="control">
-            <textarea
-              class="textarea"
-              placeholder="Enter a description"
-              bind:value={placemark.description}
-            ></textarea>
-          </div>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="columns">
-    <div class="column is-6">
-      <button class="button is-info has-text-white" type="submit">Update your placemark</button>
-      <a class="button is-dark has-text-white" href={`/category/${category._id}`}>Do not update</a>
-    </div>
-    <div class="column is-6">
-      <p class="has-text-right">
-        *Find your exact placemarks coordinates on
-        <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"
-          >https://www.gps-coordinates.net/</a
-        >
-        <span class="ml-1 icon is-small">
-          <i class="fas fa-solid fa-folder-open"></i>
-        </span>
-      </p>
-    </div>
-  </div>
-</label> -->
-<!-- </form> -->
 
 <div class="box mt-6">
   <label>
@@ -634,9 +643,14 @@
     </div> -->
     <div class="columns">
       <div class="column is-6">
-        <button class="button is-info has-text-white" type="submit">Update your placemark</button>
-        <a class="button is-dark has-text-white" href={`/category/${category._id}`}>Do not update</a
-        >
+        {#if category && placemark}
+          <button onclick={() => updatePlacemark(placemark)} class="button is-info has-text-white">
+            Update your placemark
+          </button>
+          <a class="button is-dark has-text-white" href={`/category/${category._id}`}
+            >Do not update</a
+          >
+        {/if}
       </div>
       <div class="column is-6">
         <p class="has-text-right">

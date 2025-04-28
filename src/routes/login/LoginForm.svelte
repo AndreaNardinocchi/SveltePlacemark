@@ -9,6 +9,7 @@
   import { loggedInUser } from "$lib/runes.svelte";
   import Message from "../../lib/ui/Message.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
+  import { fly } from "svelte/transition";
 
   // import UserCredentials from "$lib/ui/UserCredentials.svelte";
 
@@ -44,7 +45,7 @@
 <section class="section">
   <section class="columns">
     <!-- svelte-ignore event_directive_deprecated -->
-    <section class="column is-6 pt-5 pr-5 pb-6">
+    <section class="column is-6 pt-5 pr-5 pb-6" in:fly={{ x: 200, duration: 2000 }}>
       <!-- <div
         class="wrapper"
         use:inview={{ unobserveOnEnter: true, rootMargin: "-20%" }}

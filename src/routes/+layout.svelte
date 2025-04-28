@@ -30,7 +30,13 @@
    * @type {any}
    */
   export let key: any;
+
+  let pageTitle = "Welcome to PlaceMark"; // This can be dynamic
 </script>
+
+<svelte:head>
+  <title>{pageTitle}</title>
+</svelte:head>
 
 <div class="container">
   {#if loggedInUser.email}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
   import { placemarkService } from "./services/placemark-service";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
@@ -32,7 +33,7 @@
 
 <section>
   {#each categories as category}
-    <section class="columns box pt-2 mx-1 mb-5">
+    <section class="columns box pt-2 mx-1 mb-5" in:fly={{ x: 200, duration: 3000 }}>
       <section class="column is-8">
         <div class="box-link-hover-shadow">
           <h2 class="title">
@@ -51,10 +52,27 @@
                 class="button"
                 aria-label="Folder delete"
               > -->
-              <button
+              <!-- <button
                 onclick={() => deleteCategory(category._id)}
                 class="button is-info has-text-white mt-3">Delete Category</button
+              > -->
+
+              <!-- svelte-ignore a11y_invalid_attribute -->
+              <!-- svelte-ignore event_directive_deprecated -->
+              <!-- https://dev.to/umanghome/event-handlers-and-svelte-4f5k
+      https://stackoverflow.com/questions/77594143/svelte-how-to-prevent-default-action-of-reusable-button-component
+      https://github.com/bestguy/sveltestrap/blob/master/src/Button.svelte
+      https://svelte.dev/docs/svelte/legacy-on -->
+              <a
+                href="#"
+                on:click|preventDefault={() => deleteCategory(category._id)}
+                class="button"
+                aria-label="delete icon"
               >
+                <span class="icon is-small">
+                  <i class="fas fa-solid fa-trash"></i>
+                </span>
+              </a>
               <!-- <span class="icon is-small">
                   <i class="fas fa-solid fa-trash"></i>
                 </span>

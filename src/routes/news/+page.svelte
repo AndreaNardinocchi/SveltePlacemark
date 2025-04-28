@@ -17,8 +17,12 @@
    * @type {any}
    */
   export let key;
+  let pageTitle = "News worldwide | PlaceMark"; // This can be dynamic
 </script>
 
+<svelte:head>
+  <title>{pageTitle}</title>
+</svelte:head>
 <!-- <Header /> -->
 <div class="container">
   <News />

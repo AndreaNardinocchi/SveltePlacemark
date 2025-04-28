@@ -1,18 +1,4 @@
-<!-- <script>
-  // Define reactive variables for the form fields
-  let title = $state();
-  let lat = $state();
-  let long = $state();
-  let address = $state();
-  let country = $state();
-  let phone = $state();
-  let website = $state();
-  let visited = $state();
-  ? -->
-
 <script lang="ts">
-  // import HomepageTextCard from "./HomepageTextCard.svelte";
-
   let {
     title = $bindable(""),
     lat = $bindable(""),
@@ -25,39 +11,10 @@
     description = $bindable("")
   } = $props();
 
-  // // Handle form submission
-  // function handleSubmit(event) {
-  //   event.preventDefault();
-
-  //   // Here you can handle the form data, e.g., sending it to a backend API.
-  //   const formData = {
-  //     title,
-  //     lat,
-  //     long,
-  //     address,
-  //     country,
-  //     phone,
-  //     website,
-  //     visited,
-  //     description
-  //   };
-
-  //   // Example of logging the form data (replace this with actual logic to send data)
-  //   console.log(formData);
-
-  // You could submit the form using fetch or other methods
-  // fetch('/category/{category._id}/addplacemark', {
-  //   method: 'POST',
-  //   body: JSON.stringify(formData),
-  //   headers: { 'Content-Type': 'application/json' }
-  // });
-  // }
   async function placemark() {
     console.log(`Just placemarking ${title} to ${lat} via ${long} payment`);
   }
 </script>
-
-<!-- <form class="box" on:submit={handleSubmit}> -->
 
 <label>
   Enter Placemark Details:
