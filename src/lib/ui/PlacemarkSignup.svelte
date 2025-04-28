@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { User } from "./types/placemark-types";
+  import Message from "./Message.svelte";
   // import HomepageTextCard from "./HomepageTextCard.svelte";
 
   let {
@@ -16,6 +17,8 @@
     password = $bindable("")
   } = $props();
 
+  let message = $state("");
+
   /** Input sanitizing
    * https://stackoverflow.com/questions/62426548/how-do-i-make-svelte-update-input-components-like-react-does#62431731
    */
@@ -23,6 +26,12 @@
   function sanitizeFirstName(e: { target: { value: string } }) {
     e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
     firstName = e.target.value;
+    // 2. Limit to 250 characters
+    if (firstName.length < 3 || firstName.length > 30) {
+      firstName = firstName.slice(0, 230);
+    } else {
+      message = "First name is bad";
+    }
   }
 
   function sanitizeLastName(e: { target: { value: string } }) {
