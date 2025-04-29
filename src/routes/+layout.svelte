@@ -12,12 +12,14 @@
     <slot />
   </div> -->
 
-<script lang="ts" context="module">
+<script lang="ts" >
   // https://www.npmjs.com/package/svelte-fa
   import { loggedInUser } from "$lib/runes.svelte";
   import Footer from "$lib/Footer.svelte";
   import Header from "$lib/Header.svelte";
   import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
+    import { onMount } from "svelte";
+    import { placemarkService } from "$lib/ui/services/placemark-service";
 
   // @ts-ignore
   export const load = async ({ page }) => ({
@@ -29,9 +31,13 @@
   /**
    * @type {any}
    */
-  export let key: any;
+  //export let key: any;
 
-  let pageTitle = "Welcome to PlaceMark"; // This can be dynamic
+  let pageTitle: any = "Welcome to PlaceMark"; // This can be dynamic
+  onMount(async () => {
+ placemarkService.restoreSession();
+  
+});
 </script>
 
 <svelte:head>

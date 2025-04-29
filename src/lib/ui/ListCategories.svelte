@@ -6,8 +6,9 @@
   import { loggedInUser } from "$lib/runes.svelte";
   // import type Category from "../../routes/category/Category.svelte";
 
-  let { categories = [] } = $props();
-  console.log("These are the categories: ", categories);
+  // let { currentCategories } = $props();
+  import { currentCategories } from "$lib/runes.svelte"; 
+  console.log("These are the categories: ", currentCategories.categories);
 
   async function deleteCategory(categoryId: string) {
     console.log("This is the categoryId: ", categoryId);
@@ -29,10 +30,12 @@
       goto("/dashboard"); // Optionally, you can refresh the list instead of full redirect
     }
   }
+
 </script>
 
 <section>
-  {#each categories as category}
+  <!-- {#each categories as category} -->
+   {#each currentCategories.categories as category}
     <section class="columns box pt-2 mx-1 mb-5" in:fly={{ x: 200, duration: 3000 }}>
       <section class="column is-8">
         <div class="box-link-hover-shadow">
@@ -47,15 +50,7 @@
                   <i class="fas fa-solid fa-folder-open"></i>
                 </span>
               </a>
-              <!-- <a
-                href={`/dashboard/deletecategory/${category._id}`}
-                class="button"
-                aria-label="Folder delete"
-              > -->
-              <!-- <button
-                onclick={() => deleteCategory(category._id)}
-                class="button is-info has-text-white mt-3">Delete Category</button
-              > -->
+          
 
               <!-- svelte-ignore a11y_invalid_attribute -->
               <!-- svelte-ignore event_directive_deprecated -->
@@ -73,10 +68,7 @@
                   <i class="fas fa-solid fa-trash"></i>
                 </span>
               </a>
-              <!-- <span class="icon is-small">
-                  <i class="fas fa-solid fa-trash"></i>
-                </span>
-              </a> -->
+             
             </div>
           </div>
         </div>
