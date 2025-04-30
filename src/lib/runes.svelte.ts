@@ -46,5 +46,35 @@ export const placemark = $state({
   _id: ""
 });
 
+export const currentDataSets = {
+  totalByCountry: {
+    labels: ["country"],
+    datasets: [
+      {
+        values: [0]
+      }
+    ]
+    //  colors: ["#7cd6fd", "#743ee2"]
+  },
+
+  // totalByVisited: {
+  //   labels: ["Visited"],
+  //   datasets: [
+  //     {
+  //       values: [0]
+  //     }
+  //   ]
+  // }
+
+  totalByVisited: {
+    labels: ["Visited", "Not Visited"],
+    datasets: [
+      {
+        values: [0, 0]
+      }
+    ]
+  }
+};
+
 export const currentCategories = $state({ categories: [] as Category[] });
 export const currentPlacemarks = $state({ placemarks: [] as Placemark[] });

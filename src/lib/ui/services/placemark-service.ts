@@ -4,6 +4,7 @@ import type { Placemark, Session, User } from "../types/placemark-types";
 import type { Category } from "../types/placemark-types";
 // import { goto } from "$app/navigation";
 import { currentCategories, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
+import { computeByCountry, computeByVisited } from "./placemark-utils";
 
 axios.defaults.withCredentials = true;
 
@@ -76,6 +77,8 @@ export const placemarkService = {
     if (loggedInUser.token) {
       const allCategories = await this.getAllCategories(loggedInUser.token);
       currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
+      computeByCountry(currentPlacemarks.placemarks);
+      computeByVisited(currentPlacemarks.placemarks);
       // currentPlacemarks.placemarks = await this.getPlacemarksByCategoryId(
       //   categoryId,
       //   loggedInUser.token

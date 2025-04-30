@@ -31,7 +31,6 @@
     <!-- Conditional class -->
     <div class="navbar-end">
       <a class="navbar-item" id="dashboard" href="/dashboard">Home</a>
-      <a class="navbar-item" id="dashboard" href="/report">Report</a>
       <a class="navbar-item" id="lifestyle" href="/lifestyle">Lifestyle</a>
       <a class="navbar-item" id="news" href="/news">News</a>
       <a class="navbar-item" id="about" href="/about">About</a>

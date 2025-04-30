@@ -46,3 +46,8 @@ export interface Placemark {
   img?: string[]; // img is optional and can be undefined
   _id?: string;
 }
+
+export interface DataSet {
+  labels: string[];
+  datasets: [{ values: number[] }];
+}
