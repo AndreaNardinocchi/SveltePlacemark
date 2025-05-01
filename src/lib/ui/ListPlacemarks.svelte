@@ -10,38 +10,34 @@
   import { goto } from "$app/navigation";
 
   // svelte-ignore non_reactive_update
- // let category: Category | null = null;
+  // let category: Category | null = null;
   // let placemarks: Placemark[] = [];
 
   // let placemarks = $state<Placemark[]>([]);
 
-  import { currentCategories } from "$lib/runes.svelte"; 
+  import { currentCategories } from "$lib/runes.svelte";
 
   const url = window.location.pathname;
   const categoryId = url.split("/").pop();
   let category = currentCategories.categories.find((cat) => cat._id === categoryId);
-  import { currentPlacemarks } from "$lib/runes.svelte"; 
-  console.log("These are the placemarks :", currentPlacemarks.placemarks );
-
-
-
-
+  import { currentPlacemarks } from "$lib/runes.svelte";
+  console.log("These are the placemarks :", currentPlacemarks.placemarks);
 
   onMount(async () => {
-     const url = window.location.pathname;
-     const categoryId = url.split("/").pop();
+    const url = window.location.pathname;
+    const categoryId = url.split("/").pop();
     const token = loggedInUser.token;
 
     if (token && categoryId) {
-      const result = await placemarkService.getCategoryById(categoryId)
-      
+      const result = await placemarkService.getCategoryById(categoryId);
+
       // return result;
 
       if (result) {
-        category = result;
+        let category = result;
         // // Fetch full category
-      currentPlacemarks.placemarks= category.placemarks;
-      console.log("Our placemarks: ", currentPlacemarks.placemarks);
+        currentPlacemarks.placemarks = category.placemarks;
+        console.log("Our placemarks: ", category.placemarks);
         // Make sure placemarks are part of the category object
       } else {
         console.warn("Category not found.");
@@ -59,7 +55,6 @@
       console.warn("No placemark ID provided.");
       return;
     }
-
 
     const success = await placemarkService.deletePlacemark(placemarkId);
     if (success) {

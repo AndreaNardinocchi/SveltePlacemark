@@ -54,17 +54,7 @@ export const currentDataSets = {
         values: [0]
       }
     ]
-    //  colors: ["#7cd6fd", "#743ee2"]
   },
-
-  // totalByVisited: {
-  //   labels: ["Visited"],
-  //   datasets: [
-  //     {
-  //       values: [0]
-  //     }
-  //   ]
-  // }
 
   totalByVisited: {
     labels: ["Visited", "Not Visited"],

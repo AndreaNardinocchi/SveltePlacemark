@@ -79,23 +79,25 @@
   });
 </script>
 
-{#if category}
-  <div class={backgroundColor}>
-    <div class="card-image" in:fly={{ x: -200, duration: 3000 }}>
-      <figure class="image 264x264 m-auto">
-        <!-- Use a fallback image in case category does not have a valid image link -->
-        <!-- svelte-ignore a11y_img_redundant_alt -->
-        <img src={imageCode} alt="Category image" style="border-radius: 15px;" />
-      </figure>
-    </div>
-    <div class="columns">
-      <div class="column">
-        <article class="card-content pt-2">
-          <!-- Display category title -->
-          <p class="card-header-title">- {category.title} -</p>
-          <p></p>
-        </article>
+<div in:fly={{ x: +200, duration: 1000 }}>
+  {#if category}
+    <div class={backgroundColor}>
+      <div class="card-image" in:fly={{ x: -200, duration: 3000 }}>
+        <figure class="image 264x264 m-auto">
+          <!-- Use a fallback image in case category does not have a valid image link -->
+          <!-- svelte-ignore a11y_img_redundant_alt -->
+          <img src={imageCode} alt="Category image" style="border-radius: 15px;" />
+        </figure>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <article class="card-content pt-2">
+            <!-- Display category title -->
+            <p class="card-header-title">- {category.title} -</p>
+            <p></p>
+          </article>
+        </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
+</div>

@@ -258,82 +258,81 @@
     }}
   >
     {#if isInView} -->
-
-{#if category}
-  <!-- <div in:fly={{ x: -200, duration: 1000 }}> -->
-  <div class="box has-background-white">
-    <div class="columns">
-      <div class="column" in:fly={{ y: -200, duration: 3000 }}>
-        <section>
-          <header class="card-header"></header>
-          <div class="columns has-text-left">
-            <div class="column is-6 m-auto">
-              <div class="card-image mt-1">
-                <figure class="image is-264x264 p-2">
-                  <img src="https://i.ibb.co/G42MNvjz/placemark.jpg" alt="placemark" />
-                </figure>
+<div class="mt-4" in:fly={{ x: -200, duration: 1000 }}>
+  {#if category}
+    <div class="box has-background-white">
+      <div class="columns">
+        <div class="column" in:fly={{ y: -200, duration: 3000 }}>
+          <section>
+            <header class="card-header"></header>
+            <div class="columns has-text-left">
+              <div class="column is-6 m-auto">
+                <div class="card-image mt-1">
+                  <figure class="image is-264x264 p-2">
+                    <img src="https://i.ibb.co/G42MNvjz/placemark.jpg" alt="placemark" />
+                  </figure>
+                </div>
+              </div>
+              <div class="column is-6 ml-3">
+                <header class="card-header pt-5">
+                  <p class="subtitle has-text-weight-bold is-5">Your placemarks stats</p>
+                </header>
+                <hr class="mr-6 pr-4" />
+                <article class="card-content">
+                  <p class="content is-size-6 pt-1">
+                    <span class="has-text-weight-bold is-size-6">Placemarks:</span>
+                    {placemarkSum}<br />
+                    <span class="has-text-weight-bold is-size-6">Visited:</span>
+                    {yesCounting}<br />
+                    <span class="has-text-weight-bold is-size-6">To visit:</span>
+                    {noCounting}<br />
+                    <span class="has-text-weight-bold is-size-6">Furthest placemark:</span><br />
+                    {resultMax}<br />
+                    <span class="has-text-weight-bold is-size-6">Closest placemark:</span><br />
+                    {resultMin}
+                  </p>
+                </article>
               </div>
             </div>
-            <div class="column is-6 ml-3">
-              <header class="card-header pt-5">
-                <p class="subtitle has-text-weight-bold is-5">Your placemarks stats</p>
-              </header>
-              <hr class="mr-6 pr-4" />
-              <article class="card-content">
-                <p class="content is-size-6 pt-1">
-                  <span class="has-text-weight-bold is-size-6">Placemarks:</span>
-                  {placemarkSum}<br />
-                  <span class="has-text-weight-bold is-size-6">Visited:</span>
-                  {yesCounting}<br />
-                  <span class="has-text-weight-bold is-size-6">To visit:</span>
-                  {noCounting}<br />
-                  <span class="has-text-weight-bold is-size-6">Furthest placemark:</span><br />
-                  {resultMax}<br />
-                  <span class="has-text-weight-bold is-size-6">Closest placemark:</span><br />
-                  {resultMin}
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
 
-      <div class="column">
-        <section>
-          <header class="card-header"></header>
-          <div class="columns has-text-left">
-            <div class="column m-auto is-6">
-              <div class="card-image">
-                <figure class="image is-264x264 pt-5">
-                  <img src="https://i.ibb.co/s98MdtnM/travel.jpg" alt="travel" />
-                </figure>
+        <div class="column">
+          <section>
+            <header class="card-header"></header>
+            <div class="columns has-text-left">
+              <div class="column m-auto is-6">
+                <div class="card-image">
+                  <figure class="image is-264x264 pt-5">
+                    <img src="https://i.ibb.co/s98MdtnM/travel.jpg" alt="travel" />
+                  </figure>
+                </div>
+              </div>
+              <div class="column is-6 ml-3">
+                <header class="card-header pt-5">
+                  <p class="subtitle has-text-weight-bold is-5">Placemarks locations</p>
+                </header>
+                <hr class="mr-6 pr-6" />
+                <article class="card-content">
+                  <p class="content is-size-6 pt-5">
+                    <span class="has-text-weight-bold is-size-6">Local:</span>
+                    {localCounting}
+                    <img src={localIcon} alt="" /> <i class={localTravelIcon}></i>
+                    <br />
+                    <span class="has-text-weight-bold is-size-6">Abroad:</span>
+                    {abroadCounting}
+                    <img src={abroadIcon} alt="" />
+                    <i class={abroadTravelIcon}></i>
+                  </p>
+                </article>
               </div>
             </div>
-            <div class="column is-6 ml-3">
-              <header class="card-header pt-5">
-                <p class="subtitle has-text-weight-bold is-5">Placemarks locations</p>
-              </header>
-              <hr class="mr-6 pr-6" />
-              <article class="card-content">
-                <p class="content is-size-6 pt-5">
-                  <span class="has-text-weight-bold is-size-6">Local:</span>
-                  {localCounting}
-                  <img src={localIcon} alt="" /> <i class={localTravelIcon}></i>
-                  <br />
-                  <span class="has-text-weight-bold is-size-6">Abroad:</span>
-                  {abroadCounting}
-                  <img src={abroadIcon} alt="" />
-                  <i class={abroadTravelIcon}></i>
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
+</div>
 <!-- <PlacemarkListCard>
   <LeafletMap height={60} bind:this={map} />
 </PlacemarkListCard> -->

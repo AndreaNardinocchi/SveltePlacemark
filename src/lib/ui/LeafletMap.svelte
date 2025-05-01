@@ -7,7 +7,7 @@
   let id = "home-map-id";
   let location = { lat: 53.2734, lng: -7.7783203 };
   let zoom = 8;
-  let minZoom = 7;
+  let minZoom = 2;
   let activeLayer = "Terrain";
 
   let imap: LeafletMap;

@@ -21,8 +21,10 @@
 //   });
 // }
 
-import { currentDataSets } from "$lib/runes.svelte";
+import { currentDataSets, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 import type { Placemark } from "../types/placemark-types";
+import { placemarkService } from "./placemark-service";
+// import { placemarkService } from "./placemark-service";
 
 export function computeByCountry(placemarkList: Placemark[]) {
   /**  : Record<string, number> is a typeScript type annotation, which basically means that we are expecting
@@ -48,6 +50,22 @@ export function computeByVisited(placemarkList: Placemark[]) {
   });
   currentDataSets.totalByVisited.labels = Object.keys(visitedCounts);
   currentDataSets.totalByVisited.datasets[0].values = Object.values(visitedCounts);
+}
+
+export async function refreshPlacemarkMap(map: LeafletMap) {
+  if (!loggedInUser.token) placemarkService.restoreSession();
+  const pathParts = window.location.pathname.split("/");
+  const categoryId = pathParts[pathParts.indexOf("category") + 1];
+  console.log("This the categoryId in Maps: ", categoryId);
+  currentPlacemarks.placemarks.forEach((placemark: Placemark) => {
+    if (typeof placemark !== "string") {
+      const popup = `${placemark.title}, ${placemark.country}, ${placemark.address} | Visited: ${placemark.visited}`;
+      map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), popup);
+      console.log("These are the coordinates: ", placemark.lat, placemark.long);
+    }
+  });
+  const lastPlacemark = currentPlacemarks.placemarks[currentPlacemarks.placemarks.length - 1];
+  if (lastPlacemark) map.moveTo(parseFloat(lastPlacemark.lat), parseFloat(lastPlacemark.long));
 }
 
 // import { currentDataSets } from "$lib/runes.svelte";
