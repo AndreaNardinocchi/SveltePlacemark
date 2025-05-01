@@ -1,7 +1,6 @@
-
-
-
 <script lang="ts">
+  import type { Placemark } from "./types/placemark-types";
+
   let {
     title = $bindable(""),
     lat = $bindable(""),
@@ -14,9 +13,9 @@
     description = $bindable("")
   } = $props();
 
-  async function placemark() {
-    console.log(`Just placemarking ${title} to ${lat} via ${long} payment`);
-  }
+  // async function placemark() {
+  //   console.log(`Just placemarking ${title} to ${lat} via ${long} payment`);
+  // }
 
   function sanitizeTitle(e: { target: { value: string } }) {
     e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
