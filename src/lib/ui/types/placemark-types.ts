@@ -1,15 +1,5 @@
 export interface Session {
-  firstName: string;
-  lastName: string;
-  userLat: string;
-  userLong: string;
-  country: string;
-  street: string;
-  addressCode: string;
-  DOB: string;
-  phoneNumber: string;
   email: string;
-  password: string;
   name: string;
   _id: string;
   token: string;
@@ -55,4 +45,9 @@ export interface Placemark {
   // https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#arrays
   img?: string[]; // img is optional and can be undefined
   _id?: string;
+}
+
+export interface DataSet {
+  labels: string[];
+  datasets: [{ values: number[] }];
 }

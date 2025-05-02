@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { User } from "./types/placemark-types";
+  import Message from "./Message.svelte";
   // import HomepageTextCard from "./HomepageTextCard.svelte";
 
   let {
@@ -16,33 +17,64 @@
     password = $bindable("")
   } = $props();
 
+  let message = $state("");
+
   /** Input sanitizing
    * https://stackoverflow.com/questions/62426548/how-do-i-make-svelte-update-input-components-like-react-does#62431731
    */
 
   function sanitizeFirstName(e: { target: { value: string } }) {
-    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     firstName = e.target.value;
+    // 2. Limit to 250 characters
+    if (firstName.length < 3 || firstName.length > 30) {
+      //   firstName = firstName.slice(0, 30);
+      // } else {
+      message = "First name should be between more than 3 and less than 30 characters";
+    }
   }
 
   function sanitizeLastName(e: { target: { value: string } }) {
-    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     lastName = e.target.value;
+    if (lastName.length < 3 || lastName.length > 30) {
+      //   firstName = firstName.slice(0, 30);
+      // } else {
+      message = "Last name should be between more than 3 and less than 30 characters";
+    }
   }
 
   function sanitizeStreet(e: { target: { value: string } }) {
-    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     street = e.target.value;
+    if (street.length < 3 || street.length > 30) {
+      //   firstName = firstName.slice(0, 30);
+      // } else {
+      message = "Street should be between more than 3 and less than 30 characters";
+    }
   }
 
   function sanitizeAddressCode(e: { target: { value: string } }) {
-    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     addressCode = e.target.value;
+    if (addressCode.length < 3 || addressCode.length > 10) {
+      //   firstName = firstName.slice(0, 30);
+      // } else {
+      message = "Address Code should be between more than 3 and less than 10 characters";
+    }
   }
 
+  let isPhoneValid = false;
+
   function sanitizePhoneNumber(e: { target: { value: string } }) {
-    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    e.target.value = e.target.value.replace(/\D/g, ""); // removes leading & trailing whitespace
     phoneNumber = e.target.value;
+    if (phoneNumber.length < 6 || phoneNumber.length > 12) {
+      isPhoneValid = false;
+      //   firstName = firstName.slice(0, 30);
+      // } else {
+      message = "Phone Number should be between more than 6 and less than 10 characters";
+    }
   }
 
   function sanitizeEmail(e: { target: { value: string } }) {
@@ -71,6 +103,7 @@
   <form action="/register" method="POST"> -->
 
 <!-- {#if user} -->
+
 <div class="field is-horizontal">
   <div class="field-body">
     <div class="field">
@@ -84,7 +117,7 @@
             placeholder="Enter first name"
             name="firstName"
             bind:value={firstName}
-            on:input={sanitizeFirstName}
+            on:blur={sanitizeFirstName}
           />
           <span class="icon is-small is-left">
             <i class="fas fa-user"></i>
@@ -103,7 +136,7 @@
             placeholder="Enter last name"
             name="lastName"
             bind:value={lastName}
-            on:input={sanitizeLastName}
+            on:blur={sanitizeLastName}
           />
           <span class="icon is-small is-left">
             <!-- <i class="fa fa-id-card-o" aria-hidden="true"></i> -->
@@ -446,7 +479,7 @@
             placeholder="Street"
             name="street"
             bind:value={street}
-            on:input={sanitizeStreet}
+            on:blur={sanitizeStreet}
           />
           <span class="icon is-small is-left">
             <i class="fa fa-address-card" aria-hidden="true"></i>
@@ -465,7 +498,7 @@
             placeholder="Address code"
             name="addressCode"
             bind:value={addressCode}
-            on:input={sanitizeAddressCode}
+            on:blur={sanitizeAddressCode}
           />
           <span class="icon is-small is-left">
             <i class="fa fa-map-marker" aria-hidden="true"></i>
@@ -508,7 +541,7 @@
             placeholder="Enter your phone number"
             name="phoneNumber"
             bind:value={phoneNumber}
-            on:input={sanitizePhoneNumber}
+            on:blur={sanitizePhoneNumber}
           />
           <span class="icon is-small is-left">
             <i class="fa fa-phone" aria-hidden="true"></i>
@@ -558,6 +591,7 @@
     </div>
   </label>
 </div>
+{message}
 <!-- {/if} -->
 <!-- </form> -->
 <!-- </section> -->

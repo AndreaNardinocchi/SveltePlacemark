@@ -1,4 +1,14 @@
 <script lang="ts">
+  import { subTitle } from "$lib/runes.svelte";
+
+  import { currentPlacemarks } from "$lib/runes.svelte";
+  // @ts-ignore
+  import Chart from "svelte-frappe-charts";
+  import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
+  import { currentDataSets } from "$lib/runes.svelte";
+  // import placemarkUtils from "$lib/ui/services/placemark-utils";
+
+  subTitle.text = "Placemarks data";
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
 
@@ -10,7 +20,12 @@
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { onMount } from "svelte";
   import { category, loggedInUser } from "$lib/runes.svelte";
-  import type { User } from "$lib/ui/types/placemark-types";
+  import type { Placemark, User } from "$lib/ui/types/placemark-types";
+  import LeafletMap from "$lib/ui/LeafletMap.svelte";
+  import Charts from "./Charts.svelte";
+  // import { map } from "leaflet";
+
+  let map: LeafletMap;
 
   let placemarkSum = $state(0);
   let yesCounting = $state(0);
@@ -205,7 +220,32 @@
     await getLocalAbroadStats();
     resultMax = result.resultMax;
     resultMin = result.resultMin;
+    // const pathParts = window.location.pathname.split("/");
+    // let categoryId = pathParts[pathParts.indexOf("category") + 1];
+    // console.log("This the categoryId in Maps: ", categoryId);
+    // currentPlacemarks.placemarks.forEach((placemark: Placemark) => {
+    //   if (typeof placemark !== "string") {
+    //     const popup = `${placemark.title}, ${placemark.country} | Visited: ${placemark.visited}`;
+    //     map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), popup);
+    //     console.log("These are the coordinates: ", placemark.lat, placemark.long);
+    //   }
+    // });
+    // const lastPlacemark = currentPlacemarks.placemarks[currentPlacemarks.placemarks.length - 1];
+    // if (lastPlacemark) map.moveTo(parseFloat(lastPlacemark.lat), parseFloat(lastPlacemark.long));
   });
+
+  // function placemarkAdded(placemark: Placemark) {
+  //   {
+  //     map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
+  //     map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
+  //   }
+  //   // Call placemarkAdded for each placemark in currentPlacemarks
+  //   currentPlacemarks.placemarks.forEach((placemark: Placemark) => {
+  //     if (typeof placemark !== "string") {
+  //       placemarkAdded(placemark);
+  //     }
+  //   });
+  // }
 </script>
 
 <!-- {#if user} -->
@@ -218,81 +258,81 @@
     }}
   >
     {#if isInView} -->
-{#if category}
-  <!-- <div in:fly={{ x: -200, duration: 1000 }}> -->
-  <div class="box has-background-white">
-    <div class="columns">
-      <div class="column" in:fly={{ y: -200, duration: 3000 }}>
-        <section>
-          <header class="card-header"></header>
-          <div class="columns has-text-left">
-            <div class="column is-6 m-auto">
-              <div class="card-image mt-1">
-                <figure class="image is-264x264 p-2">
-                  <img src="https://i.ibb.co/G42MNvjz/placemark.jpg" alt="placemark" />
-                </figure>
+<div class="mt-4" in:fly={{ x: -200, duration: 1000 }}>
+  {#if category}
+    <div class="box has-background-white">
+      <div class="columns">
+        <div class="column" in:fly={{ y: -200, duration: 3000 }}>
+          <section>
+            <header class="card-header"></header>
+            <div class="columns has-text-left">
+              <div class="column is-6 m-auto">
+                <div class="card-image mt-1">
+                  <figure class="image is-264x264 p-2">
+                    <img src="https://i.ibb.co/G42MNvjz/placemark.jpg" alt="placemark" />
+                  </figure>
+                </div>
+              </div>
+              <div class="column is-6 ml-3">
+                <header class="card-header pt-5">
+                  <p class="subtitle has-text-weight-bold is-5">Your placemarks stats</p>
+                </header>
+                <hr class="mr-6 pr-4" />
+                <article class="card-content">
+                  <p class="content is-size-6 pt-1">
+                    <span class="has-text-weight-bold is-size-6">Placemarks:</span>
+                    {placemarkSum}<br />
+                    <span class="has-text-weight-bold is-size-6">Visited:</span>
+                    {yesCounting}<br />
+                    <span class="has-text-weight-bold is-size-6">To visit:</span>
+                    {noCounting}<br />
+                    <span class="has-text-weight-bold is-size-6">Furthest placemark:</span><br />
+                    {resultMax}<br />
+                    <span class="has-text-weight-bold is-size-6">Closest placemark:</span><br />
+                    {resultMin}
+                  </p>
+                </article>
               </div>
             </div>
-            <div class="column is-6 ml-3">
-              <header class="card-header pt-5">
-                <p class="subtitle has-text-weight-bold is-5">Your placemarks stats</p>
-              </header>
-              <hr class="mr-6 pr-4" />
-              <article class="card-content">
-                <p class="content is-size-6 pt-1">
-                  <span class="has-text-weight-bold is-size-6">Placemarks:</span>
-                  {placemarkSum}<br />
-                  <span class="has-text-weight-bold is-size-6">Visited:</span>
-                  {yesCounting}<br />
-                  <span class="has-text-weight-bold is-size-6">To visit:</span>
-                  {noCounting}<br />
-                  <span class="has-text-weight-bold is-size-6">Furthest placemark:</span><br />
-                  {resultMax}<br />
-                  <span class="has-text-weight-bold is-size-6">Closest placemark:</span><br />
-                  {resultMin}
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
 
-      <div class="column">
-        <section>
-          <header class="card-header"></header>
-          <div class="columns has-text-left">
-            <div class="column m-auto is-6">
-              <div class="card-image">
-                <figure class="image is-264x264 pt-5">
-                  <img src="https://i.ibb.co/s98MdtnM/travel.jpg" alt="travel" />
-                </figure>
+        <div class="column">
+          <section>
+            <header class="card-header"></header>
+            <div class="columns has-text-left">
+              <div class="column m-auto is-6">
+                <div class="card-image">
+                  <figure class="image is-264x264 pt-5">
+                    <img src="https://i.ibb.co/s98MdtnM/travel.jpg" alt="travel" />
+                  </figure>
+                </div>
+              </div>
+              <div class="column is-6 ml-3">
+                <header class="card-header pt-5">
+                  <p class="subtitle has-text-weight-bold is-5">Placemarks locations</p>
+                </header>
+                <hr class="mr-6 pr-6" />
+                <article class="card-content">
+                  <p class="content is-size-6 pt-5">
+                    <span class="has-text-weight-bold is-size-6">Local:</span>
+                    {localCounting}
+                    <img src={localIcon} alt="" /> <i class={localTravelIcon}></i>
+                    <br />
+                    <span class="has-text-weight-bold is-size-6">Abroad:</span>
+                    {abroadCounting}
+                    <img src={abroadIcon} alt="" />
+                    <i class={abroadTravelIcon}></i>
+                  </p>
+                </article>
               </div>
             </div>
-            <div class="column is-6 ml-3">
-              <header class="card-header pt-5">
-                <p class="subtitle has-text-weight-bold is-5">Placemarks locations</p>
-              </header>
-              <hr class="mr-6 pr-6" />
-              <article class="card-content">
-                <p class="content is-size-6 pt-5">
-                  <span class="has-text-weight-bold is-size-6">Local:</span>
-                  {localCounting}
-                  <img src={localIcon} alt="" /> <i class={localTravelIcon}></i>
-                  <br />
-                  <span class="has-text-weight-bold is-size-6">Abroad:</span>
-                  {abroadCounting}
-                  <img src={abroadIcon} alt="" />
-                  <i class={abroadTravelIcon}></i>
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
-  </div>
-{/if}
-
-<!-- {/if} -->
-
-<!-- </div> -->
+  {/if}
+</div>
+<!-- <PlacemarkListCard>
+  <LeafletMap height={60} bind:this={map} />
+</PlacemarkListCard> -->

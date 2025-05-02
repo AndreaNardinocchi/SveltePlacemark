@@ -1,4 +1,6 @@
 <script lang="ts">
+  import type { Placemark } from "./types/placemark-types";
+
   let {
     title = $bindable(""),
     lat = $bindable(""),
@@ -11,8 +13,44 @@
     description = $bindable("")
   } = $props();
 
-  async function placemark() {
-    console.log(`Just placemarking ${title} to ${lat} via ${long} payment`);
+  // async function placemark() {
+  //   console.log(`Just placemarking ${title} to ${lat} via ${long} payment`);
+  // }
+
+  function sanitizeTitle(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    title = e.target.value;
+  }
+
+  function sanitizeAddress(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    address = e.target.value;
+  }
+
+  function sanitizePhone(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    phone = e.target.value;
+  }
+
+  function sanitizeWebsite(e: { target: { value: string } }) {
+    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    website = e.target.value;
+  }
+
+  function sanitizeDescription(e: { target: { value: string } }) {
+    let value = e.target.value;
+
+    // 1. Remove leading spaces only
+    value = value.replace(/^\s+/, "");
+
+    // 2. Limit to 250 characters
+    if (value.length > 230) {
+      value = value.slice(0, 230);
+    }
+
+    // 3. Update DOM + reactive variable
+    e.target.value = value;
+    description = value;
   }
 </script>
 
@@ -24,7 +62,14 @@
         <label class="label">
           Title
           <p class="control is-expanded has-icons-left">
-            <input class="input" type="text" placeholder="Enter Title" bind:value={title} />
+            <!-- svelte-ignore event_directive_deprecated -->
+            <input
+              class="input"
+              type="text"
+              placeholder="Enter Title"
+              bind:value={title}
+              on:input={sanitizeTitle}
+            />
             <span class="icon is-small is-left">
               <i class="fa fa-plane" aria-hidden="true"></i>
             </span>
@@ -73,11 +118,13 @@
         <label class="label">
           Address
           <p class="control is-expanded has-icons-left">
+            <!-- svelte-ignore event_directive_deprecated -->
             <input
               class="input"
               type="text"
               placeholder="Enter our placemark address"
               bind:value={address}
+              on:input={sanitizeAddress}
             />
             <span class="icon is-small is-left">
               <i class="fa fa-address-card" aria-hidden="true"></i>
@@ -378,11 +425,13 @@
         <label class="label">
           Phone Number
           <div class="control has-icons-left">
+            <!-- svelte-ignore event_directive_deprecated -->
             <input
               class="input"
               type="number"
               placeholder="Enter phone number"
               bind:value={phone}
+              on:input={sanitizePhone}
             />
             <span class="icon is-small is-left">
               <i class="fa fa-phone" aria-hidden="true"></i>
@@ -394,7 +443,14 @@
         <label class="label">
           Website
           <div class="control has-icons-left">
-            <input class="input" type="text" placeholder="Enter webiste URL" bind:value={website} />
+            <!-- svelte-ignore event_directive_deprecated -->
+            <input
+              class="input"
+              type="text"
+              placeholder="Enter webiste URL"
+              bind:value={website}
+              on:input={sanitizeWebsite}
+            />
             <span class="icon is-small is-left">
               <i class="fa fa-info" aria-hidden="true"></i>
             </span>
@@ -428,7 +484,12 @@
         <div class="control">
           <label class="label"
             >Description
-            <textarea class="textarea" placeholder="Enter a description" bind:value={description}
+            <!-- svelte-ignore event_directive_deprecated -->
+            <textarea
+              class="textarea"
+              placeholder="Enter a description"
+              bind:value={description}
+              on:input={sanitizeDescription}
             ></textarea>
           </label>
         </div>

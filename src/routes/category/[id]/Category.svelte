@@ -6,6 +6,7 @@
   import { inview } from "svelte-inview";
 
   let isInView: boolean = false;
+  let { placemarkEvent = null } = $props();
 
   import ListPlacemarks from "$lib/ui/ListPlacemarks.svelte";
   import AddPlacemark from "$lib/ui/AddPlacemark.svelte";
@@ -16,6 +17,8 @@
   import type { Placemark } from "$lib/ui/types/placemark-types";
   import { goto } from "$app/navigation";
   import PlacemarkStats from "$lib/ui/PlacemarkStats.svelte";
+  import Charts from "$lib/ui/Charts.svelte";
+  import PlacemarksMap from "$lib/ui/PlacemarksMap.svelte";
 
   // Define reactive variables for the form fields
   let title = $state("");
@@ -28,6 +31,7 @@
   let visited = $state("");
   let img: string[] = [];
   let description = $state("");
+  let message = $state("");
 
   async function addPlacemark() {
     const placemark: Placemark = {
@@ -39,12 +43,8 @@
       phone: phone,
       website: website,
       visited: visited,
-      // img: img,
       img: img.length > 0 ? img : undefined, // Only send `img` if it has values
       description: description
-      // img: []
-      // Only add img if it's provided
-      // img: img || undefined
     };
 
     const url = window.location.pathname;
@@ -73,95 +73,54 @@
       console.log("Payload being sent:", placemark);
       console.warn("Failed to add placemark.");
     }
+
+    if (placemarkEvent) placemarkEvent(placemark);
+    message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
   }
 </script>
 
-<!-- {#if user} -->
-<section class="section mt-6">
-  <!-- <div
-    class="wrapper mb-5"
-    use:inview={{ unobserveOnEnter: true, rootMargin: "-10%" }}
-    on:change={({ detail }) => {
-      isInView = detail.inView;
-    }}
-  >
-    {#if isInView}
-      <div in:fly={{ x: 200, duration: 1000 }}> -->
+<!-- <section class="section mt-6">
   <CategoryBanner />
-  <!-- </div>
-    {/if}
-  </div> -->
 
-  <!-- <div
-    class="wrapper mb-5"
-    use:inview={{ unobserveOnEnter: true, rootMargin: "-5%" }}
-    on:change={({ detail }) => {
-      isInView = detail.inView;
-    }}
-  >
-    {#if isInView}
-      <div in:fly={{ x: -200, duration: 1000 }}> -->
-  <!-- {#if category} -->
   <PlacemarkStats />
+  <!-- placemarkEvent={placemarkAdded} 
+  <PlacemarksMap />
+  <Charts />
 
-  <!-- <img
-    id="category-image"
-    src={category.img}
-    class="mb-5"
-    style="border-radius: 10px; display: none;"
-    alt=""
-  /> -->
-
-  <!-- Assuming list-placemarks, add-placemark, and category-image are separate Svelte components -->
-  <!-- <div
-    class="wrapper mb-5"
-    use:inview={{ unobserveOnEnter: true, rootMargin: "-1%" }}
-    on:change={({ detail }) => {
-      isInView = detail.inView;
-    }}
-  >
-    {#if isInView}
-      <div in:fly={{ y: 200, duration: 2000 }}> -->
   <PlacemarkListCard>
     <ListPlacemarks />
-  </PlacemarkListCard>
-  <div class="box">
-    <AddPlacemark
-      bind:title
-      bind:lat
-      bind:long
-      bind:address
-      bind:country
-      bind:phone
-      bind:website
-      bind:visited
-      bind:description
-    />
-    <div class="columns">
-      <div class="column is-3">
-        <!-- <button class="button is-info has-text-white" type="submit"> Add your placemark </button> -->
-        <button onclick={() => addPlacemark()} class="mt-3 button is-info has-text-white">
-          Add your placemark
-        </button>
-      </div>
-      <div class="column is-9">
-        <p class="has-text-right mt-2">
-          *Find your exact placemarks coordinates on
-          <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"
-            >https://www.gps-coordinates.net/</a
-          >
-          <span class="ml-1 icon is-small">
-            <i class="fas fa-solid fa-folder-open"></i>
-          </span>
-        </p>
-      </div>
+  </PlacemarkListCard> -->
+<div class="box">
+  <AddPlacemark
+    bind:title
+    bind:lat
+    bind:long
+    bind:address
+    bind:country
+    bind:phone
+    bind:website
+    bind:visited
+    bind:description
+  />
+  {message}
+  <div class="columns">
+    <div class="column is-3">
+      <button onclick={() => addPlacemark()} class="mt-3 button is-info has-text-white">
+        Add your placemark
+      </button>
+    </div>
+    <div class="column is-9">
+      <p class="has-text-right mt-2">
+        *Find your exact placemarks coordinates on
+        <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"
+          >https://www.gps-coordinates.net/</a
+        >
+        <span class="ml-1 icon is-small">
+          <i class="fas fa-solid fa-folder-open"></i>
+        </span>
+      </p>
     </div>
   </div>
-  <CategoryImage />
-  <!-- </div>
-    {/if}
-  </div> -->
-</section>
-<!-- {/if} -->
-
-<!-- {placemarks} -->
+</div>
+<!-- <CategoryImage /> -->
+<!-- </section> -->

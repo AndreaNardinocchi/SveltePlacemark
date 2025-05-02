@@ -10,29 +10,42 @@
   import { goto } from "$app/navigation";
 
   // svelte-ignore non_reactive_update
-  let category: Category | null = null;
+  // let category: Category | null = null;
   // let placemarks: Placemark[] = [];
 
-  let placemarks = $state<Placemark[]>([]);
+  // let placemarks = $state<Placemark[]>([]);
+
+  import { currentCategories } from "$lib/runes.svelte";
+
+  const url = window.location.pathname;
+  const categoryId = url.split("/").pop();
+  let category = currentCategories.categories.find((cat) => cat._id === categoryId);
+  import { currentPlacemarks } from "$lib/runes.svelte";
+  console.log("These are the placemarks :", currentPlacemarks.placemarks);
 
   onMount(async () => {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
     const token = loggedInUser.token;
 
-    if (categoryId && token) {
-      // Fetch full category
+    if (token && categoryId) {
       const result = await placemarkService.getCategoryById(categoryId);
 
+      // return result;
+
       if (result) {
-        category = result;
-        placemarks = result.placemarks; // Make sure placemarks are part of the category object
+        let category = result;
+        // // Fetch full category
+        currentPlacemarks.placemarks = category.placemarks;
+        console.log("Our placemarks: ", category.placemarks);
+        // Make sure placemarks are part of the category object
       } else {
         console.warn("Category not found.");
       }
     } else {
       console.warn("Invalid category ID or token.");
     }
+    return "";
   });
 
   async function deletePlacemark(placemarkId: string) {
@@ -42,13 +55,6 @@
       console.warn("No placemark ID provided.");
       return;
     }
-
-    // Optional: You can fetch the placemark details first if needed
-    // const placemark = await placemarkService.getPlacemarkById(placemarkId);
-    // if (!placemark) {
-    //   console.warn("Invalid placemark returned.");
-    //   return;
-    // }
 
     const success = await placemarkService.deletePlacemark(placemarkId);
     if (success) {
@@ -61,7 +67,8 @@
 </script>
 
 <div class="mt-6"></div>
-{#each placemarks as placemark}
+<!-- {#each placemarks as placemark} -->
+{#each currentPlacemarks.placemarks as placemark}
   <div class="card has-text-dark-grey" in:fly={{ y: 200, duration: 3000 }}>
     <header class="card-header has-text-centered">
       <p class="card-header-title">

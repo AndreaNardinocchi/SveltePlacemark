@@ -21,16 +21,11 @@
     console.log(`attempting to log in email: ${email} with password: ${password}`);
     let session = await placemarkService.login(email, password);
     if (session) {
-      loggedInUser.email = email;
-      loggedInUser.name = session.name;
-      loggedInUser.token = session.token;
-      loggedInUser._id = session._id;
-      console.log(`Session: ${JSON.stringify(session)}`);
       goto("/dashboard");
     } else {
       email = "";
       password = "";
-      message = "Invalid Credentials Broo...";
+      message = "Invalid Credentials";
     }
   }
 
