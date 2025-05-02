@@ -1,8 +1,4 @@
 <script lang="ts">
-  import type { User } from "./types/placemark-types";
-  import Message from "./Message.svelte";
-  // import HomepageTextCard from "./HomepageTextCard.svelte";
-
   let {
     firstName = $bindable(""),
     lastName = $bindable(""),
@@ -26,10 +22,7 @@
   function sanitizeFirstName(e: { target: { value: string } }) {
     e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     firstName = e.target.value;
-    // 2. Limit to 250 characters
     if (firstName.length < 3 || firstName.length > 30) {
-      //   firstName = firstName.slice(0, 30);
-      // } else {
       message = "First name should be between more than 3 and less than 30 characters";
     }
   }
@@ -38,8 +31,6 @@
     e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     lastName = e.target.value;
     if (lastName.length < 3 || lastName.length > 30) {
-      //   firstName = firstName.slice(0, 30);
-      // } else {
       message = "Last name should be between more than 3 and less than 30 characters";
     }
   }
@@ -48,8 +39,6 @@
     e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     street = e.target.value;
     if (street.length < 3 || street.length > 30) {
-      //   firstName = firstName.slice(0, 30);
-      // } else {
       message = "Street should be between more than 3 and less than 30 characters";
     }
   }
@@ -58,22 +47,16 @@
     e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     addressCode = e.target.value;
     if (addressCode.length < 3 || addressCode.length > 10) {
-      //   firstName = firstName.slice(0, 30);
-      // } else {
       message = "Address Code should be between more than 3 and less than 10 characters";
     }
   }
-
-  let isPhoneValid = false;
 
   function sanitizePhoneNumber(e: { target: { value: string } }) {
     e.target.value = e.target.value.replace(/\D/g, ""); // removes leading & trailing whitespace
     phoneNumber = e.target.value;
     if (phoneNumber.length < 6 || phoneNumber.length > 12) {
-      isPhoneValid = false;
-      //   firstName = firstName.slice(0, 30);
-      // } else {
-      message = "Phone Number should be between more than 6 and less than 10 characters";
+      phoneNumber = "";
+      message = "Phone Number should be between more than 6 and less than 12 characters";
     }
   }
 
@@ -86,23 +69,7 @@
     e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
     password = e.target.value;
   }
-
-  // let user: User | null = null;
-
-  // // https://www.geeksforgeeks.org/how-to-set-minimum-and-maximum-date-in-html-date-picker/
-  // const datePicker =
-  //     document.getElementById('date');
-  // datePicker.addEventListener('change',
-  //     function () {
-  //         const selectedDate = datePicker.value;
-  //         {{!-- alert('Selected Date: ' + selectedDate); --}}
-  //     });
 </script>
-
-<!-- <section class="section">
-  <form action="/register" method="POST"> -->
-
-<!-- {#if user} -->
 
 <div class="field is-horizontal">
   <div class="field-body">
@@ -592,6 +559,3 @@
   </label>
 </div>
 {message}
-<!-- {/if} -->
-<!-- </form> -->
-<!-- </section> -->
