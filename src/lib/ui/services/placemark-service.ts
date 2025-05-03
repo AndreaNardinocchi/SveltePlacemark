@@ -3,7 +3,7 @@ import type { Placemark, Session, User } from "../types/placemark-types";
 // import type Category from "../../../routes/category/Category.svelte";
 import type { Category } from "../types/placemark-types";
 // import { goto } from "$app/navigation";
-import { currentCategories, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
+import { category, currentCategories, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 import { computeByCountry, computeByVisited } from "./placemark-utils";
 
 axios.defaults.withCredentials = true;
@@ -59,31 +59,40 @@ export const placemarkService = {
   },
 
   async refreshPlacemarksInfo() {
-    // async refreshPlacemarksInfo() {
-    // if (loggedInUser.token) {
-    //   currentCategories.categories = await this.getAllCategories(loggedInUser.token);
-    //   // currentCandidates.candidates = await this.getCandidates(loggedInUser.token);
-    //   // computeByMethod(currentDonations.donations);
-    //   // computeByCandidate(currentDonations.donations, currentCandidates.candidates);
-    // }
-
-    // const categoryId = localStorage.getItem("categoryId"); // Get categoryId from localStorage
-
-    // if (!categoryId) {
-    //   console.warn("No categoryId found.");
-    //   return;
-    // }
-    // if (loggedInUser.token && categoryId) {
-    if (loggedInUser.token) {
-      const allCategories = await this.getAllCategories(loggedInUser.token);
-      currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
-      computeByCountry(currentPlacemarks.placemarks);
-      computeByVisited(currentPlacemarks.placemarks);
-      // currentPlacemarks.placemarks = await this.getPlacemarksByCategoryId(
-      //   categoryId,
-      //   loggedInUser.token
-      // );
+    if (!loggedInUser.token || !loggedInUser._id) {
+      console.warn("Session is not ready, skipping refresh");
+      return;
     }
+
+    console.log("Give me the token: ", loggedInUser.token);
+
+    const allCategories = await this.getAllCategories(loggedInUser.token);
+    currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
+
+    console.log("Give me all categories: ", currentCategories.categories);
+
+    // Check if categoryId is valid
+    const categoryTitle = localStorage.getItem("categoryTitle");
+    const validCategory = currentCategories.categories.find((cat) => cat.title === categoryTitle);
+
+    if (!categoryTitle || !validCategory) {
+      console.warn("No valid categoryId found. User must select one.");
+      return;
+    }
+
+    const categoryId = validCategory._id;
+
+    const categoryWithPlacemarks = await this.getCategoryById(validCategory._id);
+    if (!categoryWithPlacemarks?.placemarks) {
+      console.warn("Could not retrieve placemarks for category.");
+      return;
+    }
+
+    currentPlacemarks.placemarks = categoryWithPlacemarks.placemarks;
+    console.log("These are the placemarks now: ", currentPlacemarks.placemarks, categoryId);
+
+    computeByCountry(currentPlacemarks.placemarks);
+    computeByVisited(currentPlacemarks.placemarks);
   },
 
   // async refreshPlacemarksInfo() {
@@ -111,6 +120,8 @@ export const placemarkService = {
     loggedInUser.token = "";
     loggedInUser._id = "";
     localStorage.removeItem("placemark");
+    localStorage.removeItem("categoryTitle");
+    localStorage.removeItem("categoryId");
   },
 
   saveSession(session: Session, email: string) {
@@ -134,9 +145,9 @@ export const placemarkService = {
       // ✅ Ensure axios has the token again
       axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
 
-      const categoryId = localStorage.getItem("categoryId");
-      if (categoryId) {
-        console.log("Using stored categoryId:", categoryId);
+      const categoryTitle = localStorage.getItem("categoryTitle");
+      if (categoryTitle) {
+        console.log("Using stored categoryTitle:", categoryTitle);
       } else {
         console.log("No categoryId found. You may need to select one.");
       }
@@ -148,12 +159,15 @@ export const placemarkService = {
 
   clearSession() {
     // currentDonations.donations = [];
+    currentPlacemarks.placemarks = [];
     currentCategories.categories = [];
     loggedInUser.email = "";
     loggedInUser.name = "";
     loggedInUser.token = "";
     loggedInUser._id = "";
     localStorage.removeItem("placemark");
+    localStorage.removeItem("categoryTitle");
+    localStorage.removeItem("categoryId");
   },
 
   async updateUser(updatedUser: User, token: string) {
@@ -234,35 +248,6 @@ export const placemarkService = {
     }
   },
 
-  // async addCategory(category: Category): Promise<Category | null> {
-  //   try {
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     console.log("Authorization header in addCategory:", token); // Debug log
-
-  //     if (!token) {
-  //       console.log("User is not logged in. No Authorization token found.");
-  //       return null;
-  //     }
-
-  //     const response = await axios.post(`${this.baseUrl}/api/categories`, category, {
-  //       headers: {
-  //         Authorization: token
-  //       }
-  //     });
-
-  //     await this.refreshPlacemarksInfo();
-  //     console.log("Category added:", response.data);
-  //     return response.data;
-  //   } catch (error: any) {
-  //     if (error.response) {
-  //       console.error("Error adding category:", error.response.status, error.response.data);
-  //     } else {
-  //       console.error("Error adding category:", error.message);
-  //     }
-  //     return null;
-  //   }
-  // },
-
   async addCategory(category: Category): Promise<Category | null> {
     try {
       const token = axios.defaults.headers.common["Authorization"];
@@ -326,35 +311,6 @@ export const placemarkService = {
     }
   },
 
-  // async getUserCategories(token: string): Promise<Category[]> {
-  //   try {
-  //     const response = await axios.get(`${this.baseUrl}/api/user/categories`, {
-  //       headers: {
-  //         Authorization: "Bearer " + token
-  //       }
-  //     });
-
-  //     console.log("Categories for user:", response.data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Error fetching categories for user:", error);
-  //     return [];
-  //   }
-  // },
-
-  // This is to fetch all categories, and we call in the loggedinUser token to ensure we are signed in
-  // async getAllCategories(token: string): Promise<Category[]> {
-  //   try {
-  //     console.log(this.baseUrl + "/api/categories");
-  //     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-  //     const response = await axios.get(this.baseUrl + "/api/categories");
-
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log(error);
-  //     return [];
-  //   }
-  // },
   async getAllCategories(token: string): Promise<Category[]> {
     try {
       console.log(this.baseUrl + "/api/categories");
@@ -474,6 +430,7 @@ export const placemarkService = {
           }
         }
       );
+      await this.refreshPlacemarksInfo();
 
       console.log("Placemark added:", response.data);
       return response.data;
@@ -501,6 +458,7 @@ export const placemarkService = {
           Authorization: token
         }
       });
+      await this.refreshPlacemarksInfo();
 
       console.log("Placemark deleted:", response.data);
       return response.data.success === true; // Adjust based on your backend response

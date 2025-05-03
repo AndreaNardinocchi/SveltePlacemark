@@ -1,19 +1,18 @@
 <script lang="ts">
   import { placemarkService } from "$lib/ui/services/placemark-service";
-
-  import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
   import { onMount } from "svelte";
   import Category from "./Category.svelte";
   import type { Placemark } from "$lib/ui/types/placemark-types";
   // import { map } from "leaflet";
-  import { currentPlacemarks } from "$lib/runes.svelte";
+  import { currentCategories, currentDataSets, currentPlacemarks } from "$lib/runes.svelte";
   import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
   import PlacemarkStats from "$lib/ui/PlacemarkStats.svelte";
   import PlacemarksMap from "$lib/ui/PlacemarksMap.svelte";
   import Charts from "$lib/ui/Charts.svelte";
   import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
   import ListPlacemarks from "$lib/ui/ListPlacemarks.svelte";
-
+  // @ts-ignore
+  import Chart from "svelte-frappe-charts";
   import LeafletMap from "$lib/ui/LeafletMap.svelte";
   import { refreshPlacemarkMap } from "$lib/ui/services/placemark-utils";
   let map: LeafletMap;
@@ -26,12 +25,15 @@
   let pageTitle: any = "";
 
   async function getBroswerTitle() {
+    if (typeof window === "undefined") return "PlaceMark";
     const pathParts = window.location.pathname.split("/");
     let categoryId = pathParts[pathParts.indexOf("category") + 1];
     let placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
     const category = await placemarkService.getCategoryById(categoryId);
     if (category) {
       pageTitle = `${category.title} | PlaceMark`; // This can be dynamic
+    } else {
+      pageTitle = "PlaceMark";
     }
     console.log("PageTitle: ", pageTitle);
     return pageTitle;
@@ -39,48 +41,104 @@
 
   onMount(async () => {
     pageTitle = await getBroswerTitle();
-  });
-
-  // onMount will fetch and assign:
-  onMount(async () => {
     await refreshPlacemarkMap(map);
-    // const pathParts = window.location.pathname.split("/");
-    // let categoryId = pathParts[pathParts.indexOf("category") + 1];
-    // console.log("This the categoryId in Maps: ", categoryId);
-    // currentPlacemarks.placemarks.forEach((placemark: Placemark) => {
-    //   if (typeof placemark !== "string") {
-    //     const popup = `${placemark.title}, ${placemark.country} | Visited: ${placemark.visited}`;
-    //     map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), popup);
-    //     console.log("These are the coordinates: ", placemark.lat, placemark.long);
-    //   }
-    // });
-    // const lastPlacemark = currentPlacemarks.placemarks[currentPlacemarks.placemarks.length - 1];
-    // if (lastPlacemark) map.moveTo(parseFloat(lastPlacemark.lat), parseFloat(lastPlacemark.long));
+    await placemarkService.refreshPlacemarksInfo();
   });
 
   function placemarkAdded(placemark: Placemark) {
-    {
-      map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
-      map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
-    }
-    // Call placemarkAdded for each placemark in currentPlacemarks
-    currentPlacemarks.placemarks.forEach((placemark: Placemark) => {
-      if (typeof placemark !== "string") {
-        placemarkAdded(placemark);
-      }
-    });
+    map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
+    map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
   }
 
-  function refreshDonationMap(
-    map: {
-      $on?(type: string, callback: (e: any) => void): () => void;
-      $set?(props: Partial<{ height?: number }>): void;
-    } & {
-      addMarker: (lat: number, lng: number, popupText: string) => Promise<void>;
-      moveTo: (lat: number, lng: number) => Promise<void>;
+  console.log("Chart - Total by Country", currentDataSets.totalByCountry);
+  console.log("Chart - Total by Visited", currentDataSets.totalByVisited);
+</script>
+
+<svelte:head>
+  <title>{pageTitle}</title>
+</svelte:head>
+
+<div class="container">
+  <section class="section mt-6">
+    {#if currentCategories.categories.length > 0}
+      <CategoryBanner />
+      <PlacemarkStats />
+      <PlacemarkListCard>
+        <LeafletMap height={40} bind:this={map} />
+      </PlacemarkListCard>
+      <!-- <PlacemarksMap /> -->
+      <!-- <Charts /> -->
+      <div class="box has-background-white">
+        <div class="columns">
+          <div class="column">
+            <!-- title="Placemark countries" -->
+            <PlacemarkListCard>
+              <p class="has-text-centered subtitle has-text-weight-bold is-5">Total by Country</p>
+              <p>Country Labels: {currentDataSets.totalByCountry.labels.join(", ")}</p>
+              <Chart data={currentDataSets.totalByCountry} type="bar" />
+            </PlacemarkListCard>
+          </div>
+          <div class="column has-text-centered">
+            <PlacemarkListCard>
+              <p class="has-text-centered subtitle has-text-weight-bold is-5">
+                Total by Visited/Not Visited
+              </p>
+              <!-- {#if currentDataSets.totalByVisited.labels.length > 0} -->
+
+              <Chart data={currentDataSets.totalByVisited} type="pie" />
+              <!-- {/if} -->
+            </PlacemarkListCard>
+          </div>
+        </div>
+      </div>
+
+      <PlacemarkListCard>
+        <ListPlacemarks />
+      </PlacemarkListCard>
+    {/if}
+    <Category placemarkEvent={placemarkAdded} />
+  </section>
+</div>
+
+<!-- <script lang="ts">
+  import { placemarkService } from "$lib/ui/services/placemark-service";
+  import { onMount } from "svelte";
+  import { currentCategories, currentDataSets, currentPlacemarks } from "$lib/runes.svelte";
+  import type { Placemark } from "$lib/ui/types/placemark-types";
+  import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
+  import PlacemarkStats from "$lib/ui/PlacemarkStats.svelte";
+  import PlacemarksMap from "$lib/ui/PlacemarksMap.svelte";
+  // @ts-ignore
+  import Chart from "svelte-frappe-charts";
+  import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
+  import ListPlacemarks from "$lib/ui/ListPlacemarks.svelte";
+  import LeafletMap from "$lib/ui/LeafletMap.svelte";
+  import { refreshPlacemarkMap } from "$lib/ui/services/placemark-utils";
+  import Category from "./Category.svelte";
+
+  let map: LeafletMap;
+  let pageTitle: string = "";
+
+  // Function to retrieve and set the page title based on the category
+  async function getBroswerTitle() {
+    const pathParts = window.location.pathname.split("/");
+    let categoryId = pathParts[pathParts.indexOf("category") + 1];
+    const category = await placemarkService.getCategoryById(categoryId);
+    if (category) {
+      pageTitle = `${category.title} | PlaceMark`;
     }
-  ) {
-    throw new Error("Function not implemented.");
+    return pageTitle;
+  }
+
+  // Triggered when the component is mounted
+  onMount(async () => {
+    pageTitle = await getBroswerTitle();
+    await refreshPlacemarkMap(map); // Refresh placemark map and charts after loading placemarks
+  });
+
+  function placemarkAdded(placemark: Placemark) {
+    map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
+    map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
   }
 </script>
 
@@ -90,18 +148,37 @@
 
 <div class="container">
   <section class="section mt-6">
-    <CategoryBanner />
+    {#if currentCategories.categories.length > 0}
+      <CategoryBanner />
+      <PlacemarkStats />
+      <PlacemarkListCard>
+        <LeafletMap height={40} bind:this={map} />
+      </PlacemarkListCard>
 
-    <PlacemarkStats />
-    <!-- placemarkEvent={placemarkAdded} -->
-    <PlacemarksMap />
-    <Charts />
+      <!-- Charts 
+      <div class="box has-background-white">
+        <div class="columns">
+          <div class="column">
+            <PlacemarkListCard>
+              <p class="has-text-centered subtitle has-text-weight-bold is-5">Total by Country</p>
+              <Chart data={currentDataSets.totalByCountry} type="bar" />
+            </PlacemarkListCard>
+          </div>
+          <div class="column has-text-centered">
+            <PlacemarkListCard>
+              <p class="has-text-centered subtitle has-text-weight-bold is-5">
+                Total by Visited/Not Visited
+              </p>
+              <Chart data={currentDataSets.totalByVisited} type="pie" />
+            </PlacemarkListCard>
+          </div>
+        </div>
+      </div>
 
-    <PlacemarkListCard>
-      <ListPlacemarks />
-    </PlacemarkListCard>
-    <!-- <div class="box"> -->
+      <PlacemarkListCard>
+        <ListPlacemarks />
+      </PlacemarkListCard>
+    {/if}
     <Category placemarkEvent={placemarkAdded} />
-    <!-- </div> -->
   </section>
-</div>
+</div> -->
