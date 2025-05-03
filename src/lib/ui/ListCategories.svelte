@@ -157,11 +157,10 @@
     localStorage.setItem("categoryId", validCategory._id);
     console.log("Sending the categoryTitle:", validCategory.title);
 
-    // Call the placemarkService to refresh the placemarks for the selected category
-    placemarkService.refreshPlacemarksInfo();
-
     // Now, manually navigate to the category page after the state is set
     goto(`/category/${validCategory._id}`);
+    // Call the placemarkService to refresh the placemarks for the selected category
+    //  placemarkService.refreshPlacemarksInfo();
   }
 </script>
 

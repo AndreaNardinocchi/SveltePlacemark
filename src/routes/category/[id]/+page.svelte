@@ -39,12 +39,6 @@
     return pageTitle;
   }
 
-  onMount(async () => {
-    pageTitle = await getBroswerTitle();
-    await refreshPlacemarkMap(map);
-    await placemarkService.refreshPlacemarksInfo();
-  });
-
   function placemarkAdded(placemark: Placemark) {
     map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
     map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
@@ -52,6 +46,11 @@
 
   console.log("Chart - Total by Country", currentDataSets.totalByCountry);
   console.log("Chart - Total by Visited", currentDataSets.totalByVisited);
+  onMount(async () => {
+    pageTitle = await getBroswerTitle();
+    await refreshPlacemarkMap(map);
+    await placemarkService.refreshPlacemarksInfo();
+  });
 </script>
 
 <svelte:head>

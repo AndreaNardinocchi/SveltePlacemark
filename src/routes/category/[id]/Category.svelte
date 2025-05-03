@@ -2,23 +2,11 @@
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
 
-  import { fly } from "svelte/transition";
-  import { inview } from "svelte-inview";
-
-  let isInView: boolean = false;
   let { placemarkEvent = null } = $props();
-
-  import ListPlacemarks from "$lib/ui/ListPlacemarks.svelte";
   import AddPlacemark from "$lib/ui/AddPlacemark.svelte";
-  import CategoryImage from "$lib/ui/CategoryImage.svelte";
-  import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
-  import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
   import type { Placemark } from "$lib/ui/types/placemark-types";
   import { goto } from "$app/navigation";
-  import PlacemarkStats from "$lib/ui/PlacemarkStats.svelte";
-  import Charts from "$lib/ui/Charts.svelte";
-  import PlacemarksMap from "$lib/ui/PlacemarksMap.svelte";
 
   // Define reactive variables for the form fields
   let title = $state("");
@@ -58,6 +46,7 @@
     }
 
     const category = await placemarkService.getCategoryById(categoryId);
+
     if (!category) {
       console.warn("Invalid category returned.");
       return;
@@ -79,17 +68,6 @@
   }
 </script>
 
-<!-- <section class="section mt-6">
-  <CategoryBanner />
-
-  <PlacemarkStats />
-  <!-- placemarkEvent={placemarkAdded} 
-  <PlacemarksMap />
-  <Charts />
-
-  <PlacemarkListCard>
-    <ListPlacemarks />
-  </PlacemarkListCard> -->
 <div class="box">
   <AddPlacemark
     bind:title
@@ -122,5 +100,3 @@
     </div>
   </div>
 </div>
-<!-- <CategoryImage /> -->
-<!-- </section> -->

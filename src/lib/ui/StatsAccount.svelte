@@ -111,7 +111,7 @@
 <script lang="ts">
   import { placemarkService } from "./services/placemark-service";
   import { onMount } from "svelte";
-  import { loggedInUser } from "$lib/runes.svelte";
+  import { currentCategories, loggedInUser } from "$lib/runes.svelte";
   import { goto } from "$app/navigation";
   import type { User } from "./types/placemark-types";
   import { fly } from "svelte/transition";
@@ -124,89 +124,85 @@
   console.log("These are the categoryPlacemarks: ", categoryPlacemarks);
 
   // Method to fetch and process categories and placemarks
-  async function fetchCategories() {
-    // try {
-    //   const response = await placemarkService.getAllCategories(loggedInUser.token); // Fetch categories
-    //   categories = response; // Assuming response contains the categories
+  // async function fetchCategories() {
+  // try {
+  //   const response = await placemarkService.getAllCategories(loggedInUser.token); // Fetch categories
+  //   categories = response; // Assuming response contains the categories
 
-    //   // Now fetch the placemarks for each category
+  //   // Now fetch the placemarks for each category
 
-    //   // const categoryPlacemarks = await placemarkService.getPlacemarksByCategoryId(
-    //   //   category._id,
-    //   //   loggedInUser.token
-    //   // );
+  //   // const categoryPlacemarks = await placemarkService.getPlacemarksByCategoryId(
+  //   //   category._id,
+  //   //   loggedInUser.token
+  //   // );
 
-    //   categories.forEach(async (category) => {
-    //     // Directly assign the placemarks from the category if available
-    //     if (category) {
-    //       const categoryId = category._id;
-    //       const placemarks = await placemarkService.getPlacemarksByCategoryId(
-    //         // categoryId,
-    //         loggedInUser.token
-    //       );
-    //       // categoryPlacemarks = category.placemarks;
-    //       console.log(
-    //         "These are the placemarks for category:",
-    //         category.title,
-    //         category._id,
-    //         placemarks
-    //       );
-    //       placemarks.push(...categoryPlacemarks); // Flatten placemarks into the global array
-    //     } else {
-    //       console.warn("No placemarks found for category:", category.title);
-    //     }
-    //   });
-    // } catch (error) {
-    //   console.error("Error fetching categories and placemarks:", error);
-    // }
+  //   categories.forEach(async (category) => {
+  //     // Directly assign the placemarks from the category if available
+  //     if (category) {
+  //       const categoryId = category._id;
+  //       const placemarks = await placemarkService.getPlacemarksByCategoryId(
+  //         // categoryId,
+  //         loggedInUser.token
+  //       );
+  //       // categoryPlacemarks = category.placemarks;
+  //       console.log(
+  //         "These are the placemarks for category:",
+  //         category.title,
+  //         category._id,
+  //         placemarks
+  //       );
+  //       placemarks.push(...categoryPlacemarks); // Flatten placemarks into the global array
+  //     } else {
+  //       console.warn("No placemarks found for category:", category.title);
+  //     }
+  //   });
+  // } catch (error) {
+  //   console.error("Error fetching categories and placemarks:", error);
+  // }
 
-    // Method to fetch and process categories and placemarks
+  // Method to fetch and process categories and placemarks
 
-    try {
-      placemarks = []; // Clear previous placemarks to avoid duplicates
+  // try {
+  //   //   placemarks = []; // Clear previous placemarks to avoid duplicates
 
-      const response = await placemarkService.getAllCategories(loggedInUser.token);
-      categories = response;
+  //   const response = await placemarkService.getAllCategories(loggedInUser.token);
+  //   console.log("User page: ", response);
+  //   categories = response;
 
-      // Use a for...of loop to handle async/await properly
-      for (const category of categories) {
-        const categoryId = category._id;
+  //   // Use a for...of loop to handle async/await properly
+  //   for (const category of categories) {
+  //     const categoryId = category._id;
 
-        const categoryPlacemarks = await placemarkService.getPlacemarksByCategoryId(
-          categoryId,
-          loggedInUser.token
-        );
+  // const categoryPlacemarks = await placemarkService.getPlacemarksByCategoryId(
+  //   categoryId,
+  //   loggedInUser.token
+  // );
 
-        console.log(
-          "These are the placemarks for category:",
-          category.title,
-          categoryId,
-          categoryPlacemarks
-        );
+  //       console.log("These are the placemarks for category:", category.title, categoryId);
 
-        if (categoryPlacemarks && categoryPlacemarks.length > 0) {
-          placemarks = [...placemarks, ...categoryPlacemarks]; // Properly update reactive placemarks array
-        } else {
-          console.warn(`No placemarks found for category: ${category.title}`);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching categories and placemarks:", error);
-    }
-  }
+  //       // if (categoryPlacemarks && categoryPlacemarks.length > 0) {
+  //       //   placemarks = [...placemarks, ...categoryPlacemarks]; // Properly update reactive placemarks array
+  //       // } else {
+  //       //   console.warn(`No placemarks found for category: ${category.title}`);
+  //       // }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching categories and placemarks:", error);
+  //   }
+  // }
   const token = loggedInUser.token;
   const email = loggedInUser.email;
 
   const loggedInUserId = loggedInUser._id;
   onMount(async () => {
-    fetchCategories();
+    // fetchCategories();
     if (token && email) {
       try {
         const users = await placemarkService.getAllUsers(token);
         const matchedUser = users.find((user) => user.email === email);
         if (matchedUser) {
           user = matchedUser;
-          console.log("Matched user:", user);
+          if (matchedUser) console.log("Matched user:", user);
           console.log("This is the timestamp: ", user.createdTimeStamp);
         } else {
           console.log("No user found matching email.");
@@ -276,7 +272,8 @@
   <section class="content pl-4">
     <div class="columns">
       <div class="column">
-        {#each categories as category}
+        {#each currentCategories.categories as category}
+          <!-- {#each categories as category} -->
           <p class="is-size-4 mb-2">
             <a href={`/category/${category._id}`} class="has-text-grey-light">{category.title}</a>
           </p>

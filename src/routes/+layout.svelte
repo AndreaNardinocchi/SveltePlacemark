@@ -1,25 +1,11 @@
-<!-- <script >
-    import { loggedInUser } from "$lib/runes.svelte";
-    import Heading from "$lib/ui/Heading.svelte";
-    import Menu from "$lib/ui/Menu.svelte";
-  </script>
-  
-  <div class="container">
-    {#if loggedInUser.email}
-      <Menu />
-      <Heading />
-    {/if}
-    <slot />
-  </div> -->
-
-<script lang="ts" >
+<script lang="ts">
   // https://www.npmjs.com/package/svelte-fa
   import { loggedInUser } from "$lib/runes.svelte";
   import Footer from "$lib/Footer.svelte";
   import Header from "$lib/Header.svelte";
   import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
-    import { onMount } from "svelte";
-    import { placemarkService } from "$lib/ui/services/placemark-service";
+  import { onMount } from "svelte";
+  import { placemarkService } from "$lib/ui/services/placemark-service";
 
   // @ts-ignore
   export const load = async ({ page }) => ({
@@ -35,9 +21,8 @@
 
   let pageTitle: any = "Welcome to PlaceMark"; // This can be dynamic
   onMount(async () => {
- placemarkService.restoreSession();
-  
-});
+    await placemarkService.restoreSession();
+  });
 </script>
 
 <svelte:head>

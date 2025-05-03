@@ -1,4 +1,4 @@
-import { currentDataSets, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
+import { category, currentDataSets, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 import type { Placemark } from "../types/placemark-types";
 import { placemarkService } from "./placemark-service";
 // import { placemarkService } from "./placemark-service";
@@ -21,6 +21,12 @@ import { placemarkService } from "./placemark-service";
 
 export function computeByCountry(placemarkList: Placemark[]) {
   const countryCounts: Record<string, number> = {};
+
+  if (!placemarkList || placemarkList.length === 0) {
+    console.warn("No placemarks available for computing chart.");
+    return;
+  }
+
   placemarkList.forEach((placemark) => {
     countryCounts[placemark.country] = (countryCounts[placemark.country] || 0) + 1;
   });
@@ -49,6 +55,11 @@ export function computeByCountry(placemarkList: Placemark[]) {
 
 export function computeByVisited(placemarkList: Placemark[]) {
   const visitedCounts: Record<string, number> = {};
+
+  if (!placemarkList || placemarkList.length === 0) {
+    console.warn("No placemarks available for computing chart.");
+    return;
+  }
   placemarkList.forEach((placemark) => {
     visitedCounts[placemark.visited] = (visitedCounts[placemark.visited] || 0) + 1;
   });
@@ -70,6 +81,11 @@ export async function refreshPlacemarkMap(map: LeafletMap) {
   const pathParts = window.location.pathname.split("/");
   const categoryId = pathParts[pathParts.indexOf("category") + 1];
   console.log("This the categoryId in Maps: ", categoryId);
+
+  // Set categoryTitle if not already set
+  // localStorage.setItem("categoryTitle", category.title); // Replace dynamically if needed
+
+  // await placemarkService.refreshPlacemarksInfo();
 
   currentPlacemarks.placemarks.forEach((placemark: Placemark) => {
     if (typeof placemark !== "string") {
