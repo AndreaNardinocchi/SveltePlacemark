@@ -7,6 +7,8 @@
   import { currentCategories } from "$lib/runes.svelte";
   import DOMPurify from "dompurify";
 
+  // ############### REMEMBER THAT THE NEW MAPS BRING ABOUT THE REFRESH ISSUE 500 (Internal Server Error) ############//
+
   // Using the below enables me to retrieve the categoryId
   // https://stackoverflow.com/questions/23690234/getting-last-segment-of-url-in-javascript?
   // https://www.geeksforgeeks.org/how-to-get-url-and-url-parts-in-javascript/
@@ -14,6 +16,11 @@
   const categoryId = url.split("/").pop();
   let category = currentCategories.categories.find((cat) => cat._id === categoryId);
   import { currentPlacemarks } from "$lib/runes.svelte";
+  import { refreshPlacemarkMap } from "./services/placemark-utils";
+
+  let map: any;
+  import LeafletMapMulti from "./LeafletMapMulti.svelte";
+
   console.log("These are the placemarks :", currentPlacemarks.placemarks);
 
   /**
@@ -25,8 +32,19 @@
   }
 
   onMount(async () => {
-    const url = window.location.pathname;
-    const categoryId = url.split("/").pop();
+    await refreshPlacemarkMap(map);
+    await placemarkService.refreshPlacemarksInfo();
+  });
+
+  onMount(async () => {
+    // This is the control the 'window is not defined' error (typeOf' is prompted by VsCode itself)
+    if (typeof window !== "undefined") {
+      const url = window.location.pathname;
+      const categoryId = url.split("/").pop();
+      console.log("Category ID:", categoryId);
+    }
+
+    // categoryId = url.split("/").pop();
     const token = loggedInUser.token;
 
     if (token && categoryId) {
@@ -125,8 +143,17 @@
             </p>
           </div>
           <div class="column is-4">
-            <p><span class="has-text-weight-bold">Map Placeholder:</span><br /></p>
-            <iframe
+            <p><span class="has-text-weight-bold">Map:</span><br /></p>
+            <LeafletMapMulti
+              lat={parseFloat(placemark.lat)}
+              lng={parseFloat(placemark.long)}
+              popupText={`${placemark.title}, ${placemark.country} `}
+              height={30}
+            />
+
+            <!-- | Geo: ${placemark.lat} / ${placemark.long}` -->
+
+            <!-- <iframe
               class="mt-2"
               title={sanitizeInput(placemark.title)}
               src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19694.431967599397!2d-8.4167813!3d51.901040949999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48449bee2f866ab1%3A0x4b0e792b7b212ab7!2sDistrict%20Health%20%26%20Leisure!5e0!3m2!1sen!2sie!4v1739290933254!5m2!1sen!2sie`}
@@ -134,7 +161,7 @@
               referrerpolicy="no-referrer-when-downgrade"
               height="200"
               style="border:0; white; box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);border-radius: 15px;"
-            ></iframe>
+            ></iframe> -->
           </div>
         </div>
       </div>

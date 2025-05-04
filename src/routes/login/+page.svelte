@@ -20,8 +20,6 @@
 <svelte:head>
   <title>{pageTitle}</title>
 </svelte:head>
-<!-- <WelcomeMenu /> -->
 <div class="container">
   <LoginForm />
 </div>
-<!-- <Footer /> -->

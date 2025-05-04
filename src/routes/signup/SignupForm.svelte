@@ -2,11 +2,11 @@
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { goto } from "$app/navigation";
   import type { User } from "$lib/ui/types/placemark-types";
-  // import { $state } from "svelte/store"; // Assuming you're using reactive stores
   import Message from "$lib/ui/Message.svelte";
   import PlacemarkSignup from "$lib/ui/PlacemarkSignup.svelte";
   import PlacemarkSignupImage from "$lib/ui/PlacemarkSignupImage.svelte";
   import { fly } from "svelte/transition";
+  // import bcrypt from "bcryptjs";
 
   // Form state variables
   let firstName = $state("");
@@ -26,6 +26,9 @@
   async function signup() {
     console.log("Signup function triggered");
 
+    // const saltRounds = 10;
+    // const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const user: User = {
       firstName: firstName,
       lastName: lastName,
@@ -37,7 +40,7 @@
       DOB: DOB,
       phoneNumber: phoneNumber,
       email: email,
-      password: password
+      password: password //hashedPassword // store hashed password
     };
 
     //   try {
@@ -90,7 +93,9 @@
 
       // Check if the response has an _id (indicating successful signup)
       if (addedUser) {
-        console.log(`Successfully signed up ${user.firstName} ${user.lastName} ${user.email}`);
+        console.log(
+          `Successfully signed up ${user.firstName} ${user.lastName} ${user.email} ${user.password}`
+        );
         // Redirect to login page after successful signup
         goto("/login");
       } else {
