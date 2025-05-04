@@ -4,6 +4,7 @@ loggedinUser.token issue
 
 Assignment 2
 ===================
+- Priority work on placemark-service.ts row 82
 - bindings check Yes or No visited
 - Placemark page, work on weather widget
 - Adjust the Account page with bindings and $props ?? Pop up won't open with bindables
@@ -12,6 +13,7 @@ Assignment 2
 - Issue with maps in PlacemarkList bringing about errors when refreshing the page
 - Hashing and salting
 - Image upload issue
+- Why is it that from the Account page I need to click twice on the same category to see the correct chart 
 
       ##########################  Version 1 CORS ERROR ##########################################  
 

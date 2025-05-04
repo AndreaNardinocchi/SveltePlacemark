@@ -58,74 +58,183 @@ export const placemarkService = {
     }
   },
 
+  async waitForCategoriesToLoad(): Promise<void> {
+    return new Promise((resolve) => {
+      const check = () => {
+        if (currentCategories.categories.length > 0) {
+          resolve();
+        } else {
+          setTimeout(check, 50); // Poll every 50ms
+        }
+      };
+      check();
+    });
+  },
+
   async refreshPlacemarksInfo() {
     if (!loggedInUser.token || !loggedInUser._id) {
       console.warn("Session is not ready, skipping refresh");
       return;
     }
 
-    console.log("Give me the token: ", loggedInUser.token);
+    console.log("Token:", loggedInUser.token);
 
     const allCategories = await this.getAllCategories(loggedInUser.token);
     currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
+
+    // ✅ Wait until categories are loaded
+    await this.waitForCategoriesToLoad();
+
     const categoryId = localStorage.getItem("categoryId");
-
-    const categoryTitle = localStorage.getItem("categoryTitle");
-
-    const validCategoryTitle = currentCategories.categories.find(
-      (cat) => cat.title === categoryTitle
-    );
-    const validCategoryId = currentCategories.categories.find((cat) => cat._id === categoryId);
-
     if (!categoryId) {
-      console.warn("No categoryId found. User must select one.");
+      console.warn("No categoryId in localStorage.");
       return;
     }
 
-    console.log(
-      "Give me all categories: ",
-      currentCategories.categories,
-      categoryTitle,
-      validCategoryTitle,
-      validCategoryId,
-      categoryId
-    );
+    const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
 
-    // Check if categoryId is valid
-    // const categoryTitle = localStorage.getItem("categoryTitle");
-    // const validCategory = currentCategories.categories.find((cat) => cat.title === categoryTitle);
-
-    //const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
-
-    if (!categoryId) {
-      console.warn("No valid categoryId found. User must select one.");
+    if (!validCategory) {
+      console.warn("categoryId from localStorage is not valid.");
       return;
     }
 
-    // categoryId = validCategory._id;
+    // ✅ Set global category state
+    category.title = validCategory.title;
+    category._id = validCategory._id;
+    category.userId = validCategory.userid;
+    category.image = validCategory.image;
+    category.notes = validCategory.notes;
 
-    //     const categoryWithPlacemarks = await this.getCategoryById(category._id);
-    // if (!categoryWithPlacemarks?.placemarks) return;
-    // currentPlacemarks.placemarks = categoryWithPlacemarks.placemarks;
-
-    //  const placemarks = await this.getPlacemarksByCategoryId(categoryId, loggedInUser.token);
-
-    const category = await this.getCategoryById(categoryId);
-    if (!category?.placemarks) {
+    const fetchedCategory = await this.getCategoryById(categoryId);
+    if (!fetchedCategory?.placemarks) {
       console.warn("Could not retrieve placemarks for category.");
       return;
     }
-    if (!category.placemarks) return;
 
-    currentPlacemarks.placemarks = [...category.placemarks];
-
-    console.log("Updated placemarks: ", currentPlacemarks.placemarks);
-    // currentPlacemarks.placemarks = categoryWithPlacemarks.placemarks;
-    // console.log("These are the placemarks now: ", currentPlacemarks.placemarks, categoryId);
+    currentPlacemarks.placemarks = [...fetchedCategory.placemarks];
+    console.log("Updated placemarks:", currentPlacemarks.placemarks);
 
     computeByCountry(currentPlacemarks.placemarks);
     computeByVisited(currentPlacemarks.placemarks);
   },
+
+  // async refreshPlacemarksInfo() {
+  //   if (!loggedInUser.token || !loggedInUser._id) {
+  //     console.warn("Session is not ready, skipping refresh");
+  //     return;
+  //   }
+
+  //   const allCategories = await this.getAllCategories(loggedInUser.token);
+  //   currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
+
+  //   // Wait until categories are set before continuing
+  //   const categoryId = localStorage.getItem("categoryId");
+  //   const categoryTitle = localStorage.getItem("categoryTitle");
+
+  //   if (!categoryId) {
+  //     console.warn("No categoryId found in localStorage. User must select one.");
+  //     return;
+  //   }
+
+  //   // Now that categories are loaded, validate
+  //   const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
+
+  //   if (!validCategory) {
+  //     console.warn("Stored categoryId not found in current user's categories.");
+  //     return;
+  //   }
+
+  //   // Set global category state
+  //   category.title = validCategory.title;
+  //   category._id = validCategory._id;
+  //   category.userId = validCategory.userid;
+  //   category.image = validCategory.image;
+  //   category.notes = validCategory.notes;
+
+  //   // Fetch and update placemarks for the selected category
+  //   const fetchedCategory = await this.getCategoryById(categoryId);
+  //   if (!fetchedCategory?.placemarks) {
+  //     console.warn("Could not retrieve placemarks for the category.");
+  //     return;
+  //   }
+
+  //   currentPlacemarks.placemarks = [...fetchedCategory.placemarks];
+
+  //   console.log("Updated placemarks: ", currentPlacemarks.placemarks);
+
+  //   computeByCountry(currentPlacemarks.placemarks);
+  //   computeByVisited(currentPlacemarks.placemarks);
+  // },
+
+  // async refreshPlacemarksInfo() {
+  //   if (!loggedInUser.token || !loggedInUser._id) {
+  //     console.warn("Session is not ready, skipping refresh");
+  //     return;
+  //   }
+
+  //   console.log("Give me the token: ", loggedInUser.token);
+
+  //   const allCategories = await this.getAllCategories(loggedInUser.token);
+  //   currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
+  //   const categoryId = localStorage.getItem("categoryId");
+
+  //   const categoryTitle = localStorage.getItem("categoryTitle");
+
+  //   const validCategoryTitle = currentCategories.categories.find(
+  //     (cat) => cat.title === categoryTitle
+  //   );
+  //   const validCategoryId = currentCategories.categories.find((cat) => cat._id === categoryId);
+  //   console.log("No categoryId found. User must select one.", validCategoryId, validCategoryTitle);
+
+  //   if (!categoryId) {
+  //     console.warn("No categoryId found. User must select one.");
+  //     return;
+  //   }
+
+  //   console.log(
+  //     "Give me all categories: ",
+  //     currentCategories.categories,
+  //     categoryTitle,
+  //     validCategoryTitle,
+  //     validCategoryId,
+  //     categoryId
+  //   );
+
+  //   // Check if categoryId is valid
+  //   // const categoryTitle = localStorage.getItem("categoryTitle");
+  //   // const validCategory = currentCategories.categories.find((cat) => cat.title === categoryTitle);
+
+  //   //const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
+
+  //   if (!categoryId) {
+  //     console.warn("No valid categoryId found. User must select one.");
+  //     return;
+  //   }
+
+  //   // categoryId = validCategory._id;
+
+  //   //     const categoryWithPlacemarks = await this.getCategoryById(category._id);
+  //   // if (!categoryWithPlacemarks?.placemarks) return;
+  //   // currentPlacemarks.placemarks = categoryWithPlacemarks.placemarks;
+
+  //   //  const placemarks = await this.getPlacemarksByCategoryId(categoryId, loggedInUser.token);
+
+  //   const category = await this.getCategoryById(categoryId);
+  //   if (!category?.placemarks) {
+  //     console.warn("Could not retrieve placemarks for category.");
+  //     return;
+  //   }
+  //   if (!category.placemarks) return;
+
+  //   currentPlacemarks.placemarks = [...category.placemarks];
+
+  //   console.log("Updated placemarks: ", currentPlacemarks.placemarks);
+  //   // currentPlacemarks.placemarks = categoryWithPlacemarks.placemarks;
+  //   // console.log("These are the placemarks now: ", currentPlacemarks.placemarks, categoryId);
+
+  //   computeByCountry(currentPlacemarks.placemarks);
+  //   computeByVisited(currentPlacemarks.placemarks);
+  // },
 
   // async refreshPlacemarksInfo() {
   //   const categoryId = localStorage.getItem("categoryId"); // Retrieve the categoryId from localStorage
@@ -346,20 +455,35 @@ export const placemarkService = {
 
   async getAllCategories(token: string): Promise<Category[]> {
     try {
-      console.log(this.baseUrl + "/api/categories");
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      const response = await axios.get(this.baseUrl + "/api/categories", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
-      const response = await axios.get(this.baseUrl + "/api/categories");
-
-      // Optional: If you only want to refresh after categories are fetched
-      const categories = response.data;
-
-      return categories;
+      return response.data;
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching categories:", error);
       return [];
     }
   },
+
+  // async getAllCategories(token: string): Promise<Category[]> {
+  //   try {
+  //     console.log(this.baseUrl + "/api/categories");
+  //     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+
+  //     const response = await axios.get(this.baseUrl + "/api/categories");
+
+  //     // Optional: If you only want to refresh after categories are fetched
+  //     const categories = response.data;
+
+  //     return categories;
+  //   } catch (error) {
+  //     console.log(error);
+  //     return [];
+  //   }
+  // },
 
   // This is to fetch all users, NEEDS REVISITING
   async getAllUsers(token: string): Promise<User[]> {
@@ -581,3 +705,6 @@ export const placemarkService = {
     }
   }
 };
+function waitForCategoriesToLoad() {
+  throw new Error("Function not implemented.");
+}

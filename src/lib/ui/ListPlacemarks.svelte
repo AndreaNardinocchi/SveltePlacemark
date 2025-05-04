@@ -21,6 +21,8 @@
   let map: any;
   import LeafletMapMulti from "./LeafletMapMulti.svelte";
 
+  // let user: User;
+
   console.log("These are the placemarks :", currentPlacemarks.placemarks);
 
   /**
@@ -46,6 +48,25 @@
 
     // categoryId = url.split("/").pop();
     const token = loggedInUser.token;
+    const email = loggedInUser.email;
+
+    // if (token && email) {
+    //   try {
+    //     const users = await placemarkService.getAllUsers(token);
+    //     const matchedUser = users.find((user) => user.email === email);
+    //     if (matchedUser) {
+    //       user = matchedUser;
+    //       console.log("Matched user:", user);
+    //       console.log("This is the timestamp: ", user.createdTimeStamp);
+    //     } else {
+    //       console.log("No user found matching email.");
+    //     }
+    //   } catch (error) {
+    //     console.error("Failed to fetch or filter user:", error);
+    //   }
+    // } else {
+    //   console.error("Missing token or email.");
+    // }
 
     if (token && categoryId) {
       const result = await placemarkService.getCategoryById(categoryId);

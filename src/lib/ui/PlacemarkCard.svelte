@@ -9,6 +9,9 @@
   import { fly } from "svelte/transition";
   import DOMPurify from "dompurify";
 
+  let map: any;
+  import LeafletMapMulti from "./LeafletMapMulti.svelte";
+
   /**
    * This is to sanitize any inputs where needed
    * https://github.com/cure53/DOMPurify?tab=readme-ov-file#running-dompurify-on-the-server
@@ -259,7 +262,7 @@
         {sanitizeInput(placemark.title)}, {sanitizeInput(placemark.country)}
       </p>
       <p>
-        sanitizeInput({placemark.description}) Find out more on
+        {sanitizeInput(placemark.description)} Find out more on
         <a href={sanitizeInput(placemark.website)} target="_blank" class="has-text-grey"
           >{sanitizeInput(placemark.website)}</a
         >.
@@ -282,14 +285,20 @@
       </div>
     </section>
     <section class="column is-4">
-      <figure class="image is-264x264 m-auto">
+      <LeafletMapMulti
+        lat={parseFloat(placemark.lat)}
+        lng={parseFloat(placemark.long)}
+        popupText={`${placemark.title}, ${placemark.country} `}
+        height={30}
+      />
+      <!-- <figure class="image is-264x264 m-auto">
         <img
           src="https://i.ibb.co/M66kktn/travel.jpg"
           alt="Travel signs"
           style="border-radius: 10px;"
           border="0"
         />
-      </figure>
+      </figure> -->
     </section>
   </main>
 {/if}
