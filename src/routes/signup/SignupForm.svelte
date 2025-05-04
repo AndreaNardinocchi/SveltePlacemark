@@ -40,6 +40,44 @@
       password: password
     };
 
+    //   try {
+    //     // Hash the password before sending it to the backend
+    //     const saltRounds = 10;
+    //     bcrypt.hash(password, saltRounds, async function (err, hashedPassword) {
+    //       if (err) {
+    //         console.error("Error hashing password", err);
+    //         message = "Error hashing password";
+    //         return;
+    //       }
+
+    //       // Replace the plain password with the hashed password
+    //       user.password = hashedPassword;
+
+    //       // Log the user object (with hashed password) being sent for signup
+    //       console.log("Signing up user with data:", user);
+
+    //       // Make the API call to the signup service
+    //       const addedUser = await placemarkService.signup(user);
+
+    //       // Log the backend response to verify
+    //       console.log("Signup response:", addedUser);
+
+    //       // Check if the response has an _id (indicating successful signup)
+    //       if (addedUser) {
+    //         console.log(`Successfully signed up ${user.firstName} ${user.lastName} ${user.email}`);
+    //         // Redirect to login page after successful signup
+    //         goto("/login");
+    //       } else {
+    //         console.error("Signup failed on the backend: No user _id returned");
+    //         message = "Error trying to sign up";
+    //       }
+    //     });
+    //   } catch (error) {
+    //     console.error("Error during signup:", error);
+    //     message = "Error trying to sign up";
+    //   }
+    // }
+
     try {
       // Log the user object being sent for signup
       console.log("Signing up user with data:", user);

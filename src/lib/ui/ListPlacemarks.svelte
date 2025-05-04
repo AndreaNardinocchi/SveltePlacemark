@@ -1,27 +1,28 @@
 <script lang="ts">
-  // let { placemarks = [] } = $props();
-  // console.log("These are the categories: ", placemarks);
   import { fly } from "svelte/transition";
   import { placemarkService } from "$lib/ui/services/placemark-service";
-  import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
-  import type { Category, Placemark } from "$lib/ui/types/placemark-types";
   import { onMount } from "svelte";
   import { loggedInUser } from "$lib/runes.svelte";
   import { goto } from "$app/navigation";
-
-  // svelte-ignore non_reactive_update
-  // let category: Category | null = null;
-  // let placemarks: Placemark[] = [];
-
-  // let placemarks = $state<Placemark[]>([]);
-
   import { currentCategories } from "$lib/runes.svelte";
+  import DOMPurify from "dompurify";
 
+  // Using the below enables me to retrieve the categoryId
+  // https://stackoverflow.com/questions/23690234/getting-last-segment-of-url-in-javascript?
+  // https://www.geeksforgeeks.org/how-to-get-url-and-url-parts-in-javascript/
   const url = window.location.pathname;
   const categoryId = url.split("/").pop();
   let category = currentCategories.categories.find((cat) => cat._id === categoryId);
   import { currentPlacemarks } from "$lib/runes.svelte";
   console.log("These are the placemarks :", currentPlacemarks.placemarks);
+
+  /**
+   * This is to sanitize any inputs where needed
+   * https://github.com/cure53/DOMPurify?tab=readme-ov-file#running-dompurify-on-the-server
+   */
+  function sanitizeInput(input: string): string {
+    return DOMPurify.sanitize(input); // Use DOMPurify to clean the input
+  }
 
   onMount(async () => {
     const url = window.location.pathname;
@@ -30,12 +31,9 @@
 
     if (token && categoryId) {
       const result = await placemarkService.getCategoryById(categoryId);
-
-      // return result;
-
       if (result) {
         let category = result;
-        // // Fetch full category
+        // Fetch full category
         currentPlacemarks.placemarks = category.placemarks;
         console.log("Our placemarks: ", category.placemarks);
         // Make sure placemarks are part of the category object
@@ -67,7 +65,6 @@
 </script>
 
 <div class="mt-6"></div>
-<!-- {#each placemarks as placemark} -->
 {#each currentPlacemarks.placemarks as placemark}
   <div class="card has-text-dark-grey" in:fly={{ y: 200, duration: 3000 }}>
     <header class="card-header has-text-centered">
@@ -87,35 +84,51 @@
       <div class="content">
         <div class="columns">
           <div class="column is-3">
-            <p><span class="has-text-weight-bold">Placemark Name:</span><br />{placemark.title}</p>
+            <p>
+              <span class="has-text-weight-bold">Placemark Name:</span><br />{sanitizeInput(
+                placemark.title
+              )}
+            </p>
             <p>
               <span class="has-text-weight-bold">Geolocation (lat/long):</span><br />
               {placemark.lat} / {placemark.long}
             </p>
-            <p><span class="has-text-weight-bold">Address:</span><br /> {placemark.address}</p>
-            <p><span class="has-text-weight-bold">Phone number:</span><br /> {placemark.phone}</p>
+            <p>
+              <span class="has-text-weight-bold">Address:</span><br />
+              {sanitizeInput(placemark.address)}
+            </p>
+            <p>
+              <span class="has-text-weight-bold">Phone number:</span><br />
+              {sanitizeInput(placemark.phone)}
+            </p>
           </div>
           <div class="column is-5 pr-5 pb-4">
-            <p><span class="has-text-weight-bold">Country:</span><br /> {placemark.country}</p>
+            <p>
+              <span class="has-text-weight-bold">Country:</span><br />
+              {sanitizeInput(placemark.country)}
+            </p>
             <p>
               <span class="has-text-weight-bold">Website:</span><br />
               <span style="word-wrap: break-word;">
-                <a href={placemark.website} target="_blank" class="has-text-grey"
-                  >{placemark.website}</a
+                <a href={sanitizeInput(placemark.website)} target="_blank" class="has-text-grey"
+                  >{sanitizeInput(placemark.website)}</a
                 >
               </span>
             </p>
             <p>
               <span class="has-text-weight-bold">Description:</span><br />
-              {placemark.description}
+              {sanitizeInput(placemark.description)}
             </p>
-            <p><span class="has-text-weight-bold">Visited:</span> {placemark.visited}</p>
+            <p>
+              <span class="has-text-weight-bold">Visited:</span>
+              {sanitizeInput(placemark.visited)}
+            </p>
           </div>
           <div class="column is-4">
             <p><span class="has-text-weight-bold">Map Placeholder:</span><br /></p>
             <iframe
               class="mt-2"
-              title={placemark.title}
+              title={sanitizeInput(placemark.title)}
               src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19694.431967599397!2d-8.4167813!3d51.901040949999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48449bee2f866ab1%3A0x4b0e792b7b212ab7!2sDistrict%20Health%20%26%20Leisure!5e0!3m2!1sen!2sie!4v1739290933254!5m2!1sen!2sie`}
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"

@@ -2,7 +2,6 @@
   import "leaflet/dist/leaflet.css";
   import { onMount } from "svelte";
   import type { Control, Map as LeafletMap } from "leaflet";
-
   let { height = 40 } = $props();
   let id = "home-map-id";
   let location = { lat: 53.2734, lng: -7.7783203 };

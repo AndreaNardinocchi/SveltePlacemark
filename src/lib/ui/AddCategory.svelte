@@ -1,24 +1,25 @@
 <script lang="ts">
-  import ListCategories from "$lib/ui/ListCategories.svelte";
   import type { Category } from "$lib/ui/types/placemark-types";
   import { onMount } from "svelte";
-  // https://www.npmjs.com/package/svelte-fa
-  // import Dashboard from "./Dashboard.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { currentCategories, loggedInUser } from "$lib/runes.svelte";
-  import DashboardBanner from "$lib/ui/DashboardBanner.svelte";
   import { goto } from "$app/navigation";
+  import DOMPurify from "dompurify";
 
   let categories: Category[] = [];
 
   let title = $state("");
   let userid = loggedInUser._id;
-  console.log("This is the userid when trying to add a new category:", loggedInUser._id);
   let notes = $state("");
   let image = $state("");
+  let message = $state("");
 
-  // ✅ Runes-style reactivity using `effect`
-  // https://svelte.dev/docs/svelte/$effect and https://www.reddit.com/r/sveltejs/comments/1785b6q/when_the_effect_rune_is_supposed_to_run/
+  // Sanitized values for output
+  // svelte-ignore non_reactive_update -->
+  let safeNotes = "";
+  // svelte-ignore non_reactive_update -->
+  let safeImage = "";
+
   $effect(() => {
     if (title === "Restaurants") {
       image = "https://i.ibb.co/gZjF0ppp/jerk-pasta-recipe.png";
@@ -40,30 +41,16 @@
       image = "";
       notes = "";
     }
-  });
 
-  let message = $state("");
+    // Sanitize only for rendering
+    safeNotes = DOMPurify.sanitize(notes);
+    safeImage = DOMPurify.sanitize(image);
+  });
 
   onMount(async () => {
     const allCategories = await placemarkService.getAllCategories(loggedInUser.token);
-    // Filter categories belonging to the logged-in user
     categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
-
-    console.log("Filtered user categories:", categories);
   });
-
-  // $effect(() => {
-  //   if (!title || categories.length === 0) return;
-
-  //   const existingTitles = categories.map((cat) => cat.title);
-  //   console.log("Existing category titles:", existingTitles);
-
-  //   if (existingTitles.includes(title)) {
-  //     message = "This category already exists. Please choose a different title.";
-  //     title = "";
-  //     goto("/dashboard");
-  //   }
-  // });
 
   function handleTitleChange(event: Event) {
     const selected = (event.target as HTMLSelectElement).value;
@@ -72,7 +59,7 @@
     );
 
     if (existingTitles.includes(selected.trim().toLowerCase())) {
-      message = "This category already exists. Please choose a different title.";
+      message = "!!! This category already exists. Please choose a different one...!!!";
       title = "";
       goto("/dashboard");
     } else {
@@ -81,47 +68,18 @@
     }
   }
 
-  // $: if (title && currentCategories.categories.length > 0)
-  //   const existingTitles = currentCategories.categories.map((cat) => cat.title);
-  //   console.log("Existing category titles:", existingTitles);
-
-  //   if (existingTitles.includes(title)) {
-  //     message = "This category already exists. Please choose a different title.";
-  //     title = ""; // Reset input
-  //     goto("/dashboard"); // Optional redirect
-  //   }
-  // }
-
-  //  $effect(() => {
-  //    const exTitle = title; // Get the current value of title reactively
-  //    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map we are passing category.title to the category when we map its array
-  //    const existingTitles = categories.map((category) => category.title);
-  //    console.log("Existing categories: ", category.title);
-
-  //    // Check if the current title already exists in the categories
-  //    if (existingTitles.includes(exTitle)) {
-  //      message = "This category already exists. Please choose a different title.";
-  //      title = ""; // Clear the title to prevent adding the same category
-  //      goto("/dashboard"); // Redirect to the dashboard
-  //    }
-  //  });
-
-  console.log("This is the userid", loggedInUser._id, loggedInUser.email, loggedInUser.password);
-
   async function addCategory() {
     let category: Category = {
-      title: title,
-      userid: userid,
-      notes: notes,
-      // img: img,
-      image: image,
+      title,
+      userid,
+      notes,
+      image,
       placemarks: []
     };
 
     let success = await placemarkService.addCategory(category);
     if (success) {
-      console.log(`You are adding the category ${category.title}`);
-      localStorage.setItem("categoryTitle", category.title); // ✅ update localStorage
+      localStorage.setItem("categoryTitle", category.title);
       placemarkService.refreshPlacemarksInfo();
       goto("/dashboard");
     } else {
@@ -130,8 +88,6 @@
   }
 </script>
 
-<!-- <section class="section"> -->
-<!-- {#each categories as category (category._id)} -->
 <section class="content mt-6 mb-5 mx-3">
   <article>
     <p class="subtitle has-text-weight-bold">About your categories</p>
@@ -140,20 +96,18 @@
     </p>
   </article>
 </section>
-<!-- Add Category section -->
+
 <section class="box">
-  <div class="field is-horizontal"></div>
   <div class="field">
     <div class="control">
       <label class="label">
         Category Title - ** Only 4 PlaceMark categories are allowed 👮‍♂️**
         <div class="select is-fullwidth">
-          <select name="category" bind:value={title} onchange={handleTitleChange}>
-            <!-- bind:value={title} -->
-            <!-- <select onchange={handleCategoryChange}> -->
-            <option class="has-text-grey-light" value="" disabled selected
-              >Select your category</option
-            >
+          <!-- svelte-ignore event_directive_deprecated -->
+          <select name="category" bind:value={title} on:change={handleTitleChange}>
+            <option class="has-text-grey-light" value="" disabled selected>
+              Select your category
+            </option>
             <option value="Restaurants">Restaurants</option>
             <option value="Museums">Museums</option>
             <option value="Parks">Parks</option>
@@ -163,12 +117,29 @@
       </label>
     </div>
   </div>
+
+  {#if safeImage}
+    <figure class="image is-3by1 mt-4">
+      <img src={safeImage} alt={title} />
+    </figure>
+  {/if}
+
+  {#if safeNotes}
+    <div class="mt-3 has-text-info">
+      {@html safeNotes}
+    </div>
+  {/if}
+
+  {#if message}
+    <div class="notification is-warning mt-3">{message}</div>
+  {/if}
+
   <div class="columns">
     <div class="column is-3">
-      <button onclick={() => addCategory()} class="button is-info has-text-white mt-3"
-        >Add Category</button
-      >
+      <!-- svelte-ignore event_directive_deprecated -->
+      <button on:click={addCategory} class="button is-info has-text-white mt-3">
+        Add Category
+      </button>
     </div>
   </div>
 </section>
-<!-- </section> -->

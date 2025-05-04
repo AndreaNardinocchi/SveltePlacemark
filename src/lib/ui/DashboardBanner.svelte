@@ -2,9 +2,7 @@
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
   import { fly } from "svelte/transition";
-  import { fade } from "svelte/transition";
   import { inview } from "svelte-inview";
-
   let isInView: boolean = false;
 </script>
 

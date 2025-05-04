@@ -1,8 +1,6 @@
 <script context="module">
   import EditPoi from "./EditPOI.svelte";
-
   // https://www.npmjs.com/package/svelte-fa
-
   // @ts-ignore
   export const load = async ({ page }) => ({
     props: {
@@ -16,8 +14,6 @@
   export let key;
 </script>
 
-<!-- <Header /> -->
 <div class="container">
   <EditPoi />
 </div>
-<!-- <Footer /> -->

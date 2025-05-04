@@ -21,7 +21,6 @@
       <section class="image has-text-centered">
         <Fa style="font-size: 160px; color: #000000;" icon={faPlane} />
       </section>
-
       <p class="title is-size-1 mt-3 pl-4">PlaceMark</p>
       <p class="subtitle has-text-weight-bold pl-4">Place your mark on your next journey!</p>
     </div>

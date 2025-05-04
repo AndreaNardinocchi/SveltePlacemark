@@ -35,7 +35,6 @@
   {:else}
     <WelcomeMenu />
   {/if}
-  <!-- <SignupForm /> -->
   <slot />
 </div>
 <Footer />
