@@ -11,11 +11,11 @@
   import Chart from "svelte-frappe-charts";
 
   // @ts-ignore
-  export const load = async ({ page }) => ({
-    props: {
-      key: page.path
-    }
-  });
+  // export const load = async ({ page }) => ({
+  //   props: {
+  //     key: page.path
+  //   }
+  // });
 
   /**
    * @type {any}
@@ -39,26 +39,6 @@
 
 <div class="container">
   <DashboardBanner />
-  <div class="box has-background-white">
-    <div class="columns">
-      <div class="column">
-        <PlacemarkListCard>
-          <p class="has-text-centered subtitle has-text-weight-bold is-5">Total by Country</p>
-          <p>Country Labels: {currentDataSets.totalByCountry.labels.join(", ")}</p>
-          <Chart data={currentDataSets.totalByCountry} type="bar" />
-        </PlacemarkListCard>
-      </div>
-      <div class="column has-text-centered">
-        <PlacemarkListCard>
-          <p class="has-text-centered subtitle has-text-weight-bold is-5">
-            Total by Visited/Not Visited
-          </p>
-          <Chart data={currentDataSets.totalByVisited} type="pie" />
-        </PlacemarkListCard>
-      </div>
-    </div>
-  </div>
-
   <section class="section">
     <ListCategories />
     <AddCategory />

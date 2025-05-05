@@ -34,7 +34,7 @@
   }
 
   onMount(async () => {
-    await refreshPlacemarkMap(map);
+   // await refreshPlacemarkMap(map);
     await placemarkService.refreshPlacemarksInfo();
   });
 
@@ -172,7 +172,6 @@
               height={30}
             />
 
-            <!-- | Geo: ${placemark.lat} / ${placemark.long}` -->
 
             <!-- <iframe
               class="mt-2"

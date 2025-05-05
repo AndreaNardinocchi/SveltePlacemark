@@ -54,7 +54,7 @@
       fileName = "";
       previewUrl = null;
     } else {
-      alert("We could not upload your image!");
+      alert("We could not upload your image! ");
     }
 
     isUploading = false; // Reset uploading state
