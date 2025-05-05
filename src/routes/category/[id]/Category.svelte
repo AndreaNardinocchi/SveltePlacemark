@@ -2,23 +2,20 @@
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
 
-  import { fly } from "svelte/transition";
-  import { inview } from "svelte-inview";
-
-  let isInView: boolean = false;
   let { placemarkEvent = null } = $props();
-
-  import ListPlacemarks from "$lib/ui/ListPlacemarks.svelte";
   import AddPlacemark from "$lib/ui/AddPlacemark.svelte";
-  import CategoryImage from "$lib/ui/CategoryImage.svelte";
-  import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
-  import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
   import type { Placemark } from "$lib/ui/types/placemark-types";
   import { goto } from "$app/navigation";
-  import PlacemarkStats from "$lib/ui/PlacemarkStats.svelte";
-  import Charts from "$lib/ui/Charts.svelte";
-  import PlacemarksMap from "$lib/ui/PlacemarksMap.svelte";
+  import DOMPurify from "dompurify";
+
+  /**
+   * This is to sanitize any inputs where needed
+   * https://github.com/cure53/DOMPurify?tab=readme-ov-file#running-dompurify-on-the-server
+   */
+  function sanitizeInput(input: string): string {
+    return DOMPurify.sanitize(input); // Use DOMPurify to clean the input
+  }
 
   // Define reactive variables for the form fields
   let title = $state("");
@@ -34,17 +31,28 @@
   let message = $state("");
 
   async function addPlacemark() {
+    // Sanitize user input fields before using them
+    const sanitizedTitle = sanitizeInput(title);
+    const sanitizedLat = sanitizeInput(lat);
+    const sanitizedLong = sanitizeInput(long);
+    const sanitizedAddress = sanitizeInput(address);
+    const sanitizedCountry = sanitizeInput(country);
+    const sanitizedPhone = sanitizeInput(phone);
+    const sanitizedWebsite = sanitizeInput(website);
+    const sanitizedVisited = sanitizeInput(visited);
+    const sanitizedDescription = sanitizeInput(description);
+
     const placemark: Placemark = {
-      title: title,
-      lat: lat,
-      long: long,
-      address: address,
-      country: country,
-      phone: phone,
-      website: website,
-      visited: visited,
+      title: sanitizedTitle,
+      lat: sanitizedLat,
+      long: sanitizedLong,
+      address: sanitizedAddress,
+      country: sanitizedCountry,
+      phone: sanitizedPhone,
+      website: sanitizedWebsite,
+      visited: sanitizedVisited,
       img: img.length > 0 ? img : undefined, // Only send `img` if it has values
-      description: description
+      description: sanitizedDescription
     };
 
     const url = window.location.pathname;
@@ -58,6 +66,7 @@
     }
 
     const category = await placemarkService.getCategoryById(categoryId);
+
     if (!category) {
       console.warn("Invalid category returned.");
       return;
@@ -75,21 +84,11 @@
     }
 
     if (placemarkEvent) placemarkEvent(placemark);
-    message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
+    // message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
+    message = `You added ${sanitizedTitle} in ${sanitizedCountry}. Visited? ${sanitizedVisited}`;
   }
 </script>
 
-<!-- <section class="section mt-6">
-  <CategoryBanner />
-
-  <PlacemarkStats />
-  <!-- placemarkEvent={placemarkAdded} 
-  <PlacemarksMap />
-  <Charts />
-
-  <PlacemarkListCard>
-    <ListPlacemarks />
-  </PlacemarkListCard> -->
 <div class="box">
   <AddPlacemark
     bind:title
@@ -122,5 +121,3 @@
     </div>
   </div>
 </div>
-<!-- <CategoryImage /> -->
-<!-- </section> -->

@@ -3,7 +3,7 @@ import type { Placemark, Session, User } from "../types/placemark-types";
 // import type Category from "../../../routes/category/Category.svelte";
 import type { Category } from "../types/placemark-types";
 // import { goto } from "$app/navigation";
-import { currentCategories, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
+import { category, currentCategories, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 import { computeByCountry, computeByVisited } from "./placemark-utils";
 
 axios.defaults.withCredentials = true;
@@ -58,33 +58,183 @@ export const placemarkService = {
     }
   },
 
-  async refreshPlacemarksInfo() {
-    // async refreshPlacemarksInfo() {
-    // if (loggedInUser.token) {
-    //   currentCategories.categories = await this.getAllCategories(loggedInUser.token);
-    //   // currentCandidates.candidates = await this.getCandidates(loggedInUser.token);
-    //   // computeByMethod(currentDonations.donations);
-    //   // computeByCandidate(currentDonations.donations, currentCandidates.candidates);
-    // }
-
-    // const categoryId = localStorage.getItem("categoryId"); // Get categoryId from localStorage
-
-    // if (!categoryId) {
-    //   console.warn("No categoryId found.");
-    //   return;
-    // }
-    // if (loggedInUser.token && categoryId) {
-    if (loggedInUser.token) {
-      const allCategories = await this.getAllCategories(loggedInUser.token);
-      currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
-      computeByCountry(currentPlacemarks.placemarks);
-      computeByVisited(currentPlacemarks.placemarks);
-      // currentPlacemarks.placemarks = await this.getPlacemarksByCategoryId(
-      //   categoryId,
-      //   loggedInUser.token
-      // );
-    }
+  async waitForCategoriesToLoad(): Promise<void> {
+    return new Promise((resolve) => {
+      const check = () => {
+        if (currentCategories.categories.length > 0) {
+          resolve();
+        } else {
+          setTimeout(check, 50); // Poll every 50ms
+        }
+      };
+      check();
+    });
   },
+
+  async refreshPlacemarksInfo() {
+    if (!loggedInUser.token || !loggedInUser._id) {
+      console.warn("Session is not ready, skipping refresh");
+      return;
+    }
+
+    console.log("Token:", loggedInUser.token);
+
+    const allCategories = await this.getAllCategories(loggedInUser.token);
+    currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
+
+    // ✅ Wait until categories are loaded
+    await this.waitForCategoriesToLoad();
+
+    const categoryId = localStorage.getItem("categoryId");
+    if (!categoryId) {
+      console.warn("No categoryId in localStorage.");
+      return;
+    }
+
+    const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
+
+    if (!validCategory) {
+      console.warn("categoryId from localStorage is not valid.");
+      return;
+    }
+
+    // ✅ Set global category state
+    category.title = validCategory.title;
+    category._id = validCategory._id;
+    category.userId = validCategory.userid;
+    category.image = validCategory.image;
+    category.notes = validCategory.notes;
+
+    const fetchedCategory = await this.getCategoryById(categoryId);
+    if (!fetchedCategory?.placemarks) {
+      console.warn("Could not retrieve placemarks for category.");
+      return;
+    }
+
+    currentPlacemarks.placemarks = [...fetchedCategory.placemarks];
+    console.log("Updated placemarks:", currentPlacemarks.placemarks);
+
+    computeByCountry(currentPlacemarks.placemarks);
+    computeByVisited(currentPlacemarks.placemarks);
+  },
+
+  // async refreshPlacemarksInfo() {
+  //   if (!loggedInUser.token || !loggedInUser._id) {
+  //     console.warn("Session is not ready, skipping refresh");
+  //     return;
+  //   }
+
+  //   const allCategories = await this.getAllCategories(loggedInUser.token);
+  //   currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
+
+  //   // Wait until categories are set before continuing
+  //   const categoryId = localStorage.getItem("categoryId");
+  //   const categoryTitle = localStorage.getItem("categoryTitle");
+
+  //   if (!categoryId) {
+  //     console.warn("No categoryId found in localStorage. User must select one.");
+  //     return;
+  //   }
+
+  //   // Now that categories are loaded, validate
+  //   const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
+
+  //   if (!validCategory) {
+  //     console.warn("Stored categoryId not found in current user's categories.");
+  //     return;
+  //   }
+
+  //   // Set global category state
+  //   category.title = validCategory.title;
+  //   category._id = validCategory._id;
+  //   category.userId = validCategory.userid;
+  //   category.image = validCategory.image;
+  //   category.notes = validCategory.notes;
+
+  //   // Fetch and update placemarks for the selected category
+  //   const fetchedCategory = await this.getCategoryById(categoryId);
+  //   if (!fetchedCategory?.placemarks) {
+  //     console.warn("Could not retrieve placemarks for the category.");
+  //     return;
+  //   }
+
+  //   currentPlacemarks.placemarks = [...fetchedCategory.placemarks];
+
+  //   console.log("Updated placemarks: ", currentPlacemarks.placemarks);
+
+  //   computeByCountry(currentPlacemarks.placemarks);
+  //   computeByVisited(currentPlacemarks.placemarks);
+  // },
+
+  // async refreshPlacemarksInfo() {
+  //   if (!loggedInUser.token || !loggedInUser._id) {
+  //     console.warn("Session is not ready, skipping refresh");
+  //     return;
+  //   }
+
+  //   console.log("Give me the token: ", loggedInUser.token);
+
+  //   const allCategories = await this.getAllCategories(loggedInUser.token);
+  //   currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
+  //   const categoryId = localStorage.getItem("categoryId");
+
+  //   const categoryTitle = localStorage.getItem("categoryTitle");
+
+  //   const validCategoryTitle = currentCategories.categories.find(
+  //     (cat) => cat.title === categoryTitle
+  //   );
+  //   const validCategoryId = currentCategories.categories.find((cat) => cat._id === categoryId);
+  //   console.log("No categoryId found. User must select one.", validCategoryId, validCategoryTitle);
+
+  //   if (!categoryId) {
+  //     console.warn("No categoryId found. User must select one.");
+  //     return;
+  //   }
+
+  //   console.log(
+  //     "Give me all categories: ",
+  //     currentCategories.categories,
+  //     categoryTitle,
+  //     validCategoryTitle,
+  //     validCategoryId,
+  //     categoryId
+  //   );
+
+  //   // Check if categoryId is valid
+  //   // const categoryTitle = localStorage.getItem("categoryTitle");
+  //   // const validCategory = currentCategories.categories.find((cat) => cat.title === categoryTitle);
+
+  //   //const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
+
+  //   if (!categoryId) {
+  //     console.warn("No valid categoryId found. User must select one.");
+  //     return;
+  //   }
+
+  //   // categoryId = validCategory._id;
+
+  //   //     const categoryWithPlacemarks = await this.getCategoryById(category._id);
+  //   // if (!categoryWithPlacemarks?.placemarks) return;
+  //   // currentPlacemarks.placemarks = categoryWithPlacemarks.placemarks;
+
+  //   //  const placemarks = await this.getPlacemarksByCategoryId(categoryId, loggedInUser.token);
+
+  //   const category = await this.getCategoryById(categoryId);
+  //   if (!category?.placemarks) {
+  //     console.warn("Could not retrieve placemarks for category.");
+  //     return;
+  //   }
+  //   if (!category.placemarks) return;
+
+  //   currentPlacemarks.placemarks = [...category.placemarks];
+
+  //   console.log("Updated placemarks: ", currentPlacemarks.placemarks);
+  //   // currentPlacemarks.placemarks = categoryWithPlacemarks.placemarks;
+  //   // console.log("These are the placemarks now: ", currentPlacemarks.placemarks, categoryId);
+
+  //   computeByCountry(currentPlacemarks.placemarks);
+  //   computeByVisited(currentPlacemarks.placemarks);
+  // },
 
   // async refreshPlacemarksInfo() {
   //   const categoryId = localStorage.getItem("categoryId"); // Retrieve the categoryId from localStorage
@@ -111,6 +261,8 @@ export const placemarkService = {
     loggedInUser.token = "";
     loggedInUser._id = "";
     localStorage.removeItem("placemark");
+    localStorage.removeItem("categoryTitle");
+    localStorage.removeItem("categoryId");
   },
 
   saveSession(session: Session, email: string) {
@@ -134,9 +286,9 @@ export const placemarkService = {
       // ✅ Ensure axios has the token again
       axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
 
-      const categoryId = localStorage.getItem("categoryId");
-      if (categoryId) {
-        console.log("Using stored categoryId:", categoryId);
+      const categoryTitle = localStorage.getItem("categoryTitle");
+      if (categoryTitle) {
+        console.log("Using stored categoryTitle:", categoryTitle);
       } else {
         console.log("No categoryId found. You may need to select one.");
       }
@@ -148,12 +300,16 @@ export const placemarkService = {
 
   clearSession() {
     // currentDonations.donations = [];
+
     currentCategories.categories = [];
+    currentPlacemarks.placemarks = [];
     loggedInUser.email = "";
     loggedInUser.name = "";
     loggedInUser.token = "";
     loggedInUser._id = "";
     localStorage.removeItem("placemark");
+    localStorage.removeItem("categoryTitle");
+    localStorage.removeItem("categoryId");
   },
 
   async updateUser(updatedUser: User, token: string) {
@@ -234,35 +390,6 @@ export const placemarkService = {
     }
   },
 
-  // async addCategory(category: Category): Promise<Category | null> {
-  //   try {
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     console.log("Authorization header in addCategory:", token); // Debug log
-
-  //     if (!token) {
-  //       console.log("User is not logged in. No Authorization token found.");
-  //       return null;
-  //     }
-
-  //     const response = await axios.post(`${this.baseUrl}/api/categories`, category, {
-  //       headers: {
-  //         Authorization: token
-  //       }
-  //     });
-
-  //     await this.refreshPlacemarksInfo();
-  //     console.log("Category added:", response.data);
-  //     return response.data;
-  //   } catch (error: any) {
-  //     if (error.response) {
-  //       console.error("Error adding category:", error.response.status, error.response.data);
-  //     } else {
-  //       console.error("Error adding category:", error.message);
-  //     }
-  //     return null;
-  //   }
-  // },
-
   async addCategory(category: Category): Promise<Category | null> {
     try {
       const token = axios.defaults.headers.common["Authorization"];
@@ -326,51 +453,37 @@ export const placemarkService = {
     }
   },
 
-  // async getUserCategories(token: string): Promise<Category[]> {
-  //   try {
-  //     const response = await axios.get(`${this.baseUrl}/api/user/categories`, {
-  //       headers: {
-  //         Authorization: "Bearer " + token
-  //       }
-  //     });
+  async getAllCategories(token: string): Promise<Category[]> {
+    try {
+      const response = await axios.get(this.baseUrl + "/api/categories", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
-  //     console.log("Categories for user:", response.data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Error fetching categories for user:", error);
-  //     return [];
-  //   }
-  // },
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      return [];
+    }
+  },
 
-  // This is to fetch all categories, and we call in the loggedinUser token to ensure we are signed in
   // async getAllCategories(token: string): Promise<Category[]> {
   //   try {
   //     console.log(this.baseUrl + "/api/categories");
   //     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+
   //     const response = await axios.get(this.baseUrl + "/api/categories");
 
-  //     return response.data;
+  //     // Optional: If you only want to refresh after categories are fetched
+  //     const categories = response.data;
+
+  //     return categories;
   //   } catch (error) {
   //     console.log(error);
   //     return [];
   //   }
   // },
-  async getAllCategories(token: string): Promise<Category[]> {
-    try {
-      console.log(this.baseUrl + "/api/categories");
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-
-      const response = await axios.get(this.baseUrl + "/api/categories");
-
-      // Optional: If you only want to refresh after categories are fetched
-      const categories = response.data;
-
-      return categories;
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  },
 
   // This is to fetch all users, NEEDS REVISITING
   async getAllUsers(token: string): Promise<User[]> {
@@ -474,6 +587,7 @@ export const placemarkService = {
           }
         }
       );
+      //    await this.refreshPlacemarksInfo();
 
       console.log("Placemark added:", response.data);
       return response.data;
@@ -501,6 +615,7 @@ export const placemarkService = {
           Authorization: token
         }
       });
+      await this.refreshPlacemarksInfo();
 
       console.log("Placemark deleted:", response.data);
       return response.data.success === true; // Adjust based on your backend response
@@ -556,80 +671,6 @@ export const placemarkService = {
     }
   },
 
-  // async updatePlacemark(categoryId: string, placemarkId: string, placemark: any): Promise<boolean> {
-  //   try {
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     if (!token) {
-  //       console.warn("No Authorization token found.");
-  //       return false;
-  //     }
-
-  //     const response = await axios.post(
-  //       `${this.baseUrl}/category/${categoryId}/updateplacemark/${placemarkId}`,
-  //       placemark,
-  //       {
-  //         headers: {
-  //           Authorization: token
-  //         },
-  //         withCredentials: true,
-  //         // ⛔️ Stop axios from auto-following the 302 redirect to HTML
-  //         maxRedirects: 0,
-  //         // ✅ Let it treat 3xx responses as "okay"
-  //         validateStatus: (status) => status >= 200 && status < 400
-  //       }
-  //     );
-
-  //     // At this point, the update worked — backend is redirecting
-  //     console.log("✅ Placemark updated, redirecting manually...");
-  //     return response.data;
-  //   } catch (error: any) {
-  //     if (error.response) {
-  //       console.error("❌ Error updating placemark:", error.response.status, error.response.data);
-  //     } else {
-  //       console.error("❌ Unexpected error:", error.message);
-  //     }
-  //     return false;
-  //   }
-  // },
-
-  // async updatePlacemark(categoryId: string, placemarkId: string, placemark: any) {
-  //   try {
-  //     const token = axios.defaults.headers.common["Authorization"];
-
-  //     if (!token) {
-  //       console.warn("No Authorization token found.");
-  //       return;
-  //     }
-
-  //     console.log(`Updating placemark with ID: ${placemarkId} in category: ${categoryId}`);
-
-  //     // Make the POST request to update the placemark
-  //     const response = await axios.post(
-  //       `${this.baseUrl}/category/${categoryId}/updateplacemark/${placemarkId}`,
-  //       placemark,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}` // Attach the token for authorization
-  //         },
-  //         withCredentials: true // If you need to send cookies or credentials
-  //       }
-  //     );
-
-  //     // Log the response to ensure everything is working correctly
-  //     console.log("This is the updated placemark:", response.data);
-
-  //     // If the response is successful, redirect the user to the category page
-  //     if (response.status === 200) {
-  //       goto(`/category/${categoryId}`);
-  //     } else {
-  //       alert("Failed to update placemark.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating placemark:", error);
-  //     alert("There was an error updating the placemark.");
-  //   }
-  // },
-
   // This is to fetch a single placemark by its ID (and optionally the category ID, if your API requires it)
   async getPlacemarkById(categoryId: string, placemarkId: string) {
     try {
@@ -663,73 +704,7 @@ export const placemarkService = {
       return undefined;
     }
   }
-
-  // Function to upload an image for a placemark
-  // async uploadImage(categoryId: string, placemarkId: string, imageFile: File): Promise<boolean> {
-  //   try {
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     if (!token) {
-  //       console.warn("No Authorization token found.");
-  //       return false;
-  //     }
-
-  //     const formData = new FormData();
-  //     formData.append("imagefile", imageFile);
-
-  //     const response = await axios.post(
-  //       `${this.baseUrl}/api/categories/${categoryId}/placemark/${placemarkId}/uploadimage`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: token
-  //           // Do not set Content-Type here
-  //         }
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       console.log("Image uploaded successfully:", response.data);
-  //       return true;
-  //     } else {
-  //       console.error("Failed to upload image:", response.status);
-  //       return false;
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Error uploading image:", error);
-  //     return false;
-  //   }
-  // },
-
-  // // Function to delete an image from a placemark
-  // async deleteImage(categoryId: string, placemarkId: string, imageIndex: number): Promise<boolean> {
-  //   try {
-  //     const token = axios.defaults.headers.common["Authorization"];
-  //     if (!token) {
-  //       console.warn("No Authorization token found.");
-  //       return false;
-  //     }
-
-  //     // Send the delete request to the backend API with the category ID, placemark ID, and image index
-  //     const response = await axios.delete(
-  //       `${this.baseUrl}/api/categories/${categoryId}/placemark/${placemarkId}/deleteimage/${imageIndex}`,
-  //       {
-  //         headers: {
-  //           Authorization: token
-  //         }
-  //       }
-  //     );
-
-  //     // Check if the image was successfully deleted
-  //     if (response.status === 200) {
-  //       console.log("Image deleted successfully:", response.data);
-  //       return true;
-  //     } else {
-  //       console.error("Failed to delete image:", response.status);
-  //       return false;
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Error deleting image:", error);
-  //     return false;
-  //   }
-  // }
 };
+function waitForCategoriesToLoad() {
+  throw new Error("Function not implemented.");
+}

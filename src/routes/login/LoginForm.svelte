@@ -1,17 +1,12 @@
 <script lang="ts">
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
-  // import { fly } from "svelte/transition";
-  // import { inview } from "svelte-inview";
+  import { fly } from "svelte/transition";
   import PlacemarkLogin from "../../lib/ui/PlacemarkLogin.svelte";
   import UserCredentials from "../../lib/ui/UserCredentials.svelte";
   import { goto } from "$app/navigation";
-  import { loggedInUser } from "$lib/runes.svelte";
   import Message from "../../lib/ui/Message.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
-  import { fly } from "svelte/transition";
-
-  // import UserCredentials from "$lib/ui/UserCredentials.svelte";
 
   let email = $state("");
   let password = $state("");
@@ -41,22 +36,12 @@
   <section class="columns">
     <!-- svelte-ignore event_directive_deprecated -->
     <section class="column is-6 pt-5 pr-5 pb-6" in:fly={{ x: 200, duration: 2000 }}>
-      <!-- <div
-        class="wrapper"
-        use:inview={{ unobserveOnEnter: true, rootMargin: "-20%" }}
-        on:change={({ detail }) => {
-          isInView = detail.inView;
-        }}
-      >
-        {#if isInView}
-          <div in:fly={{ x: 200, duration: 1000 }}> -->
       {#if message}
         <Message {message} />
       {/if}
       <UserCredentials bind:email bind:password />
       <!-- Submit Button -->
       <div class="field is-grouped mt-3">
-        <!-- <button class="button is-info has-text-white is-fullwidth">Submit</button> -->
         <button onclick={() => login()} class="button is-info is-fullwidth has-text-white"
           >Log In</button
         >
@@ -68,24 +53,9 @@
           > now!
         </p>
       </div>
-      <!-- </div>
-        {/if} -->
-      <!-- </div> -->
     </section>
     <section class="column is-6 px-4">
-      <!-- <div
-        class="wrapper"
-        use:inview={{ unobserveOnEnter: true, rootMargin: "-20%" }}
-        on:change={({ detail }) => {
-          isInView = detail.inView;
-        }}
-      >
-        {#if isInView}
-          <div in:fly={{ x: -200, duration: 1000 }}> -->
       <PlacemarkLogin />
-      <!-- </div>
-        {/if}
-      </div> -->
     </section>
   </section>
 </section>

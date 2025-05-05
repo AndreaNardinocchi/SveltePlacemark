@@ -11,15 +11,21 @@
 
   let { title = "#instaPlaceMark", subtitle = "InstaMark your InstaPlaces" } = $props();
 
-  let city = $state("");
-  let weatherData = $state("");
-  let errorMessage = $state("");
+  // Reactive state variables for user input and results
+  let city = $state(""); // City to fetch weather for
+  let weatherData = $state(""); // Resulting weather data
+  let errorMessage = $state(""); // Any error that occurs during fetch
 
   const API_KEY = "c3e26a0b5387b001f6f548f5710c0baf";
   const BASE_URL = "https://api.openweathermap.org/data/2.5/";
 
   // Function to fetch the weather data
   async function getWeather() {
+    /**
+     * The below variables will enable me to retrieve tha category and placemark ids
+     * https://css-tricks.com/snippets/javascript/get-url-and-url-parts-in-javascript/
+     * https://www.slingacademy.com/article/isolating-file-paths-and-directories-using-javascript-string-methods-without-extracting-filename-extension/
+     */
     const pathParts = window.location.pathname.split("/");
     const categoryId = pathParts[pathParts.indexOf("category") + 1];
     const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
@@ -32,6 +38,7 @@
     }
 
     try {
+      // Fetch weather data from OpenWeatherMap API
       const weatherResponse = await fetch(
         `${BASE_URL}weather?q=${city}&appid=${API_KEY}&units=metric`
       );
@@ -50,7 +57,7 @@
     }
   }
 
-  // Auto-fetch on component mount ✅
+  // Auto-fetch on component mount
   onMount(() => {
     getWeather();
   });
@@ -98,15 +105,19 @@
         <p style="color: red;">{errorMessage}</p>
       {/if}
 
+      <!-- This block is only displayed if both weather data and the city are available -->
       {#if weatherData && city}
+        <!-- Column for displaying the name of the country or city -->
         <div class="column has-text-centered is-4">
           <p class="has-text-weight-bold">Country or City</p>
           <p>{weatherData.name}</p>
         </div>
+        <!-- Column for displaying the temperature -->
         <div class="column has-text-centered is-4">
           <p class="has-text-weight-bold">Temperature</p>
           <p>{weatherData.main.temp}°C</p>
         </div>
+        <!-- Column for displaying the weather condition -->
         <div class="column has-text-centered is-4">
           <p class="has-text-weight-bold">Condition</p>
           <p>{weatherData.weather[0].description}</p>

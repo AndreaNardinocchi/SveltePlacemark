@@ -2,11 +2,11 @@
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { goto } from "$app/navigation";
   import type { User } from "$lib/ui/types/placemark-types";
-  // import { $state } from "svelte/store"; // Assuming you're using reactive stores
   import Message from "$lib/ui/Message.svelte";
   import PlacemarkSignup from "$lib/ui/PlacemarkSignup.svelte";
   import PlacemarkSignupImage from "$lib/ui/PlacemarkSignupImage.svelte";
   import { fly } from "svelte/transition";
+  // import bcrypt from "bcryptjs";
 
   // Form state variables
   let firstName = $state("");
@@ -26,6 +26,9 @@
   async function signup() {
     console.log("Signup function triggered");
 
+    // const saltRounds = 10;
+    // const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const user: User = {
       firstName: firstName,
       lastName: lastName,
@@ -37,8 +40,46 @@
       DOB: DOB,
       phoneNumber: phoneNumber,
       email: email,
-      password: password
+      password: password //hashedPassword // store hashed password
     };
+
+    //   try {
+    //     // Hash the password before sending it to the backend
+    //     const saltRounds = 10;
+    //     bcrypt.hash(password, saltRounds, async function (err, hashedPassword) {
+    //       if (err) {
+    //         console.error("Error hashing password", err);
+    //         message = "Error hashing password";
+    //         return;
+    //       }
+
+    //       // Replace the plain password with the hashed password
+    //       user.password = hashedPassword;
+
+    //       // Log the user object (with hashed password) being sent for signup
+    //       console.log("Signing up user with data:", user);
+
+    //       // Make the API call to the signup service
+    //       const addedUser = await placemarkService.signup(user);
+
+    //       // Log the backend response to verify
+    //       console.log("Signup response:", addedUser);
+
+    //       // Check if the response has an _id (indicating successful signup)
+    //       if (addedUser) {
+    //         console.log(`Successfully signed up ${user.firstName} ${user.lastName} ${user.email}`);
+    //         // Redirect to login page after successful signup
+    //         goto("/login");
+    //       } else {
+    //         console.error("Signup failed on the backend: No user _id returned");
+    //         message = "Error trying to sign up";
+    //       }
+    //     });
+    //   } catch (error) {
+    //     console.error("Error during signup:", error);
+    //     message = "Error trying to sign up";
+    //   }
+    // }
 
     try {
       // Log the user object being sent for signup
@@ -52,7 +93,9 @@
 
       // Check if the response has an _id (indicating successful signup)
       if (addedUser) {
-        console.log(`Successfully signed up ${user.firstName} ${user.lastName} ${user.email}`);
+        console.log(
+          `Successfully signed up ${user.firstName} ${user.lastName} ${user.email} ${user.password}`
+        );
         // Redirect to login page after successful signup
         goto("/login");
       } else {

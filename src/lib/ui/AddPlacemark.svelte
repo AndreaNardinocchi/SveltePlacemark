@@ -1,6 +1,4 @@
 <script lang="ts">
-  import type { Placemark } from "./types/placemark-types";
-
   let {
     title = $bindable(""),
     lat = $bindable(""),
@@ -13,23 +11,35 @@
     description = $bindable("")
   } = $props();
 
-  // async function placemark() {
-  //   console.log(`Just placemarking ${title} to ${lat} via ${long} payment`);
-  // }
+  let message = $state("");
+
+  /** Input sanitizing
+   * https://stackoverflow.com/questions/62426548/how-do-i-make-svelte-update-input-components-like-react-does#62431731
+   */
 
   function sanitizeTitle(e: { target: { value: string } }) {
-    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     title = e.target.value;
+    if (title.length < 3 || title.length > 20) {
+      message = "Title should be between more than 3 and less than 20 characters";
+    }
   }
 
   function sanitizeAddress(e: { target: { value: string } }) {
-    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     address = e.target.value;
+    if (address.length < 3 || address.length > 20) {
+      message = "Address should be between more than 3 and less than 30 characters";
+    }
   }
 
   function sanitizePhone(e: { target: { value: string } }) {
-    e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
+    e.target.value = e.target.value.replace(/\D/g, ""); // removes leading & trailing whitespace
     phone = e.target.value;
+    if (phone.length < 6 || phone.length > 12) {
+      phone = "";
+      message = "Phone number should be between more than 6 and less than 12 characters";
+    }
   }
 
   function sanitizeWebsite(e: { target: { value: string } }) {
@@ -38,19 +48,11 @@
   }
 
   function sanitizeDescription(e: { target: { value: string } }) {
-    let value = e.target.value;
-
-    // 1. Remove leading spaces only
-    value = value.replace(/^\s+/, "");
-
-    // 2. Limit to 250 characters
-    if (value.length > 230) {
-      value = value.slice(0, 230);
+    e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
+    description = e.target.value;
+    if (description.length < 100 || description.length > 230) {
+      message = "Description should be between more than 100 and less than 230 characters";
     }
-
-    // 3. Update DOM + reactive variable
-    e.target.value = value;
-    description = value;
   }
 </script>
 
@@ -68,7 +70,7 @@
               type="text"
               placeholder="Enter Title"
               bind:value={title}
-              on:input={sanitizeTitle}
+              on:blur={sanitizeTitle}
             />
             <span class="icon is-small is-left">
               <i class="fa fa-plane" aria-hidden="true"></i>
@@ -124,7 +126,7 @@
               type="text"
               placeholder="Enter our placemark address"
               bind:value={address}
-              on:input={sanitizeAddress}
+              on:blur={sanitizeAddress}
             />
             <span class="icon is-small is-left">
               <i class="fa fa-address-card" aria-hidden="true"></i>
@@ -431,7 +433,7 @@
               type="number"
               placeholder="Enter phone number"
               bind:value={phone}
-              on:input={sanitizePhone}
+              on:blur={sanitizePhone}
             />
             <span class="icon is-small is-left">
               <i class="fa fa-phone" aria-hidden="true"></i>
@@ -489,7 +491,7 @@
               class="textarea"
               placeholder="Enter a description"
               bind:value={description}
-              on:input={sanitizeDescription}
+              on:blur={sanitizeDescription}
             ></textarea>
           </label>
         </div>
@@ -497,4 +499,4 @@
     </div>
   </div>
 </label>
-<!-- </form> -->
+{message}

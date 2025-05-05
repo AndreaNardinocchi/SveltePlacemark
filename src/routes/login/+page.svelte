@@ -1,6 +1,5 @@
 <script context="module">
   // https://www.npmjs.com/package/svelte-fa
-  import Footer from "$lib/Footer.svelte";
   import LoginForm from "./LoginForm.svelte";
 
   // @ts-ignore
@@ -10,7 +9,6 @@
     }
   });
 
-  import WelcomeMenu from "$lib/ui/WelcomeMenu.svelte";
   /**
    * @type {any}
    */
@@ -22,8 +20,6 @@
 <svelte:head>
   <title>{pageTitle}</title>
 </svelte:head>
-<!-- <WelcomeMenu /> -->
 <div class="container">
   <LoginForm />
 </div>
-<!-- <Footer /> -->

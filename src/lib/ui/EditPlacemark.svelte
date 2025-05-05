@@ -262,8 +262,6 @@
         </div>
         <div class="field-body">
           <div class="field">
-            <!-- {country} -->
-            <!-- <datalist id="country"> -->
             <div class="control">
               <label class="label">
                 Country
@@ -546,7 +544,6 @@
                 </div>
               </label>
             </div>
-            <!-- </datalist> -->
           </div>
         </div>
       </div>
@@ -586,8 +583,6 @@
           </label>
         </div>
         <div class="field">
-          <!-- {country} -->
-          <!-- <datalist id="country"> -->
           <div class="control">
             <label class="label">
               Visited?
@@ -602,7 +597,6 @@
               </div>
             </label>
           </div>
-          <!-- </datalist> -->
         </div>
       </div>
     </div>
@@ -622,25 +616,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="columns">
-      <div class="column is-3">
-        <button class="button is-info has-text-white" type="submit"> Add your placemark </button> -->
-    <!-- <button onclick={() => placemark()} class="button is-info has-text-white">
-          Add your placemark
-        </button>
-      </div>
-      <div class="column is-9">
-        <p class="has-text-right">
-          *Find your exact placemarks coordinates on
-          <a href="https://www.gps-coordinates.net/" target="_blank" class="has-text-grey"
-            >https://www.gps-coordinates.net/</a
-          >
-          <span class="ml-1 icon is-small">
-            <i class="fas fa-solid fa-folder-open"></i>
-          </span>
-        </p>
-      </div>
-    </div> -->
     <div class="columns">
       <div class="column is-6">
         {#if category && placemark}
@@ -666,4 +641,3 @@
     </div>
   </label>
 </div>
-<!-- </form> -->
