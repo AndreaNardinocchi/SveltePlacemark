@@ -13,6 +13,7 @@
   import { placemarkService } from "$lib/ui/services/placemark-service.js";
   import { onMount } from "svelte";
   import type { Placemark } from "$lib/ui/types/placemark-types.js";
+    import Category from "./Category.svelte";
   let map: LeafletMap;
 
   export let data;
@@ -56,7 +57,7 @@
   <title>{pageTitle}</title>
 </svelte:head>
 
-<!-- Basic structure to ensure rendering works 
+<!--Basic structure to ensure rendering works 
 <div class="container">
   <section class="section mt-6">
     {#if category.placemarks && category.placemarks.length > 0}
@@ -90,9 +91,9 @@
     {/if}
      <Category placemarkEvent={placemarkAdded} />
   </section>
-</div> -->
+</div>  -->
 
-<!-- <script lang="ts">
+ <!-- <script lang="ts">
  ///////////////// VERSION 2 ///////////////////////////////////
   import { page } from "$app/stores";
   import { placemarkService } from "$lib/ui/services/placemark-service";
@@ -192,7 +193,7 @@
     {/if}
     <Category placemarkEvent={placemarkAdded} />
   </section>
-</div> -->
+</div>  -->
 
 <script lang="ts">
   import { page } from "$app/stores";

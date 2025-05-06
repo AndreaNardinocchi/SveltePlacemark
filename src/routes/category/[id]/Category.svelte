@@ -43,16 +43,17 @@
     const sanitizedDescription = sanitizeInput(description);
 
     const placemark: Placemark = {
-      title: sanitizedTitle,
-      lat: sanitizedLat,
-      long: sanitizedLong,
-      address: sanitizedAddress,
-      country: sanitizedCountry,
-      phone: sanitizedPhone,
-      website: sanitizedWebsite,
-      visited: sanitizedVisited,
-      img: img.length > 0 ? img : undefined, // Only send `img` if it has values
-      description: sanitizedDescription
+        title: sanitizedTitle,
+        lat: sanitizedLat,
+        long: sanitizedLong,
+        address: sanitizedAddress,
+        country: sanitizedCountry,
+        phone: sanitizedPhone,
+        website: sanitizedWebsite,
+        visited: sanitizedVisited,
+        img: img.length > 0 ? img : undefined, // Only send `img` if it has values
+        description: sanitizedDescription,
+       // categoryId: ""
     };
 
     const url = window.location.pathname;

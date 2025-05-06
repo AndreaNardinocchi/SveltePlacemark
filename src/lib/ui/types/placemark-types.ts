@@ -22,6 +22,8 @@ export interface User {
 }
 
 export interface Category {
+  // thisUserCategory: Placemark;
+  thisUserCategory: Placemark[];
   placemarks: Placemark[];
   // placemarks?: Placemark[];
   title: string;
@@ -33,6 +35,7 @@ export interface Category {
 }
 
 export interface Placemark {
+  categoryId: string;
   title: string;
   lat: string;
   long: string;

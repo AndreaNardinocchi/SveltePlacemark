@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { subTitle } from "$lib/runes.svelte";
+  import { currentPlacemarks, subTitle } from "$lib/runes.svelte";
   // @ts-ignore
   import Chart from "svelte-frappe-charts";
   import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
