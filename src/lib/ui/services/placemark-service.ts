@@ -72,7 +72,11 @@ export const placemarkService = {
   },
 
   async refreshPlacemarksInfo() {
-    if (!loggedInUser.token || !loggedInUser._id) {
+    const token = axios.defaults.headers.common["Authorization"];
+    if (!token || !loggedInUser._id) {
+      // this.restoreSession();
+      // token = axios.defaults.headers.common["Authorization"];
+      // await this.refreshPlacemarksInfo();
       console.warn("Session is not ready, skipping refresh");
       return;
     }
@@ -289,6 +293,8 @@ export const placemarkService = {
       const token = axios.defaults.headers.common["Authorization"];
       // The token verification will ensure the user is logged in
       if (!token) {
+        this.restoreSession();
+        await this.refreshPlacemarksInfo();
         console.log("User is not logged in. No Authorization token found.");
         return null;
       }
@@ -324,6 +330,8 @@ export const placemarkService = {
       // The token verification will ensure the user is logged in
       const token = axios.defaults.headers.common["Authorization"];
       if (!token) {
+        this.restoreSession();
+        await this.refreshPlacemarksInfo();
         console.warn("No Authorization token found.");
         return false;
       }
@@ -350,6 +358,13 @@ export const placemarkService = {
   // This is the function to retrieve all categories
   async getAllCategories(token: string): Promise<Category[]> {
     try {
+      if (!token) {
+        //   token = axios.defaults.headers.common["Authorization"];
+        this.restoreSession();
+        token = axios.defaults.headers.common["Authorization"];
+        await this.refreshPlacemarksInfo();
+      }
+
       const response = await axios.get(this.baseUrl + "/api/categories", {
         headers: {
           Authorization: `Bearer ${token}`
@@ -379,10 +394,13 @@ export const placemarkService = {
   async getCategoryById(id: string): Promise<Category | null> {
     try {
       // The token verification will ensure the user is logged in
-      const token = axios.defaults.headers.common["Authorization"];
+      let token = axios.defaults.headers.common["Authorization"];
       if (!token) {
-        console.warn("No Authorization token found.");
-        return null;
+        this.restoreSession();
+        token = axios.defaults.headers.common["Authorization"];
+        await this.refreshPlacemarksInfo();
+        // console.warn("No Authorization token found.");
+        // return null;
       }
 
       const response = await axios.get(`${this.baseUrl}/api/categories/${id}`, {
@@ -412,8 +430,12 @@ export const placemarkService = {
       }
 
       if (!token) {
-        console.warn("No Authorization token provided.");
-        return [];
+        this.restoreSession();
+        token = axios.defaults.headers.common["Authorization"];
+        await this.refreshPlacemarksInfo();
+
+        // console.warn("No Authorization token provided.");
+        // return [];
       }
 
       const url = `${this.baseUrl}/api/categories/${categoryId}/placemarks`; // <- Correct endpoint based on RESTful design
@@ -553,8 +575,11 @@ export const placemarkService = {
   // This is to fetch a single placemark by its ID (and optionally the category ID, if your API requires it)
   async getPlacemarkById(categoryId: string, placemarkId: string) {
     try {
-      const token = axios.defaults.headers.common["Authorization"];
+      let token = axios.defaults.headers.common["Authorization"];
       if (!token) {
+        this.restoreSession();
+        token = axios.defaults.headers.common["Authorization"];
+        await this.refreshPlacemarksInfo();
         console.warn("No Authorization token found.");
         return null;
       }

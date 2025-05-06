@@ -3,6 +3,8 @@ import { placemarkService } from "$lib/ui/services/placemark-service";
 import type { PageLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 
+export const ssr = false; // disable server-side rendering
+
 export const load: PageLoad = async ({ params }) => {
   const categoryId = params.id;
 
