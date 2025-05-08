@@ -62,7 +62,7 @@
         console.log("Fetched category: ", categoryResponse);
 
         // Get Placemark
-        const placemarkResponse = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const placemarkResponse = await placemarkService.getPlacemarkById(placemarkId);
         console.log("Fetched placemark:", placemarkResponse);
 
         // Update placemark data
@@ -197,6 +197,7 @@
     const token = loggedInUser.token;
     const pathParts = window.location.pathname.split("/");
     const categoryId = pathParts[pathParts.indexOf("category") + 1];
+    console.log("CategoryId in Placemark page: ", categoryId);
     const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
 
     console.log("This is the placemarkId in youShouldVisit: ", placemarkId);
@@ -207,9 +208,9 @@
     }
 
     if (email && token) {
-      const pathParts = window.location.pathname.split("/");
-      const categoryId = pathParts[pathParts.indexOf("category") + 1];
-      const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
+      // const pathParts = window.location.pathname.split("/");
+      // const categoryId = pathParts[pathParts.indexOf("category") + 1];
+      // const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
       const users = await placemarkService.getAllUsers(token);
       const matchedUser = users.find((user) => user.email === email);
 
@@ -226,7 +227,7 @@
         }
         console.log("This is the placemarkId 2 in youShouldVisit: ", placemarkId);
         // const placemark = category.placemarks.find((p) => p.id === placemarkId);
-        const placemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const placemark = await placemarkService.getPlacemarkById(placemarkId);
         console.log("Placemark in you youShouldVisit: ", placemark);
         if (!placemark) {
           console.error("Placemark not found for id:", placemarkId);

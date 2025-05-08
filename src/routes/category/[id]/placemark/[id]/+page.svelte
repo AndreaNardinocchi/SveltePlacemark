@@ -1,15 +1,26 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import Title from "$lib/ui/Title.svelte";
   import PlacemarkCard from "$lib/ui/PlacemarkCard.svelte";
   import InstaGrid from "$lib/ui/InstaGrid.svelte";
   import InstHeader from "$lib/ui/InstHeader.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { onMount } from "svelte";
+  import { placemark } from "$lib/runes.svelte";
 
   /**
    * @type {any}
   //  */
   // export let key;
+  let categoryId: string;
+  let placemarkId: string;
+
+  $: categoryId = $page.params._id;
+  $: placemarkId = $page.params._id;
+
+  export let data;
+
+  console.log("No worries", data, placemarkId);
 
   let pageTitle: any = "";
   async function getBroswerTitle() {
@@ -21,7 +32,7 @@
     const pathParts = window.location.pathname.split("/");
     let categoryId = pathParts[pathParts.indexOf("category") + 1];
     let placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
-    const placemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+    const placemark = await placemarkService.getPlacemarkById(placemarkId);
     if (placemark) {
       pageTitle = `${placemark.title} | #instaPlaceMark!`; // This can be dynamic
     }
@@ -31,6 +42,7 @@
 
   onMount(async () => {
     pageTitle = await getBroswerTitle();
+    await placemarkService.refreshSpecificPlacemark();
   });
 </script>
 

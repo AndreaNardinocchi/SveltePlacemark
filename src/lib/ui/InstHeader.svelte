@@ -50,7 +50,7 @@
           return sanitizeInput(titleShort);
         }
         console.log("This is the placemarkId 2 in Title: ", placemarkId);
-        const placemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const placemark = await placemarkService.getPlacemarkById(placemarkId);
         console.log("Placemark in Title: ", placemark);
         if (!placemark) {
           console.error("Placemark not found for id:", placemarkId);

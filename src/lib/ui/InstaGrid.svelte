@@ -41,7 +41,7 @@
         console.error("Category or placemarks not found.");
         return;
       }
-      const placemarkData = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+      const placemarkData = await placemarkService.getPlacemarkById( placemarkId);
       if (placemarkData) {
         placemark = placemarkData; // Reactive update
         if (placemark) {

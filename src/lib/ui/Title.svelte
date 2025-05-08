@@ -29,7 +29,7 @@
     const pathParts = window.location.pathname.split("/");
     const categoryId = pathParts[pathParts.indexOf("category") + 1];
     const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
-    const placemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+    const placemark = await placemarkService.getPlacemarkById( placemarkId);
     city = city?.trim() || placemark.country;
 
     if (!city) {

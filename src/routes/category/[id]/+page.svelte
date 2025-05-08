@@ -93,7 +93,7 @@
   </section>
 </div>  -->
 
- <!-- <script lang="ts">
+<!-- <script lang="ts">
  ///////////////// VERSION 2 ///////////////////////////////////
   import { page } from "$app/stores";
   import { placemarkService } from "$lib/ui/services/placemark-service";
@@ -196,6 +196,17 @@
 </div>  -->
 
 <script lang="ts">
+  //import { currentDataSets } from "$lib/runes.svelte"; // or ./stores.ts
+  import { derived } from "svelte/store";
+
+  let totalByCountry;
+  let totalByVisited;
+
+  $currentDataSets; // subscribe
+
+  $: totalByCountry = $currentDataSets.totalByCountry;
+  $: totalByVisited = $currentDataSets.totalByVisited;
+
   import { page } from "$app/stores";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { onMount } from "svelte";
@@ -235,6 +246,7 @@
     // let placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
     const category = await placemarkService.getCategoryById(categoryId);
     if (category) {
+      // placemarkService.refreshPlacemarksInfo();
       pageTitle = `${category.title} | PlaceMark`; // This can be dynamic
     } else {
       pageTitle = "PlaceMark";
@@ -246,14 +258,22 @@
   function placemarkAdded(placemark: Placemark) {
     map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
     map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
+    console.log(
+      "map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long) ",
+      placemark.lat
+    );
   }
 
-  console.log("Chart - Total by Country", currentDataSets.totalByCountry);
-  console.log("Chart - Total by Visited", currentDataSets.totalByVisited);
+  console.log("Chart - Total by Country", totalByCountry);
+  console.log("Chart - Total by Visited", totalByVisited);
+  // placemarkService.refreshPlacemarksInfo();
+
   onMount(async () => {
     pageTitle = await getBroswerTitle();
-    await refreshPlacemarkMap(map);
     await placemarkService.refreshPlacemarksInfo();
+    // await refreshPlacemarkMap(map);
+    await refreshPlacemarkMap(map, currentPlacemarks.placemarks); // pass the data directly
+    console.log("The map: ", map);
   });
 </script>
 
@@ -274,8 +294,12 @@
           <div class="column">
             <PlacemarkListCard>
               <p class="has-text-centered subtitle has-text-weight-bold is-5">Total by Country</p>
-              <p>Country Labels: {currentDataSets.totalByCountry.labels.join(", ")}</p>
-              <Chart data={currentDataSets.totalByCountry} type="bar" />
+              <p>Country Labels: {totalByCountry.labels.join(", ")}</p>
+              <!-- <Chart data={totalByCountry} type="bar" /> -->
+
+              {#key totalByCountry}
+                <Chart data={totalByCountry} type="bar" />
+              {/key}
             </PlacemarkListCard>
           </div>
           <div class="column has-text-centered">
@@ -283,7 +307,10 @@
               <p class="has-text-centered subtitle has-text-weight-bold is-5">
                 Total by Visited/Not Visited
               </p>
-              <Chart data={currentDataSets.totalByVisited} type="pie" />
+              <!-- <Chart data={totalByVisited} type="pie" /> -->
+              {#key totalByVisited}
+                <Chart data={totalByVisited} type="pie" />
+              {/key}
             </PlacemarkListCard>
           </div>
         </div>

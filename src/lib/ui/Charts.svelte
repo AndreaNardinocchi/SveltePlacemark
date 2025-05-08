@@ -4,9 +4,14 @@
   import Chart from "svelte-frappe-charts";
   import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
   import { currentDataSets } from "$lib/runes.svelte";
+  import { onMount } from "svelte";
+  import { placemarkService } from "./services/placemark-service";
   subTitle.text = "Placemarks data";
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
+  onMount(async () => {
+    await placemarkService.refreshPlacemarksInfo();
+  });
 </script>
 
 <div class="box has-background-white">
