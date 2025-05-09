@@ -221,6 +221,7 @@
   import Chart from "svelte-frappe-charts";
   import LeafletMap from "$lib/ui/LeafletMap.svelte";
   import { refreshPlacemarkMap } from "$lib/ui/services/placemark-utils";
+
   let map: LeafletMap;
 
   /**
@@ -255,13 +256,23 @@
     return pageTitle;
   }
 
+  let statsComponent: any;
+
   function placemarkAdded(placemark: Placemark) {
-    map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
+    console.log("Placemark was added:", placemark);
+    const popup = `${placemark.title}, ${placemark.country}, ${placemark.address} | Visited: ${placemark.visited} | Geo: ${placemark.lat} / ${placemark.long}`;
+    map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), popup);
     map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
-    console.log(
-      "map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long) ",
-      placemark.lat
-    );
+    console.log("parseFloat(placemark.lat", placemark.lat);
+
+    // Critical: check that this logs and is defined
+    console.log("statsComponent is:", statsComponent);
+    if (statsComponent && typeof statsComponent.refresh === "function") {
+      console.log("Calling statsComponent.refresh()");
+      statsComponent.refresh();
+    } else {
+      console.warn("statsComponent.refresh not available");
+    }
   }
 
   console.log("Chart - Total by Country", totalByCountry);
@@ -285,7 +296,7 @@
   <section class="section mt-6">
     {#if currentCategories.categories.length > 0}
       <CategoryBanner />
-      <PlacemarkStats />
+      <PlacemarkStats bind:this={statsComponent} />
       <PlacemarkListCard>
         <LeafletMap height={40} bind:this={map} />
       </PlacemarkListCard>

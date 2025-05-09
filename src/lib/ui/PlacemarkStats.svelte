@@ -206,8 +206,9 @@
     return true;
   }
 
-  // onMount will fetch and assign:
-  onMount(async () => {
+  export async function refresh() {
+    console.log("PlacemarkStats is refreshing");
+    await placemarkService.refreshPlacemarksInfo();
     placemarkSum = await sumPlacemarks();
     yesCounting = await getYesCounting();
     noCounting = await getNoCounting();
@@ -215,6 +216,18 @@
     await getLocalAbroadStats();
     resultMax = sanitizeInput(result.resultMax);
     resultMin = sanitizeInput(result.resultMin);
+  }
+
+  // onMount will fetch and assign:
+  onMount(async () => {
+    await refresh();
+    // placemarkSum = await sumPlacemarks();
+    // yesCounting = await getYesCounting();
+    // noCounting = await getNoCounting();
+    // const result = await calculateMinMaxDistance();
+    // await getLocalAbroadStats();
+    // resultMax = sanitizeInput(result.resultMax);
+    // resultMin = sanitizeInput(result.resultMin);
     // const pathParts = window.location.pathname.split("/");
   });
 </script>
