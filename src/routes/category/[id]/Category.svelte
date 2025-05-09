@@ -77,6 +77,9 @@
     const result = await placemarkService.addPlacemark(categoryId, placemark);
 
     if (result) {
+      if (placemarkEvent) placemarkEvent(placemark);
+      // message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
+      message = `You added ${sanitizedTitle} in ${sanitizedCountry}. Visited? ${sanitizedVisited}`;
       //  Reset form fields
       // title = "";
       // lat = "";
@@ -90,15 +93,25 @@
       //img = [];
       console.log(`Placemark added: ${title}, lat: ${lat}, long: ${long}`);
       console.log("Payload being sent:", placemark);
-      goto(`/category/${categoryId}`);
+      await goto(`/category/${categoryId}`);
+      // Reset form fields after navigation is completed
+      title = "";
+      lat = "";
+      long = "";
+      address = "";
+      country = "";
+      phone = "";
+      website = "";
+      visited = "";
+      description = "";
     } else {
       console.log("Payload being sent:", placemark);
       console.warn("Failed to add placemark.");
     }
 
-    if (placemarkEvent) placemarkEvent(placemark);
-    // message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
-    message = `You added ${sanitizedTitle} in ${sanitizedCountry}. Visited? ${sanitizedVisited}`;
+    // if (placemarkEvent) placemarkEvent(placemark);
+    // // message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
+    // message = `You added ${sanitizedTitle} in ${sanitizedCountry}. Visited? ${sanitizedVisited}`;
   }
 
   function handleDelete(placemark: Placemark) {
