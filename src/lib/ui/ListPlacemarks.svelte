@@ -165,7 +165,7 @@
             </p>
           </div>
           <div class="column is-4">
-            <p><span class="has-text-weight-bold">Map:</span><br /></p>
+            <p><span class="has-text-weight-bold">{placemark.title}'s Map</span><br /></p>
             <LeafletMapMulti
               lat={parseFloat(placemark.lat)}
               lng={parseFloat(placemark.long)}
