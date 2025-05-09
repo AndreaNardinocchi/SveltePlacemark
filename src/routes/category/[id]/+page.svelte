@@ -279,6 +279,22 @@
   console.log("Chart - Total by Visited", totalByVisited);
   // placemarkService.refreshPlacemarksInfo();
 
+  function placemarkDeleted(placemark: Placemark) {
+    console.log("Placemark was deleted:", placemark);
+
+    // Remove marker from map if a reference or identifier exists.
+    // Assuming your `LeafletMap` component has a method like `removeMarker`:
+    map.removeMarker(parseFloat(placemark.lat), parseFloat(placemark.long));
+
+    // Refresh statistics or any dependent UI components
+    if (statsComponent && typeof statsComponent.refresh === "function") {
+      console.log("Calling statsComponent.refresh() after deletion");
+      statsComponent.refresh();
+    } else {
+      console.warn("statsComponent.refresh not available");
+    }
+  }
+
   onMount(async () => {
     pageTitle = await getBroswerTitle();
     await placemarkService.refreshPlacemarksInfo();
@@ -327,7 +343,7 @@
         </div>
       </div>
       <PlacemarkListCard>
-        <ListPlacemarks />
+        <ListPlacemarks placemarkDeletedEvent={placemarkDeleted} />
       </PlacemarkListCard>
     {/if}
     <Category placemarkEvent={placemarkAdded} />

@@ -1,4 +1,4 @@
-<!-- <script lang="ts">
+<script lang="ts">
   /****************** Version 1 **********************************************************************************/
   import { placemarkService } from "./services/placemark-service";
   import { goto } from "$app/navigation";
@@ -20,7 +20,8 @@
     phone: "",
     website: "",
     visited: "",
-    description: ""
+    description: "",
+    categoryId: categoryId
   };
 
   onMount(async () => {
@@ -51,7 +52,7 @@
         console.log("Fetched category:", category);
         console.log("This is the token:", token);
 
-        const myPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const myPlacemark = await placemarkService.getPlacemarkById(placemarkId);
         console.log("This is myPlacemark :", myPlacemark);
         if (placemark) {
           placemark = myPlacemark;
@@ -76,7 +77,7 @@
     description: string;
   }) {
     // Don’t fetch the placemark again — use the current form values
-    const newPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+    const newPlacemark = await placemarkService.getPlacemarkById(placemarkId);
 
     console.log("This is the updated placemark: ", updatedPlacemark);
 
@@ -88,9 +89,9 @@
       alert("Failed to update placemark.");
     }
   }
-</script> -->
+</script>
 
-<script lang="ts">
+<!-- <script lang="ts">
   /************************************ Version 2 *****************************************/
   import { placemarkService } from "./services/placemark-service";
   import { goto } from "$app/navigation";
@@ -102,6 +103,10 @@
   let placemarkId = "";
   // svelte-ignore non_reactive_update
   let category: Category | null = null;
+  // Split the current URL to get categoryId and placemarkId
+  const pathParts = window.location.pathname.split("/");
+  // Try to get categoryId and placemarkId from the URL
+  categoryId = pathParts[pathParts.indexOf("category") + 1];
 
   let placemark: Placemark = {
     title: "",
@@ -112,7 +117,9 @@
     phone: "",
     website: "",
     visited: "",
-    description: ""
+    description: "",
+
+    categoryId: categoryId
   };
 
   onMount(async () => {
@@ -143,7 +150,7 @@
         console.log("Fetched category:", category);
         console.log("This is the token:", token);
 
-        const myPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const myPlacemark = await placemarkService.getPlacemarkById(placemarkId);
         console.log("This is myPlacemark :", myPlacemark);
         if (placemark) {
           placemark = myPlacemark;
@@ -183,7 +190,7 @@
       alert("Failed to update placemark.");
     }
   }
-</script>
+</script> -->
 
 <div class="box mt-6">
   <label>

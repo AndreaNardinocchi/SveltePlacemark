@@ -57,7 +57,7 @@
       imap.remove(); // Clean up the existing map to avoid duplicates
     }
 
-    imap = L.map(mapContainer).setView([lat, lng], 5);
+    imap = L.map(mapContainer).setView([lat, lng], 4);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 17,
@@ -88,7 +88,7 @@
 <style>
   .map-container {
     width: 100%;
-    border-radius: 12px;
+    border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-top: 1rem;
   }

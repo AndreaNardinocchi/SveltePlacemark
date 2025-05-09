@@ -2,7 +2,8 @@
   // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
   // https://www.npmjs.com/package/svelte-inview
 
-  let { placemarkEvent = null } = $props();
+  let { placemarkEvent = null, placemarkDeleteEvent = null } = $props();
+
   import AddPlacemark from "$lib/ui/AddPlacemark.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import type { Placemark } from "$lib/ui/types/placemark-types";
@@ -43,17 +44,17 @@
     const sanitizedDescription = sanitizeInput(description);
 
     const placemark: Placemark = {
-        title: sanitizedTitle,
-        lat: sanitizedLat,
-        long: sanitizedLong,
-        address: sanitizedAddress,
-        country: sanitizedCountry,
-        phone: sanitizedPhone,
-        website: sanitizedWebsite,
-        visited: sanitizedVisited,
-        img: img.length > 0 ? img : undefined, // Only send `img` if it has values
-        description: sanitizedDescription,
-       // categoryId: ""
+      title: sanitizedTitle,
+      lat: sanitizedLat,
+      long: sanitizedLong,
+      address: sanitizedAddress,
+      country: sanitizedCountry,
+      phone: sanitizedPhone,
+      website: sanitizedWebsite,
+      visited: sanitizedVisited,
+      img: img.length > 0 ? img : undefined, // Only send `img` if it has values
+      description: sanitizedDescription
+      // categoryId: ""
     };
 
     const url = window.location.pathname;
@@ -76,6 +77,17 @@
     const result = await placemarkService.addPlacemark(categoryId, placemark);
 
     if (result) {
+      //  Reset form fields
+      // title = "";
+      // lat = "";
+      // long = "";
+      // address = "";
+      // country = "";
+      // phone = "";
+      // website = "";
+      // visited = "";
+      // description = "";
+      //img = [];
       console.log(`Placemark added: ${title}, lat: ${lat}, long: ${long}`);
       console.log("Payload being sent:", placemark);
       goto(`/category/${categoryId}`);
@@ -87,6 +99,14 @@
     if (placemarkEvent) placemarkEvent(placemark);
     // message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
     message = `You added ${sanitizedTitle} in ${sanitizedCountry}. Visited? ${sanitizedVisited}`;
+  }
+
+  function handleDelete(placemark: Placemark) {
+    // Your deletion logic here...
+
+    if (placemarkDeleteEvent) {
+      placemarkDeleteEvent(placemark); // Notify parent
+    }
   }
 </script>
 

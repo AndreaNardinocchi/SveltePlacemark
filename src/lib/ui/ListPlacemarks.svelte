@@ -8,6 +8,10 @@
   import DOMPurify from "dompurify";
   import { refreshPlacemarkMap } from "./services/placemark-utils";
   import LeafletMapMulti from "./LeafletMapMulti.svelte";
+  import { map } from "leaflet";
+  import type { Placemark } from "./types/placemark-types";
+
+  export let placemarkDeletedEvent: (placemark: Placemark) => void;
 
   const url = window.location.pathname;
   const categoryId = url.split("/").pop();
@@ -42,6 +46,7 @@
   });
 
   async function deletePlacemark(placemarkId: string) {
+    const placemark = currentPlacemarks.placemarks.find((p) => p._id === placemarkId);
     if (!placemarkId) {
       console.warn("No placemark ID provided.");
       return;
@@ -49,7 +54,13 @@
 
     const success = await placemarkService.deletePlacemark(placemarkId);
     if (success) {
+      await placemarkService.refreshPlacemarksInfo();
       console.log(`Placemark with ID ${placemarkId} was successfully deleted.`);
+
+      if (placemark && placemarkDeletedEvent) {
+        placemarkDeletedEvent(placemark);
+      }
+
       goto(`/category/${category?._id}`);
     } else {
       console.warn("Failed to delete placemark.");
@@ -159,7 +170,7 @@
               lat={parseFloat(placemark.lat)}
               lng={parseFloat(placemark.long)}
               popupText={`${placemark.title}, ${placemark.country}`}
-              height={30}
+              height={22}
             />
           </div>
         </div>

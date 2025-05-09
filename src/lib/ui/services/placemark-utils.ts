@@ -88,7 +88,7 @@
 
 // Import Svelte's `get` function to extract current values from writable stores
 import { get } from "svelte/store";
-import { loggedInUser } from "$lib/runes.svelte";
+import { loggedInUser, user } from "$lib/runes.svelte";
 import { currentDataSets } from "$lib/runes.svelte"; // Moved store here
 import { placemarkService } from "./placemark-service";
 import LeafletMap from "../LeafletMap.svelte";
@@ -179,26 +179,3 @@ export async function refreshPlacemarkMap(map: LeafletMap, placemarkList: Placem
   computeByCountry(placemarkList);
   computeByVisited(placemarkList);
 }
-
-// // Draw placemarks on map and trigger chart computations
-// export async function refreshPlacemarkMap(map: LeafletMap) {
-//   if (!loggedInUser.token) {
-//     placemarkService.restoreSession();
-//   }
-
-//   placemarkList.forEach((placemark) => {
-//     if (typeof placemark !== "string") {
-//       const popup = `${placemark.title}, ${placemark.country}, ${placemark.address} | Visited: ${placemark.visited} | Geo: ${placemark.lat} / ${placemark.long}`;
-//       map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), popup);
-//       console.log("These are the coordinates: ", placemark.lat, placemark.long);
-//     }
-//   });
-
-//   const lastPlacemark = currentPlacemarks.placemarks[currentPlacemarks.placemarks.length - 1];
-//   if (lastPlacemark) {
-//     map.moveTo(parseFloat(lastPlacemark.lat), parseFloat(lastPlacemark.long));
-//   }
-
-//   computeByCountry(currentPlacemarks.placemarks);
-//   computeByVisited(currentPlacemarks.placemarks);
-// }

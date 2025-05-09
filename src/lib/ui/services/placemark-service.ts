@@ -521,8 +521,9 @@ export const placemarkService = {
       });
       await this.refreshPlacemarksInfo();
 
-      console.log("Placemark deleted:", response.data);
-      return response.data.success === true; // Adjust based on your backend response
+      console.log("Placemark deleted:", response.status, response.data);
+      // return response.data.success === true; // Adjust based on your backend response
+      return response.status >= 200 && response.status < 300;
     } catch (error: any) {
       if (error.response) {
         console.error("Error deleting placemark:", error.response.status, error.response.data);

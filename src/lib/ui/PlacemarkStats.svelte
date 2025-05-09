@@ -36,7 +36,7 @@
   let localTravelIcon = $state("");
   let abroadTravelIcon = $state("");
 
-  async function sumPlacemarks(): Promise<number> {
+  export async function sumPlacemarks(): Promise<number> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
     if (!categoryId) {
@@ -52,7 +52,7 @@
     return 0;
   }
 
-  async function getYesCounting(): Promise<number> {
+  export async function getYesCounting(): Promise<number> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
     if (!categoryId) {
@@ -72,7 +72,7 @@
     return 0;
   }
 
-  async function getNoCounting(): Promise<number> {
+  export async function getNoCounting(): Promise<number> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
     if (!categoryId) {
@@ -115,7 +115,10 @@
     }
   });
 
-  async function calculateMinMaxDistance(): Promise<{ resultMax: string; resultMin: string }> {
+  export async function calculateMinMaxDistance(): Promise<{
+    resultMax: string;
+    resultMin: string;
+  }> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
 
@@ -164,7 +167,7 @@
     return { resultMax, resultMin };
   }
 
-  async function getLocalAbroadStats(): Promise<boolean> {
+  export async function getLocalAbroadStats(): Promise<boolean> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
 
@@ -221,14 +224,6 @@
   // onMount will fetch and assign:
   onMount(async () => {
     await refresh();
-    // placemarkSum = await sumPlacemarks();
-    // yesCounting = await getYesCounting();
-    // noCounting = await getNoCounting();
-    // const result = await calculateMinMaxDistance();
-    // await getLocalAbroadStats();
-    // resultMax = sanitizeInput(result.resultMax);
-    // resultMin = sanitizeInput(result.resultMin);
-    // const pathParts = window.location.pathname.split("/");
   });
 </script>
 
