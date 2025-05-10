@@ -274,7 +274,7 @@
           travelMeans
         )}, and it is {sanitizeInput(distance)}.
       </p>
-      <p class="mt-4 mb-4">{sanitizeInput(youShouldVisit)} {sanitizeInput(placemark.title)}!</p>
+      <p class="mt-4 mb-4">{sanitizeInput(youShouldVisit)}</p>
       <div class="buttons pt-3">
         <a
           href={sanitizeInput(placemark.website)}
