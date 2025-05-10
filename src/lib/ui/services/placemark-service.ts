@@ -1,8 +1,6 @@
 import axios from "axios";
 import type { Placemark, Session, User } from "../types/placemark-types";
-// import type Category from "../../../routes/category/Category.svelte";
 import type { Category } from "../types/placemark-types";
-// import { goto } from "$app/navigation";
 import { category, currentCategories, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 import { computeByCountry, computeByVisited } from "./placemark-utils";
 
@@ -11,17 +9,7 @@ axios.defaults.withCredentials = true;
 export const placemarkService = {
   baseUrl: "http://localhost:3000",
 
-  // async signup(user: User): Promise<boolean> {
-  //   try {
-  //     const response = await axios.post(`${this.baseUrl}/api/users`, user);
-  //     console.log("Signup response:", response.data); // Log full response to inspect
-  //     return response.data.success === true;
-  //   } catch (error) {
-  //     console.log(error);
-  //     return false;
-  //   }
-  // },
-
+  // Signing up a new user by sending their details to the server
   async signup(user: User): Promise<User | null> {
     try {
       const response = await axios.post(`${this.baseUrl}/api/users`, user);
@@ -33,6 +21,7 @@ export const placemarkService = {
     }
   },
 
+  // Login a user by sending email and password for authentication
   async login(email: string, password: string): Promise<Session | null> {
     try {
       const response = await axios.post(`${this.baseUrl}/api/users/authenticate`, {
@@ -58,129 +47,58 @@ export const placemarkService = {
     }
   },
 
-  async waitForCategoriesToLoad(): Promise<void> {
-    return new Promise((resolve) => {
-      const check = () => {
-        if (currentCategories.categories.length > 0) {
-          resolve();
-        } else {
-          setTimeout(check, 50); // Poll every 50ms
-        }
-      };
-      check();
-    });
-  },
-
+  // Refreshing categories and placemarks data for the logged-in user
   async refreshPlacemarksInfo() {
     const token = axios.defaults.headers.common["Authorization"];
     if (!token || !loggedInUser._id) {
-      // this.restoreSession();
-      // token = axios.defaults.headers.common["Authorization"];
-      // await this.refreshPlacemarksInfo();
       console.warn("Session is not ready, skipping refresh");
       return;
     }
 
     console.log("Token:", loggedInUser.token);
-
+    // Fetching all categories for the logged-in user
     const allCategories = await this.getAllCategories(loggedInUser.token);
+    /** Here, we filter in those categories that belong to a specific user by using 'userid' of the categories
+     * which must meatch with loggeInUser._id
+     */
     currentCategories.categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
-
-    // Wait until categories are loaded || This will bring about ISSUES WITH FIRST LOG IN AFTER SIGN UP
-    // await this.waitForCategoriesToLoad();
-
+    // Retrieveing categoryId from localStorage to refresh specific category
     const categoryId = localStorage.getItem("categoryId");
     if (!categoryId) {
       console.warn("No categoryId in localStorage.");
       return;
     }
-
+    // Finding the valid category based on categoryId from localStorage
     const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
-
     if (!validCategory) {
       console.warn("categoryId from localStorage is not valid.");
       return;
     }
-
-    // Set global category state
+    // Setting global category state
     category.title = validCategory.title;
     category._id = validCategory._id;
     category.userId = validCategory.userid;
     category.image = validCategory.image;
     category.notes = validCategory.notes;
 
+    // Fetching the full category data including placemarks
     const fetchedCategory = await this.getCategoryById(categoryId);
     if (!fetchedCategory?.placemarks) {
       console.warn("Could not retrieve placemarks for category.");
       return;
     }
 
+    /** Updating global placemarks state with the retrieved placemarks
+     * Creating a shallow copy of the placemarks array from the fetched category
+     * and assigning it to the currentPlacemarks.placemarks array to update the application state.
+     * This ensures the front-end reflects the most recent placemarks data.
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+     * */
     currentPlacemarks.placemarks = [...fetchedCategory.placemarks];
     console.log("Updated placemarks:", currentPlacemarks.placemarks);
-
+    // Computing and updating the placemark data based on country and visited status
     computeByCountry(currentPlacemarks.placemarks);
     computeByVisited(currentPlacemarks.placemarks);
-  },
-
-  async refreshSpecificPlacemark(placemarkId?: string) {
-    const token = axios.defaults.headers.common["Authorization"];
-    const userId = loggedInUser?._id;
-
-    if (!token || !userId) {
-      console.warn("Session is not ready, skipping refresh");
-      return;
-    }
-
-    const categoryId = localStorage.getItem("categoryId");
-    if (!categoryId) {
-      console.warn("No categoryId in localStorage.");
-      return;
-    }
-
-    // Try to get placemarkId from localStorage if not provided
-    const finalPlacemarkId = placemarkId ?? localStorage.getItem("placemarkId");
-    if (!finalPlacemarkId) {
-      console.warn("No placemarkId provided or found in localStorage.");
-      return;
-    }
-
-    const allCategories = await this.getAllCategories(loggedInUser.token);
-    const validCategory = allCategories.find(
-      (cat) => cat._id === categoryId && cat.userid === userId
-    );
-
-    if (!validCategory) {
-      console.warn("categoryId from localStorage is not valid.");
-      return;
-    }
-
-    // Optional: Set global category state
-    Object.assign(category, validCategory);
-
-    try {
-      const placemark = await this.getPlacemarkById(categoryId, finalPlacemarkId);
-      if (!placemark) {
-        console.warn("Placemark not found or could not be fetched.");
-        return;
-      }
-
-      // Update global placemarks state
-      const existingIndex = currentPlacemarks.placemarks.findIndex(
-        (p) => p._id === finalPlacemarkId
-      );
-      if (existingIndex >= 0) {
-        currentPlacemarks.placemarks[existingIndex] = placemark;
-      } else {
-        currentPlacemarks.placemarks.push(placemark);
-      }
-
-      console.log("Refreshed specific placemark:", placemark);
-
-      computeByCountry(currentPlacemarks.placemarks);
-      computeByVisited(currentPlacemarks.placemarks);
-    } catch (err) {
-      console.error("Error refreshing specific placemark:", err);
-    }
   },
 
   disconnect() {
@@ -296,6 +214,7 @@ export const placemarkService = {
       const token = axios.defaults.headers.common["Authorization"];
       // The token verification will ensure the user is logged in
       if (!token) {
+        // if no token we will restore the session and refresh data
         this.restoreSession();
         await this.refreshPlacemarksInfo();
         console.log("User is not logged in. No Authorization token found.");
@@ -314,7 +233,6 @@ export const placemarkService = {
         }
       });
       await this.refreshPlacemarksInfo();
-
       console.log("Category added:", response.data);
       return response.data;
     } catch (error: any) {
@@ -333,6 +251,7 @@ export const placemarkService = {
       // The token verification will ensure the user is logged in
       const token = axios.defaults.headers.common["Authorization"];
       if (!token) {
+        // if no token we will restore the session and refresh data
         this.restoreSession();
         await this.refreshPlacemarksInfo();
         console.warn("No Authorization token found.");
@@ -381,7 +300,7 @@ export const placemarkService = {
     }
   },
 
-  // This is to fetch all users, NEEDS REVISITING, but probably I will no longer needd it
+  // This is to fetch all users
   async getAllUsers(token: string): Promise<User[]> {
     try {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -402,8 +321,6 @@ export const placemarkService = {
         this.restoreSession();
         token = axios.defaults.headers.common["Authorization"];
         await this.refreshPlacemarksInfo();
-        // console.warn("No Authorization token found.");
-        // return null;
       }
 
       const response = await axios.get(`${this.baseUrl}/api/categories/${id}`, {
@@ -436,9 +353,6 @@ export const placemarkService = {
         this.restoreSession();
         token = axios.defaults.headers.common["Authorization"];
         await this.refreshPlacemarksInfo();
-
-        // console.warn("No Authorization token provided.");
-        // return [];
       }
 
       const url = `${this.baseUrl}/api/categories/${categoryId}/placemarks`; // <- Correct endpoint based on RESTful design
@@ -534,6 +448,11 @@ export const placemarkService = {
     }
   },
 
+  /**
+   * This is to update a placemark, and we call in the placemark id, category id, and the placemark itself
+   * ##BUG : This unfortunately won't work...
+   * */
+
   async updatePlacemark(
     placemarkId: string,
     categoryId: string,
@@ -559,7 +478,7 @@ export const placemarkService = {
           },
           withCredentials: true,
           maxRedirects: 0, // Prevent Axios from following redirects
-          validateStatus: (status) => status >= 200 && status < 400 // Treat 3xx as successful
+          validateStatus: (status) => status >= 200 && status < 400
         }
       );
 
@@ -576,7 +495,7 @@ export const placemarkService = {
     }
   },
 
-  // This is to fetch a single placemark by its ID (and optionally the category ID, if your API requires it)
+  // This is to fetch a single placemark by its ID
   async getPlacemarkById(placemarkId: string) {
     try {
       let token = axios.defaults.headers.common["Authorization"];
@@ -585,15 +504,9 @@ export const placemarkService = {
         this.restoreSession();
         token = axios.defaults.headers.common["Authorization"];
         await this.refreshPlacemarksInfo();
-        // await this.refreshSpecificPlacemark(placemarkId);
-
-        // console.warn("No Authorization token found.");
-        // return null;
       }
-      //////////////////////// NEED TO CHECK WHY WE ARE NOT ADDING ${CATEGORYId} ////////////
-      console.log("Auth token used:", token);
 
-      // const url = `${this.baseUrl}/api/categories/${categoryId}/placemarks/${placemarkId}`;
+      console.log("Auth token used:", token);
       const url = `${this.baseUrl}/api/placemarks/${placemarkId}`;
       console.log(`Trying to fetch: ${url}`);
 
