@@ -153,6 +153,7 @@ export const placemarkService = {
     localStorage.removeItem("placemark");
     localStorage.removeItem("categoryTitle");
     localStorage.removeItem("categoryId");
+    localStorage.removeItem("placemarkId");
   },
 
   // This is the function to update the user, but it WON'T Work because of a CORS error

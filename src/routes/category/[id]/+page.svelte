@@ -1,212 +1,16 @@
-<!-- <script lang="ts">
-  ///////////// VESRION 1 /////////////////////
-  import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
-  import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
-  import PlacemarkStats from "$lib/ui/PlacemarkStats.svelte";
-
-  import LeafletMap from "$lib/ui/LeafletMap.svelte";
-  import { refreshPlacemarkMap } from "$lib/ui/services/placemark-utils";
-  // @ts-ignore
-  import Chart from "svelte-frappe-charts";
-  import { currentDataSets } from "$lib/runes.svelte.js";
-  import ListPlacemarks from "$lib/ui/ListPlacemarks.svelte";
-  import { placemarkService } from "$lib/ui/services/placemark-service.js";
-  import { onMount } from "svelte";
-  import type { Placemark } from "$lib/ui/types/placemark-types.js";
-    import Category from "./Category.svelte";
-  let map: LeafletMap;
-
-  export let data;
-  const { category } = data;
-  console.log("Category in page.svelte:", category);
-  let pageTitle: string;
-
-  async function getBroswerTitle() {
-    // if (typeof window === "undefined") return "PlaceMark";
-    // Using the below enables me to retrieve the categoryId
-    // https://stackoverflow.com/questions/23690234/getting-last-segment-of-url-in-javascript?
-    // https://www.geeksforgeeks.org/how-to-get-url-and-url-parts-in-javascript/
-    // const pathParts = window.location.pathname.split("/");
-    // let categoryId = pathParts[pathParts.indexOf("category") + 1];
-    // let placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
-    //  const category = await placemarkService.getCategoryById(categoryId);
-    if (category) {
-      pageTitle = `${category.title} | PlaceMark`; // This can be dynamic
-    } else {
-      pageTitle = "PlaceMark";
-    }
-    console.log("PageTitle: ", pageTitle);
-    return pageTitle;
-  }
-
-  function placemarkAdded(placemark: Placemark) {
-    map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
-    map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
-  }
-
-  console.log("Chart - Total by Country", currentDataSets.totalByCountry);
-  console.log("Chart - Total by Visited", currentDataSets.totalByVisited);
-  onMount(async () => {
-    pageTitle = await getBroswerTitle();
-    await refreshPlacemarkMap(map);
-    await placemarkService.refreshPlacemarksInfo();
-  });
-</script>
-
-<svelte:head>
-  <title>{pageTitle}</title>
-</svelte:head>
-
-<!--Basic structure to ensure rendering works 
-<div class="container">
-  <section class="section mt-6">
-    {#if category.placemarks && category.placemarks.length > 0}
-      <CategoryBanner />
-      <PlacemarkStats />
-      <PlacemarkListCard>
-        <LeafletMap height={40} bind:this={map} />
-      </PlacemarkListCard>
-      <div class="box has-background-white">
-        <div class="columns">
-          <div class="column">
-            <PlacemarkListCard>
-              <p class="has-text-centered subtitle has-text-weight-bold is-5">Total by Country</p>
-              <p>Country Labels: {currentDataSets.totalByCountry.labels.join(", ")}</p>
-              <Chart data={currentDataSets.totalByCountry} type="bar" />
-            </PlacemarkListCard>
-          </div>
-          <div class="column has-text-centered">
-            <PlacemarkListCard>
-              <p class="has-text-centered subtitle has-text-weight-bold is-5">
-                Total by Visited/Not Visited
-              </p>
-              <Chart data={currentDataSets.totalByVisited} type="pie" />
-            </PlacemarkListCard>
-          </div>
-        </div>
-      </div>
-      <PlacemarkListCard>
-        <ListPlacemarks />
-      </PlacemarkListCard>
-    {/if}
-     <Category placemarkEvent={placemarkAdded} />
-  </section>
-</div>  -->
-
-<!-- <script lang="ts">
- ///////////////// VERSION 2 ///////////////////////////////////
-  import { page } from "$app/stores";
-  import { placemarkService } from "$lib/ui/services/placemark-service";
-  import { onMount } from "svelte";
-  import Category from "./Category.svelte";
-  import type { Placemark } from "$lib/ui/types/placemark-types";
-  import { currentCategories, currentDataSets, currentPlacemarks } from "$lib/runes.svelte";
-  import CategoryBanner from "$lib/ui/CategoryBanner.svelte";
-  import PlacemarkStats from "$lib/ui/PlacemarkStats.svelte";
-  import PlacemarkListCard from "$lib/ui/PlacemarkListCard.svelte";
-  import ListPlacemarks from "$lib/ui/ListPlacemarks.svelte";
-  // @ts-ignore
-  import Chart from "svelte-frappe-charts";
-  import LeafletMap from "$lib/ui/LeafletMap.svelte";
-  import { refreshPlacemarkMap } from "$lib/ui/services/placemark-utils";
-  let map: LeafletMap;
-
-  /**
-  //  * @type {any}
-   */
-
-  let pageTitle: any = "";
-
-  // let categoryId: string;
-
-  // $: categoryId = $page.params.id;
-
-  export let data;
-  const { category } = data;
-
-  async function getBroswerTitle() {
-    // if (typeof window === "undefined") return "PlaceMark";
-    // Using the below enables me to retrieve the categoryId
-    // https://stackoverflow.com/questions/23690234/getting-last-segment-of-url-in-javascript?
-    // https://www.geeksforgeeks.org/how-to-get-url-and-url-parts-in-javascript/
-    // const pathParts = window.location.pathname.split("/");
-    // let categoryId = pathParts[pathParts.indexOf("category") + 1];
-    // let placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
-    // const category = await placemarkService.getCategoryById(categoryId);
-    if (category) {
-      pageTitle = `${category.title} | PlaceMark`; // This can be dynamic
-    } else {
-      pageTitle = "PlaceMark";
-    }
-    console.log("PageTitle: ", pageTitle);
-    return pageTitle;
-  }
-
-  function placemarkAdded(placemark: Placemark) {
-    map.addMarker(parseFloat(placemark.lat), parseFloat(placemark.long), "");
-    map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
-  }
-
-  console.log("Chart - Total by Country", currentDataSets.totalByCountry);
-  console.log("Chart - Total by Visited", currentDataSets.totalByVisited);
-  onMount(async () => {
-    pageTitle = await getBroswerTitle();
-    await refreshPlacemarkMap(map);
-    await placemarkService.refreshPlacemarksInfo();
-  });
-</script>
-
-<svelte:head>
-  <title>{pageTitle}</title>
-</svelte:head>
-
-<div class="container">
-  <section class="section mt-6">
-    {#if category.placemarks && currentCategories.categories.length > 0}
-      <CategoryBanner />
-      <PlacemarkStats />
-      <PlacemarkListCard>
-        <LeafletMap height={40} bind:this={map} />
-      </PlacemarkListCard>
-      <div class="box has-background-white">
-        <div class="columns">
-          <div class="column">
-            <PlacemarkListCard>
-              <p class="has-text-centered subtitle has-text-weight-bold is-5">Total by Country</p>
-              <p>Country Labels: {currentDataSets.totalByCountry.labels.join(", ")}</p>
-              <Chart data={currentDataSets.totalByCountry} type="bar" />
-            </PlacemarkListCard>
-          </div>
-          <div class="column has-text-centered">
-            <PlacemarkListCard>
-              <p class="has-text-centered subtitle has-text-weight-bold is-5">
-                Total by Visited/Not Visited
-              </p>
-              <Chart data={currentDataSets.totalByVisited} type="pie" />
-            </PlacemarkListCard>
-          </div>
-        </div>
-      </div>
-      <PlacemarkListCard>
-        <ListPlacemarks />
-      </PlacemarkListCard>
-    {/if}
-    <Category placemarkEvent={placemarkAdded} />
-  </section>
-</div>  -->
-
 <script lang="ts">
-  //import { currentDataSets } from "$lib/runes.svelte"; // or ./stores.ts
-  import { derived } from "svelte/store";
+  // Declaring variables for chart data
+  let totalByCountry: number;
+  let totalByVisited: number;
 
-  let totalByCountry;
-  let totalByVisited;
-
+  // Auto-subscribe to currentDataSets Svelte store
   $currentDataSets; // subscribe
 
+  // Reactive assignments: when currentDataSets updates, these update too
   $: totalByCountry = $currentDataSets.totalByCountry;
   $: totalByVisited = $currentDataSets.totalByVisited;
 
+  // Import the `$page` store to access route parameters like `id`
   import { page } from "$app/stores";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { onMount } from "svelte";
@@ -222,32 +26,28 @@
   import LeafletMap from "$lib/ui/LeafletMap.svelte";
   import { refreshPlacemarkMap } from "$lib/ui/services/placemark-utils";
 
+  // Referencing to the LeafletMap component for calling methods like add/removeMarker
   let map: LeafletMap;
 
-  /**
-  //  * @type {any}
-   */
-
+  // Page title to dynamically display the browser titlw
   let pageTitle: any = "";
 
+  // Holding the route param for category ID
   let categoryId: string;
-
+  // Reactive assignment to get categoryId from route (URL)
   $: categoryId = $page.params.id;
 
+  // Data passed from +page.ts load function
   export let data;
   const { category } = data;
 
+  /**
+   * Fetch the category title for the page based on categoryId
+   * and set it as the browser title.
+   */
   async function getBroswerTitle() {
-    // if (typeof window === "undefined") return "PlaceMark";
-    // Using the below enables me to retrieve the categoryId
-    // https://stackoverflow.com/questions/23690234/getting-last-segment-of-url-in-javascript?
-    // https://www.geeksforgeeks.org/how-to-get-url-and-url-parts-in-javascript/
-    // const pathParts = window.location.pathname.split("/");
-    // let categoryId = pathParts[pathParts.indexOf("category") + 1];
-    // let placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
     const category = await placemarkService.getCategoryById(categoryId);
     if (category) {
-      // placemarkService.refreshPlacemarksInfo();
       pageTitle = `${category.title} | PlaceMark`; // This can be dynamic
     } else {
       pageTitle = "PlaceMark";
@@ -256,8 +56,12 @@
     return pageTitle;
   }
 
+  // Referencing to PlacemarkStats.svelte for triggering refresh()
   let statsComponent: any;
 
+  /**
+   * Callback when a new placemark is added, adding it to the map and refreshing the statsComponent
+   */
   function placemarkAdded(placemark: Placemark) {
     console.log("Placemark was added:", placemark);
     const popup = `${placemark.title}, ${placemark.country}, ${placemark.address} | Visited: ${placemark.visited} | Geo: ${placemark.lat} / ${placemark.long}`;
@@ -265,7 +69,7 @@
     map.moveTo(parseFloat(placemark.lat), parseFloat(placemark.long));
     console.log("parseFloat(placemark.lat", placemark.lat);
 
-    // Critical: check that this logs and is defined
+    // Checking that statsComponent exists
     console.log("statsComponent is:", statsComponent);
     if (statsComponent && typeof statsComponent.refresh === "function") {
       console.log("Calling statsComponent.refresh()");
@@ -277,28 +81,45 @@
 
   console.log("Chart - Total by Country", totalByCountry);
   console.log("Chart - Total by Visited", totalByVisited);
-  // placemarkService.refreshPlacemarksInfo();
+
+  /**
+   * Callback when a placemark is deleted, removing it from the map and refreshing the statsComponent
+   */
 
   function placemarkDeleted(placemark: Placemark) {
     console.log("Placemark was deleted:", placemark);
 
-    // Remove marker from map if a reference or identifier exists.
-    // Assuming your `LeafletMap` component has a method like `removeMarker`:
+    // Removing marker from map if a reference or identifier exists.
     map.removeMarker(parseFloat(placemark.lat), parseFloat(placemark.long));
-
-    // Refresh statistics or any dependent UI components
+    // Refreshing statistics or any dependent components
     if (statsComponent && typeof statsComponent.refresh === "function") {
       console.log("Calling statsComponent.refresh() after deletion");
       statsComponent.refresh();
     } else {
       console.warn("statsComponent.refresh not available");
     }
+    // Moving map to the last remaining placemark or '0,0' if no placemark left
+    const remaining = currentPlacemarks.placemarks;
+    if (remaining.length > 0) {
+      const last = remaining[remaining.length - 1];
+      const lat = parseFloat(last.lat);
+      const long = parseFloat(last.long);
+      console.log("Moving map to last remaining placemark:", last.title);
+      map.moveTo(lat, long);
+      refreshPlacemarkMap(map, currentPlacemarks.placemarks);
+    } else {
+      console.warn("No placemarks left to move to.");
+      map.moveTo(0, 0);
+      // There will be no chart to show
+      totalByCountry = 0;
+      totalByVisited = 0;
+    }
   }
 
+  // On component mount: fetch title, refresh placemarks, and update map
   onMount(async () => {
     pageTitle = await getBroswerTitle();
     await placemarkService.refreshPlacemarksInfo();
-    // await refreshPlacemarkMap(map);
     await refreshPlacemarkMap(map, currentPlacemarks.placemarks); // pass the data directly
     console.log("The map: ", map);
   });
@@ -321,7 +142,7 @@
           <div class="column">
             <PlacemarkListCard>
               <p class="has-text-centered subtitle has-text-weight-bold is-5">Total by Country</p>
-              <p>Country Labels: {totalByCountry.labels.join(", ")}</p>
+              <!-- <p>Country Labels: {totalByCountry.labels.join(", ")}</p> -->
               <!-- <Chart data={totalByCountry} type="bar" /> -->
 
               {#key totalByCountry}
@@ -334,7 +155,10 @@
               <p class="has-text-centered subtitle has-text-weight-bold is-5">
                 Total by Visited/Not Visited
               </p>
-              <!-- <Chart data={totalByVisited} type="pie" /> -->
+              <!-- In Svelte, the {#key ...} block is used to tell the framework to completely recreate a block of DOM whenever 
+               the value inside the key expression changes. It's especially useful when you need to force a component or 
+               element to re-render from scratch.
+               https://svelte.dev/docs/svelte/key? -->
               {#key totalByVisited}
                 <Chart data={totalByVisited} type="pie" />
               {/key}

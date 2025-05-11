@@ -5,10 +5,13 @@
   import { fly } from "svelte/transition";
   import { placemarkService } from "./services/placemark-service";
   import { placemark } from "$lib/runes.svelte";
-  import { onMount } from "svelte"; // ✅ Import onMount
+  import { onMount } from "svelte"; // Import onMount
 
-  let visible = $state(true);
+  /** The script to get the weather temperature and conditions is a re-adaptation of what I found in
+  /* https://medium.com/@ravipatel.it/a-comprehensive-guide-to-fetching-weather-data-using-javascript-fetch-api-13133d0bc2e6
+  */
 
+  // Component props with defaults
   let { title = "#instaPlaceMark", subtitle = "InstaMark your InstaPlaces" } = $props();
 
   // Reactive state variables for user input and results
@@ -16,10 +19,11 @@
   let weatherData = $state(""); // Resulting weather data
   let errorMessage = $state(""); // Any error that occurs during fetch
 
+  // OpenWeatherMap API constants
   const API_KEY = "c3e26a0b5387b001f6f548f5710c0baf";
   const BASE_URL = "https://api.openweathermap.org/data/2.5/";
 
-  // Function to fetch the weather data
+  // Fetch weather based on current placemark or entered city
   async function getWeather() {
     /**
      * The below variables will enable me to retrieve tha category and placemark ids
@@ -29,7 +33,7 @@
     const pathParts = window.location.pathname.split("/");
     const categoryId = pathParts[pathParts.indexOf("category") + 1];
     const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
-    const placemark = await placemarkService.getPlacemarkById( placemarkId);
+    const placemark = await placemarkService.getPlacemarkById(placemarkId);
     city = city?.trim() || placemark.country;
 
     if (!city) {
@@ -38,7 +42,7 @@
     }
 
     try {
-      // Fetch weather data from OpenWeatherMap API
+      // Fetching weather data from OpenWeatherMap API https://medium.com/@nikhilkumarreddy28/fetching-weather-data-of-a-city-using-openweather-api-c48e279c89a8
       const weatherResponse = await fetch(
         `${BASE_URL}weather?q=${city}&appid=${API_KEY}&units=metric`
       );

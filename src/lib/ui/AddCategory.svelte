@@ -4,22 +4,27 @@
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { currentCategories, loggedInUser } from "$lib/runes.svelte";
   import { goto } from "$app/navigation";
+  // DOMPurify for sanitizing input https://www.npmjs.com/package/dompurify
   import DOMPurify from "dompurify";
 
+  // Local component state
   let categories: Category[] = [];
 
+  // Reactive state variables for form inputs
   let title = $state("");
   let userid = loggedInUser._id;
   let notes = $state("");
   let image = $state("");
   let message = $state("");
 
-  // Sanitized values for output
+  // Sanitized versions of notes and image to safely render in HTML
   // svelte-ignore non_reactive_update -->
   let safeNotes = "";
   // svelte-ignore non_reactive_update -->
   let safeImage = "";
 
+  // This reactive effect updates notes and image based on the selected title
+  // https://www.htmlallthethings.com/blog-posts/understanding-svelte-5-runes-derived-vs-effect
   $effect(() => {
     if (title === "Restaurants") {
       image = "https://i.ibb.co/gZjF0ppp/jerk-pasta-recipe.png";
@@ -52,22 +57,26 @@
     categories = allCategories.filter((cat) => cat.userid === loggedInUser._id);
   });
 
+  // Handling selection change in the dropdown
   function handleTitleChange(event: Event) {
     const selected = (event.target as HTMLSelectElement).value;
+    // Get all existing category titles in lowercase for comparison
     const existingTitles = currentCategories.categories.map((cat) =>
       cat.title.trim().toLowerCase()
     );
-
+    // If category already exists, show warning and reset selection
     if (existingTitles.includes(selected.trim().toLowerCase())) {
       message = "!!! This category already exists. Please choose a different one...!!!";
       title = "";
       goto("/dashboard");
     } else {
+      // Otherwise, update title and clear any previous message
       title = selected;
       message = "";
     }
   }
 
+  // Creating a new category and redirects to dashboard
   async function addCategory() {
     let category: Category = {
       title,
@@ -77,8 +86,10 @@
       placemarks: []
     };
 
+    // Saving category using the placemark service
     let success = await placemarkService.addCategory(category);
     if (success) {
+      // Storing selected title in local storage and refresh global state
       localStorage.setItem("categoryTitle", category.title);
       placemarkService.refreshPlacemarksInfo();
       goto("/dashboard");

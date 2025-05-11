@@ -6,13 +6,16 @@
   import { goto } from "$app/navigation";
   import { currentCategories, currentPlacemarks } from "$lib/runes.svelte";
   import DOMPurify from "dompurify";
-  import { refreshPlacemarkMap } from "./services/placemark-utils";
   import LeafletMapMulti from "./LeafletMapMulti.svelte";
-  import { map } from "leaflet";
   import type { Placemark } from "./types/placemark-types";
 
   export let placemarkDeletedEvent: (placemark: Placemark) => void;
 
+  /**
+   * The below variables will enable me to retrieve tha category and placemark ids
+   * https://css-tricks.com/snippets/javascript/get-url-and-url-parts-in-javascript/
+   * https://www.slingacademy.com/article/isolating-file-paths-and-directories-using-javascript-string-methods-without-extracting-filename-extension/
+   */
   const url = window.location.pathname;
   const categoryId = url.split("/").pop();
   let category = currentCategories.categories.find((cat) => cat._id === categoryId);
@@ -23,7 +26,7 @@
 
   onMount(async () => {
     await placemarkService.refreshPlacemarksInfo();
-
+    // Confirming we're running in the browser
     if (typeof window !== "undefined") {
       const categoryId = window.location.pathname.split("/").pop();
       console.log("Category ID:", categoryId);
@@ -35,6 +38,7 @@
       const result = await placemarkService.getCategoryById(categoryId);
       if (result) {
         category = result;
+        // Retrieving all category placemarks and reassigning to 'currentPlacemarks.placemarks'
         currentPlacemarks.placemarks = result.placemarks;
         console.log("Our placemarks: ", result.placemarks);
       } else {
@@ -45,6 +49,7 @@
     }
   });
 
+  // Function to delete a placemark
   async function deletePlacemark(placemarkId: string) {
     const placemark = currentPlacemarks.placemarks.find((p) => p._id === placemarkId);
     if (!placemarkId) {
@@ -67,6 +72,7 @@
     }
   }
 
+  // Navigate to the specific placemark landing page
   async function onPlacemarkSelect(categoryId: string, placemarkId: string, event: Event) {
     event.preventDefault();
 
@@ -83,13 +89,20 @@
         return;
       }
 
+      // Saving the placemark ID for persistence
       localStorage.setItem("placemarkId", placemarkId); // Save for refresh
 
-      // Update local state
+      /** To make sure the local Svelte store contains the most recent data for the selected placemark,
+       * and then navigate to its detail page, we search the current list of placemarks for one with the matching _id
+       * Returns the index if found, or -1 if not found.
+       * */
       const index = currentPlacemarks.placemarks.findIndex((p) => p._id === placemarkId);
       if (index !== -1) {
+        // If the placemark is already in the store, it updates that item with fresh data, which is
+        // 'updatedPlacemark'
         currentPlacemarks.placemarks[index] = updatedPlacemark;
       } else {
+        // If the placemark isn’t found in the store (maybe it’s new), it adds it to the array
         currentPlacemarks.placemarks.push(updatedPlacemark);
       }
 

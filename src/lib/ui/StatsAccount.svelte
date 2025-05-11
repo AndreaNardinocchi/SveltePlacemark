@@ -10,15 +10,15 @@
   import DOMPurify from "dompurify";
   import { goto } from "$app/navigation";
 
-  let categories: any[] = [];
-  let placemarks: any[] = [];
+  // let categories: any[] = [];
+  // let placemarks: any[] = [];
   let user: User;
   let categoryPlacemarks: never[] = [];
   console.log("These are the categoryPlacemarks: ", categoryPlacemarks);
 
   const token = loggedInUser.token;
   const email = loggedInUser.email;
-  const loggedInUserId = loggedInUser._id;
+  // const loggedInUserId = loggedInUser._id;
 
   // Sanitize function using DOMPurify
   function sanitize(input: string): string {
@@ -43,8 +43,8 @@
       return;
     }
 
-    // Ensure _id is a valid string before using it, and I am using it since the localStorage.setItem("categoryId", categoryIdString); throws
-    // me an error 'Type 'undefined' is not assignable to type 'string'.''
+    // Ensure _id is a valid string before using it, and I am using it since the localStorage.setItem("categoryId", categoryIdString);
+    // throws me an error 'Type 'undefined' is not assignable to type 'string'.''
     const categoryIdString = validCategory._id || "DefaultCategoryId";
 
     // Sanitize categoryTitle and categoryId before storing in localStorage
@@ -57,8 +57,6 @@
     console.log("Sending the categoryTitle:", sanitizedCategoryTitle, sanitizedCategoryId);
 
     goto(`/category/${sanitizedCategoryId}`);
-    // Call the placemarkService to refresh the placemarks for the selected category
-    //  placemarkService.refreshPlacemarksInfo();
   }
 
   onMount(async () => {

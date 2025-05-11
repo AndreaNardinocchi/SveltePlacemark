@@ -48,6 +48,7 @@
   <label class="label">
     Password
     <div class="control has-icons-left">
+      <!-- svelte-ignore event_directive_deprecated -->
       <input
         class="input"
         type="password"
@@ -64,6 +65,3 @@
     </div>
   </label>
 </div>
-<!-- </div> -->
-<!-- {/if}
-</div> -->

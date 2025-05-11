@@ -34,7 +34,8 @@
    * https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault
    * */
   function onCategorySelect(categoryId: string, event: Event) {
-    event.preventDefault(); // Prevent the default link navigation
+    // Stops the browser from doing a default page reload when the link is clicked.
+    event.preventDefault();
 
     const validCategory = currentCategories.categories.find(
       (category) => category._id === categoryId

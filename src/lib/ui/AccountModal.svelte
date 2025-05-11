@@ -1,14 +1,4 @@
 <script lang="ts">
-  import UserDetails from "./UserDetails.svelte";
-  // let userLat = $state("40.7128");
-  // let userLong = $state("-74.006");
-  // let country = $state("United States");
-  // let street = $state("123 Main St");
-  // let addressCode = $state("12345");
-  // let phoneNumber = $state("1234567890");
-  // let email = $state("john.doe@example.com");
-  // let password = $state("password123");
-
   let {
     country = $bindable("United States"),
     street = $bindable("123 Main St"),
@@ -20,34 +10,8 @@
     password = $bindable("password123")
   } = $props();
 
-  // let {
-  //   country = "United States",
-  //   street = "123 Main St",
-  //   addressCode = "12345",
-  //   DOB = "1990-01-01",
-  //   phoneNumber = "1234567890",
-  //   email = "john.doe@example.com",
-  //   password = "password123",
-  //   userLat = 40.7128,
-  //   userLong = -74.006
-  // } = $props();
-
-  // See example coordinates in https://tutors.dev/lab/wit-hdip-comp-sci-2024-full-stack-1/unit-6-sveltekit/topic-19-svelte-routing/side-unit/book-2-donation-svelte-2/05
-  // let { country = $bindable(),
-  //   street = $bindable() } = $props();
-
-  // let country = "United States";
-  // let street = "123 Main St";
-  // let addressCode = "12345";
-  // let DOB = "1990-01-01";
-  // let phoneNumber = "1234567890";
-  // let email = "john.doe@example.com";
-  // let password = "password123";
-  // let userLat = 40.7128;
-  // let userLong = -74.006;
-  let _id = "12345"; // Example ID
-
   // svelte-ignore non_reactive_update
+  // https://bulma.io/documentation/components/modal/
   let isModalOpen = false;
 
   function openModal() {

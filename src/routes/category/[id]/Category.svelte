@@ -1,14 +1,15 @@
 <script lang="ts">
-  // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
-  // https://www.npmjs.com/package/svelte-inview
-
-  let { placemarkEvent = null, placemarkDeleteEvent = null } = $props();
-
   import AddPlacemark from "$lib/ui/AddPlacemark.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import type { Placemark } from "$lib/ui/types/placemark-types";
   import { goto } from "$app/navigation";
   import DOMPurify from "dompurify";
+
+  /**  Props passed into this component
+   placemarkEvent will be triggered after a new placemark is added
+   placemarkDeleteEvent can be triggered for deletion actions
+   */
+  let { placemarkEvent = null, placemarkDeleteEvent = null } = $props();
 
   /**
    * This is to sanitize any inputs where needed
@@ -43,6 +44,7 @@
     const sanitizedVisited = sanitizeInput(visited);
     const sanitizedDescription = sanitizeInput(description);
 
+    // Constructing placemark object
     const placemark: Placemark = {
       title: sanitizedTitle,
       lat: sanitizedLat,
@@ -57,6 +59,10 @@
       // categoryId: ""
     };
 
+    /** Getting categoryId from the current URL
+     * https://www.tutorialrepublic.com/faq/how-to-get-portion-of-url-path-in-javascript.php
+     * https://reactgo.com/get-last-segment-url-javascript/
+     */
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
 
@@ -74,25 +80,16 @@
       return;
     }
 
+    // Submitting the new placemark placemark to the backend
     const result = await placemarkService.addPlacemark(categoryId, placemark);
 
     if (result) {
+      // Notifying parent of the addition
       if (placemarkEvent) placemarkEvent(placemark);
-      // message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
       message = `You added ${sanitizedTitle} in ${sanitizedCountry}. Visited? ${sanitizedVisited}`;
-      //  Reset form fields
-      // title = "";
-      // lat = "";
-      // long = "";
-      // address = "";
-      // country = "";
-      // phone = "";
-      // website = "";
-      // visited = "";
-      // description = "";
-      //img = [];
       console.log(`Placemark added: ${title}, lat: ${lat}, long: ${long}`);
       console.log("Payload being sent:", placemark);
+      // Navigating back to category view
       await goto(`/category/${categoryId}`);
       // Reset form fields after navigation is completed
       title = "";
@@ -108,15 +105,9 @@
       console.log("Payload being sent:", placemark);
       console.warn("Failed to add placemark.");
     }
-
-    // if (placemarkEvent) placemarkEvent(placemark);
-    // // message = `You added ${placemark.title} in ${placemark.title}. Visited? ${placemark.visited}`;
-    // message = `You added ${sanitizedTitle} in ${sanitizedCountry}. Visited? ${sanitizedVisited}`;
   }
 
   function handleDelete(placemark: Placemark) {
-    // Your deletion logic here...
-
     if (placemarkDeleteEvent) {
       placemarkDeleteEvent(placemark); // Notify parent
     }

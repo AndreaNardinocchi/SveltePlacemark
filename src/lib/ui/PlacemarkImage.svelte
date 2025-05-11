@@ -1,10 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import imageService from "./services/image-service"; // adjust the path if needed
+  import { placemarkService } from "./services/placemark-service";
 
   let categoryId = "";
   let placemarkId = "";
+  // Holds the file selected by the user (or null if no file is selected)
   let selectedFile: File | null = null;
+  // Stores a preview URL of the selected image for displaying before upload
   let previewUrl: string | null = null;
   let fileName = "";
   let isUploading = false; // To handle upload state
@@ -20,6 +23,8 @@
     placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
   });
 
+  // Called when the user selects a file
+  // https://www.webdevtutor.net/blog/typescript-etargetfiles
   function handleFileChange(event: Event) {
     const target = event.target as HTMLInputElement;
     const files = target.files;
@@ -28,6 +33,9 @@
       selectedFile = files[0];
       fileName = selectedFile.name;
 
+      // Generating a preview using FileReader
+      // https://stackoverflow.com/questions/27254735/filereader-onload-with-result-and-parameter
+      // https://www.javascripttutorial.net/web-apis/javascript-filereader/
       const reader = new FileReader();
       reader.onload = () => {
         previewUrl = reader.result as string;
@@ -37,17 +45,20 @@
     }
   }
 
+  // Called when the user clicks "Upload Image"
   async function handleUpload() {
     if (!selectedFile) {
       alert("Please select a file first.");
       return;
     }
-
-    isUploading = true; // Set uploading state
+    // Indicate that the upload is in progress
+    isUploading = true;
+    // Calling the uploadImage() function and passing in ids and selected file.
     const success = await imageService.uploadImage(categoryId, placemarkId, selectedFile);
     console.log("Upload success: ", success, categoryId, placemarkId, selectedFile);
 
     if (success) {
+      await placemarkService.refreshPlacemarksInfo();
       alert("Image uploaded successfully!");
       // Reset form after successful upload
       selectedFile = null;

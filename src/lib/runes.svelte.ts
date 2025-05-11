@@ -52,25 +52,5 @@ export const currentDataSets = writable({
   totalByVisited: { labels: ["Visited", "Not Visited"], datasets: [{ values: [0, 0] }] }
 });
 
-// export const currentDataSets = {
-//   totalByCountry: {
-//     labels: ["country"],
-//     datasets: [
-//       {
-//         values: [0]
-//       }
-//     ]
-//   },
-
-//   totalByVisited: {
-//     labels: ["Visited", "Not Visited"],
-//     datasets: [
-//       {
-//         values: [0, 0]
-//       }
-//     ]
-//   }
-// };
-
 export const currentCategories = $state({ categories: [] as Category[] });
 export const currentPlacemarks = $state({ placemarks: [] as Placemark[] });

@@ -6,23 +6,11 @@
   import InstHeader from "$lib/ui/InstHeader.svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
   import { onMount } from "svelte";
-  import { placemark } from "$lib/runes.svelte";
 
-  /**
-   * @type {any}
-  //  */
-  // export let key;
-  let categoryId: string;
-  let placemarkId: string;
-
-  $: categoryId = $page.params._id;
-  $: placemarkId = $page.params._id;
-
-  export let data;
-
-  console.log("No worries", data, placemarkId);
-
+  // Reactive page title variable, updated dynamically based on placemark data
   let pageTitle: any = "";
+
+  // Function to retrieve the Browser Title of the placemark landing page
   async function getBroswerTitle() {
     /**
      * The below variables will enable me to retrieve tha category and placemark ids
@@ -33,6 +21,7 @@
     let categoryId = pathParts[pathParts.indexOf("category") + 1];
     let placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
     const placemark = await placemarkService.getPlacemarkById(placemarkId);
+
     if (placemark) {
       pageTitle = `${placemark.title} | #instaPlaceMark!`; // This can be dynamic
     }
@@ -40,9 +29,9 @@
     return pageTitle;
   }
 
+  // When the component is mounted in the browser, set the page title dynamically
   onMount(async () => {
     pageTitle = await getBroswerTitle();
-    await placemarkService.refreshSpecificPlacemark();
   });
 </script>
 

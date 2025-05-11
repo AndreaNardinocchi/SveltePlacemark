@@ -36,7 +36,7 @@
                   If you love Venice, you might want to read this article and find out about other
                   beautiful cities with canals going through.
                 </p>
-                <p><a href="/" class="has-text-grey-light">Read more</a></p>
+                <p><a href="/news" class="has-text-grey-light">Read more</a></p>
               </div>
             </div>
           </section>
@@ -63,7 +63,7 @@
                   Plenty of unexpected and exciting things are to happen once you embark upon a
                   journey on these exotic destinations. Let them flip you out!
                 </p>
-                <p><a href="/" class="has-text-grey-light">Read more</a></p>
+                <p><a href="/news" class="has-text-grey-light">Read more</a></p>
               </div>
             </div>
           </section>
@@ -88,7 +88,7 @@
                   Discover all the tourist events near to you with our Geolocating Tourist Events
                   APP that you can download to your phone.
                 </p>
-                <p><a href="/" class="has-text-grey-light">Read more</a></p>
+                <p><a href="/news" class="has-text-grey-light">Read more</a></p>
               </div>
             </div>
           </section>
@@ -115,7 +115,7 @@
                   Whether you are a seasoned traveler or a first-time one, take a look at our
                   traveling guide.
                 </p>
-                <p><a href="/" class="has-text-grey-light">Read more</a></p>
+                <p><a href="/news" class="has-text-grey-light">Read more</a></p>
               </div>
             </div>
           </section>
@@ -137,7 +137,7 @@
               Here comes the next promos for Summer 2024. This time we are gravitating towards
               cultural tourism and destinations. Why don't you take a quick peek of what is in store
               for you?<br />
-              <a href="/" class="has-text-grey-light">Read more</a>
+              <a href="/news" class="has-text-grey-light">Read more</a>
             </p>
             <h3>Insanity Deals</h3>
             <figure class="image">
@@ -151,7 +151,7 @@
             </figure>
             <p class="p-3">
               With the new exotic destinations added to our promos, hurry up as we have new <a
-                href="/"
+                href="/news"
                 class="has-text-grey-light">Insanity Deals</a
               > that are worth checking this week. Find out more about this irrepeatable deals and do
               not forget to give us your feedback when you are back in town ;-) !

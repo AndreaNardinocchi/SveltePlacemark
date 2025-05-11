@@ -10,8 +10,10 @@
 
   // Use Svelte's reactive assignment here
   let title = $state("");
+  // The variable img is a list of strings
   let img: string[] = [];
-  let placemark: Placemark | null = $state(null); // Reactive variable
+  // Declares a reactive state variable
+  let placemark: Placemark | null = $state(null);
 
   /**
    * The below variables will enable me to retrieve tha category and placemark ids
@@ -22,7 +24,7 @@
   const categoryId = pathParts[pathParts.indexOf("category") + 1];
   const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
 
-  // Fetch placemark data
+  // Fetching placemark data
   async function getPlacemarkTitle() {
     const email = loggedInUser.email;
     const token = loggedInUser.token;
@@ -33,7 +35,8 @@
     }
 
     const users = await placemarkService.getAllUsers(token);
-    const matchedUser = users.find((user) => user.email === email);
+    // const matchedUser = users.find((user) => user.email === email);
+    const matchedUser = loggedInUser;
 
     if (matchedUser) {
       const category = await placemarkService.getCategoryById(categoryId);
@@ -41,14 +44,17 @@
         console.error("Category or placemarks not found.");
         return;
       }
-      const placemarkData = await placemarkService.getPlacemarkById( placemarkId);
+      const placemarkData = await placemarkService.getPlacemarkById(placemarkId);
       if (placemarkData) {
         placemark = placemarkData; // Reactive update
         if (placemark) {
           title = DOMPurify.sanitize(placemark.title);
           // img = placemark.img.map((url: string) => DOMPurify.sanitize(url));
-          // title = placemark.title;
-          img = placemark.img; // Ensure this is an array
+          //  title = placemark.title;
+          /** For some reason, using 'img' as a simple string will ensure a deletion with
+          /* automatic refresh on the page
+          */
+          img = placemark.img;
         }
       } else {
         console.error("Placemark not found.");
