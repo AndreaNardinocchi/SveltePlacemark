@@ -2,6 +2,8 @@
   import "leaflet/dist/leaflet.css";
   import { onMount, afterUpdate } from "svelte";
   import L from "leaflet";
+  import icon from "leaflet/dist/images/marker-icon.png";
+  import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
   // These are input values passed to the component
   export let lat: number;
