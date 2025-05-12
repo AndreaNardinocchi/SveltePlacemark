@@ -6,6 +6,7 @@
   import { goto } from "$app/navigation";
   import { fly } from "svelte/transition";
 
+  // Local user object that will be edited or deleted
   let user: User;
   let showModal = false; // Controls modal visibility
 
@@ -34,6 +35,7 @@
     }
   });
 
+  // Update user details and close modal - ##BUG as it won't update the user unfortunately
   async function handleUpdateUser() {
     try {
       console.log("This is the user we wanna send to update: ", user);
@@ -44,6 +46,7 @@
     }
   }
 
+  // Delete user by ID ##BUG as it won't delete the user unfortunately
   async function deleteUser(userId: string) {
     if (!userId) {
       console.error("No user ID provided.");

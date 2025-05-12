@@ -1,4 +1,4 @@
-<!-- <script lang="ts">
+<script lang="ts">
   /****************** Version 1 **********************************************************************************/
   import { placemarkService } from "./services/placemark-service";
   import { goto } from "$app/navigation";
@@ -20,24 +20,30 @@
     phone: "",
     website: "",
     visited: "",
-    description: ""
+    description: "",
+    categoryId: categoryId
   };
 
   onMount(async () => {
     // Split the current URL to get categoryId and placemarkId
+    // https://www.tutorialrepublic.com/faq/how-to-get-portion-of-url-path-in-javascript.php
+    // https://stackoverflow.com/questions/39334400/how-to-split-url-to-get-url-path-in-javascript
     const pathParts = window.location.pathname.split("/");
     console.log("Path parts:", pathParts); // Log the full path to see if it's what you expect
-
-    // Try to get categoryId and placemarkId from the URL
+    /**
+     * The below variables will enable me to retrieve the category and placemark ids
+     * https://css-tricks.com/snippets/javascript/get-url-and-url-parts-in-javascript/
+     * https://www.slingacademy.com/article/isolating-file-paths-and-directories-using-javascript-string-methods-without-extracting-filename-extension/
+     */
     categoryId = pathParts[pathParts.indexOf("category") + 1];
     placemarkId = pathParts[pathParts.indexOf("editplacemark") + 1];
     const token = loggedInUser.token;
 
-    // Check if the values are correctly set
+    // Checking if the values are correctly set
     console.log("categoryId:", categoryId);
     console.log("placemarkId:", placemarkId);
 
-    // If either ID is missing, log an error, or token
+    // If either ids are missing, logging an error, or token
     if (!categoryId || !placemarkId || !token) {
       console.error("Invalid categoryId or placemarkId", { categoryId, placemarkId });
       return; // Stop the rest of the logic if IDs are invalid
@@ -46,12 +52,11 @@
     if (categoryId && placemarkId && token) {
       try {
         console.log("categoryId and placemarkId:", categoryId, placemarkId);
-        // Fetch the category and placemark data
+        // Fetching the category and placemark data
         category = await placemarkService.getCategoryById(categoryId);
         console.log("Fetched category:", category);
         console.log("This is the token:", token);
-
-        const myPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const myPlacemark = await placemarkService.getPlacemarkById(placemarkId);
         console.log("This is myPlacemark :", myPlacemark);
         if (placemark) {
           placemark = myPlacemark;
@@ -64,6 +69,7 @@
     }
   });
 
+  // Function to ypdate a placemark ##BUG as there won't be any update
   async function updatePlacemark(updatedPlacemark: {
     title: string;
     lat: string;
@@ -76,10 +82,8 @@
     description: string;
   }) {
     // Don’t fetch the placemark again — use the current form values
-    const newPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
-
+    const newPlacemark = await placemarkService.getPlacemarkById(placemarkId);
     console.log("This is the updated placemark: ", updatedPlacemark);
-
     console.log("This is the placemark returned by the database: ", newPlacemark); //  Correct object
 
     if (updatedPlacemark) {
@@ -88,9 +92,9 @@
       alert("Failed to update placemark.");
     }
   }
-</script> -->
+</script>
 
-<script lang="ts">
+<!-- <script lang="ts">
   /************************************ Version 2 *****************************************/
   import { placemarkService } from "./services/placemark-service";
   import { goto } from "$app/navigation";
@@ -102,6 +106,10 @@
   let placemarkId = "";
   // svelte-ignore non_reactive_update
   let category: Category | null = null;
+  // Split the current URL to get categoryId and placemarkId
+  const pathParts = window.location.pathname.split("/");
+  // Try to get categoryId and placemarkId from the URL
+  categoryId = pathParts[pathParts.indexOf("category") + 1];
 
   let placemark: Placemark = {
     title: "",
@@ -112,7 +120,9 @@
     phone: "",
     website: "",
     visited: "",
-    description: ""
+    description: "",
+
+    categoryId: categoryId
   };
 
   onMount(async () => {
@@ -143,7 +153,7 @@
         console.log("Fetched category:", category);
         console.log("This is the token:", token);
 
-        const myPlacemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const myPlacemark = await placemarkService.getPlacemarkById(placemarkId);
         console.log("This is myPlacemark :", myPlacemark);
         if (placemark) {
           placemark = myPlacemark;
@@ -183,7 +193,7 @@
       alert("Failed to update placemark.");
     }
   }
-</script>
+</script> -->
 
 <div class="box mt-6">
   <label>

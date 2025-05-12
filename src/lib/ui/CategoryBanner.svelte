@@ -62,12 +62,13 @@
     }
     // Sanitize image URL too
     sanitizedImageCode = DOMPurify.sanitize(imageCode);
-
     return imageCode;
   }
 
   onMount(async () => {
-    // Get category ID dynamically, maybe from route or context
+    // Get category ID dynamically
+    // https://www.tutorialrepublic.com/faq/how-to-get-portion-of-url-path-in-javascript.php
+    // https://stackoverflow.com/questions/39334400/how-to-split-url-to-get-url-path-in-javascript
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
     const token = loggedInUser.token;

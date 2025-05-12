@@ -7,19 +7,7 @@
   import { onMount } from "svelte";
   import { placemarkService } from "$lib/ui/services/placemark-service";
 
-  // @ts-ignore
-  export const load = async ({ page }) => ({
-    props: {
-      key: page.path
-    }
-  });
-
-  /**
-   * @type {any}
-   */
-  //export let key: any;
-
-  let pageTitle: any = "Welcome to PlaceMark"; // This can be dynamic
+  let pageTitle: any = "Welcome to PlaceMark";
   onMount(async () => {
     await placemarkService.restoreSession();
   });

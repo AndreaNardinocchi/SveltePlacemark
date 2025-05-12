@@ -28,8 +28,8 @@
   function sanitizeAddress(e: { target: { value: string } }) {
     e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     address = e.target.value;
-    if (address.length < 3 || address.length > 20) {
-      message = "Address should be between more than 3 and less than 30 characters";
+    if (address.length < 3 || address.length > 150) {
+      message = "Address should be between more than 3 and less than 80 characters";
     }
   }
 

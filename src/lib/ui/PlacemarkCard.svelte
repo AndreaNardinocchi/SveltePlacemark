@@ -57,25 +57,26 @@
       placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
 
       if (categoryId && token) {
-        // Get category
+        // Getting the category
         const categoryResponse = await placemarkService.getCategoryById(categoryId);
         console.log("Fetched category: ", categoryResponse);
 
-        // Get Placemark
-        const placemarkResponse = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        // Getting the Placemark
+        const placemarkResponse = await placemarkService.getPlacemarkById(placemarkId);
         console.log("Fetched placemark:", placemarkResponse);
 
-        // Update placemark data
+        // Updating the placemark data
         placemark = placemarkResponse;
 
-        // Set the destination (country of the placemark)
+        // Setting the destination (country of the placemark)
         destination = placemark.country.toLowerCase().trim();
         console.log("Fetched destination: ", destination);
 
         if (email && token) {
-          // Fetch user data
+          // Fetching user data
           const users = await placemarkService.getAllUsers(token);
           const matchedUser = users.find((user) => user.email === email);
+          // const matchedUser = loggedInUser;
 
           if (matchedUser) {
             user = matchedUser; // Assign the matched user to the `user` variable
@@ -86,7 +87,6 @@
             console.log("userCountry:", userCountry);
 
             // Determine travel means after both destination and userCountry are available
-            // if (destination === userCountry) {
             if (destination.toLowerCase().includes(userCountry.toLowerCase())) {
               travelMeans = "car, bus, or train";
             } else {
@@ -124,6 +124,7 @@
         // Fetch user data using email and token
         const users = await placemarkService.getAllUsers(token);
         const matchedUser = users.find((user) => user.email === email);
+        //  const matchedUser = loggedInUser;
 
         if (matchedUser) {
           const userDetails = matchedUser; // Assign the matched user to the `userDetails` variable
@@ -144,7 +145,7 @@
 
           const category = await placemarkService.getCategoryById(categoryId);
 
-          // Make sure category and placemarks are available
+          // ing sure category and placemarks are available
           if (!category || !category.placemarks) {
             console.error("Category or placemarks are missing.");
             return;
@@ -168,15 +169,15 @@
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             let dist = R * c; // Distance in kilometers
 
-            // Round the distance to 2 decimal places
+            // Rounding the distance to 2 decimal places
             dist = Number(dist).toFixed(2);
 
-            // Handle case for -Infinity
+            // Handling case for -Infinity
             if (dist === "-Infinity") {
               dist = "0";
             }
 
-            // Update the distance string
+            // Updating the distance string
             distance = `${dist} km away`;
             console.log("Calculated distance: ", distance);
           }
@@ -197,6 +198,7 @@
     const token = loggedInUser.token;
     const pathParts = window.location.pathname.split("/");
     const categoryId = pathParts[pathParts.indexOf("category") + 1];
+    console.log("CategoryId in Placemark page: ", categoryId);
     const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
 
     console.log("This is the placemarkId in youShouldVisit: ", placemarkId);
@@ -207,9 +209,6 @@
     }
 
     if (email && token) {
-      const pathParts = window.location.pathname.split("/");
-      const categoryId = pathParts[pathParts.indexOf("category") + 1];
-      const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
       const users = await placemarkService.getAllUsers(token);
       const matchedUser = users.find((user) => user.email === email);
 
@@ -226,7 +225,7 @@
         }
         console.log("This is the placemarkId 2 in youShouldVisit: ", placemarkId);
         // const placemark = category.placemarks.find((p) => p.id === placemarkId);
-        const placemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const placemark = await placemarkService.getPlacemarkById(placemarkId);
         console.log("Placemark in you youShouldVisit: ", placemark);
         if (!placemark) {
           console.error("Placemark not found for id:", placemarkId);
@@ -273,7 +272,7 @@
           travelMeans
         )}, and it is {sanitizeInput(distance)}.
       </p>
-      <p class="mt-4 mb-4">{sanitizeInput(youShouldVisit)} {sanitizeInput(placemark.title)}!</p>
+      <p class="mt-4 mb-4">{sanitizeInput(youShouldVisit)}</p>
       <div class="buttons pt-3">
         <a
           href={sanitizeInput(placemark.website)}
@@ -292,14 +291,6 @@
         popupText={`${placemark.title}, ${placemark.country} `}
         height={30}
       />
-      <!-- <figure class="image is-264x264 m-auto">
-        <img
-          src="https://i.ibb.co/M66kktn/travel.jpg"
-          alt="Travel signs"
-          style="border-radius: 10px;"
-          border="0"
-        />
-      </figure> -->
     </section>
   </main>
 {/if}

@@ -34,7 +34,8 @@
    * https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault
    * */
   function onCategorySelect(categoryId: string, event: Event) {
-    event.preventDefault(); // Prevent the default link navigation
+    // Stops the browser from doing a default page reload when the link is clicked.
+    event.preventDefault();
 
     const validCategory = currentCategories.categories.find(
       (category) => category._id === categoryId
@@ -70,25 +71,29 @@
       <section class="column is-8">
         <div class="box-link-hover-shadow">
           <h2 class="title">
-            <a href={`/category/${category._id}`} class="has-text-grey">
+            <a
+              href={`/category/${category._id}`}
+              class="has-text-grey"
+              on:click={(event) => onCategorySelect(category._id!, event)}
+            >
               {category.title}
             </a>
           </h2>
           <div class="notes">
             <div class="content card-content">
               <p class="subtitle">{category.notes}</p>
-              {#each currentCategories.categories as category}
-                <a
-                  href={`/category/${category._id}`}
-                  class="button"
-                  aria-label="Folder open"
-                  on:click={(event) => onCategorySelect(category._id!, event)}
-                >
-                  <span class="icon is-small">
-                    <i class="fas fa-solid fa-folder-open"></i>
-                  </span>
-                </a>
-              {/each}
+              <!-- {#each currentCategories.categories as category} -->
+              <a
+                href={`/category/${category._id}`}
+                class="button"
+                aria-label="Folder open"
+                on:click={(event) => onCategorySelect(category._id!, event)}
+              >
+                <span class="icon is-small">
+                  <i class="fas fa-solid fa-folder-open"></i>
+                </span>
+              </a>
+              <!-- {/each} -->
               <!-- svelte-ignore a11y_invalid_attribute -->
               <a
                 href="#"
@@ -106,7 +111,10 @@
       </section>
       <section class="column is-4">
         <div class="card-image">
-          <a href={`/category/${category._id}`}>
+          <a
+            href={`/category/${category._id}`}
+            on:click={(event) => onCategorySelect(category._id!, event)}
+          >
             <figure class="image is-264x264">
               <img src={category.image} alt={category.title} style="border-radius: 10px;" />
             </figure>

@@ -20,10 +20,7 @@
 
   subTitle.text = "Placemarks data";
 
-  let isInView: boolean = false;
-
-  let map: LeafletMap;
-
+  // Define reactive state variables for counting placemarks, visited status, and distances
   let placemarkSum = $state(0);
   let yesCounting = $state(0);
   let noCounting = $state(0);
@@ -36,7 +33,14 @@
   let localTravelIcon = $state("");
   let abroadTravelIcon = $state("");
 
-  async function sumPlacemarks(): Promise<number> {
+  /* In the below functions, 'export' is used to make the functions and variables available outside
+   * the current module, whereas 'Promise' object is used here because many of the functions perform
+   * asynchronous operations
+   */
+
+  // Function to get the total number of placemarks in a category
+  export async function sumPlacemarks(): Promise<number> {
+    // https://www.tutorialrepublic.com/faq/how-to-get-portion-of-url-path-in-javascript.php
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
     if (!categoryId) {
@@ -52,7 +56,8 @@
     return 0;
   }
 
-  async function getYesCounting(): Promise<number> {
+  // Function to count how many placemarks have been visited (Yes)
+  export async function getYesCounting(): Promise<number> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
     if (!categoryId) {
@@ -72,7 +77,8 @@
     return 0;
   }
 
-  async function getNoCounting(): Promise<number> {
+  // Function to count how many placemarks have not been visited (No)
+  export async function getNoCounting(): Promise<number> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
     if (!categoryId) {
@@ -92,6 +98,7 @@
     return 0;
   }
 
+  // Fetch user data based on the logged-in user's email
   let user = $state<User>({} as User);
   let token = loggedInUser.token;
   let email = loggedInUser.email;
@@ -115,7 +122,11 @@
     }
   });
 
-  async function calculateMinMaxDistance(): Promise<{ resultMax: string; resultMin: string }> {
+  // Function to calculate the max and min distances from the user to placemarks
+  export async function calculateMinMaxDistance(): Promise<{
+    resultMax: string;
+    resultMin: string;
+  }> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
 
@@ -153,7 +164,7 @@
       }
     }
 
-    // Compute max/min
+    // Computing max/min
     const maxVal = Math.max(...allDistances);
     console.log("This is your maxVal: ", maxVal);
     const minVal = Math.min(...allDistances);
@@ -164,7 +175,8 @@
     return { resultMax, resultMin };
   }
 
-  async function getLocalAbroadStats(): Promise<boolean> {
+  // Function to get stats for local vs abroad placemarks
+  export async function getLocalAbroadStats(): Promise<boolean> {
     const url = window.location.pathname;
     const categoryId = url.split("/").pop();
 
@@ -206,8 +218,10 @@
     return true;
   }
 
-  // onMount will fetch and assign:
-  onMount(async () => {
+  // Function to refresh all stats
+  export async function refresh() {
+    console.log("PlacemarkStats is refreshing");
+    await placemarkService.refreshPlacemarksInfo();
     placemarkSum = await sumPlacemarks();
     yesCounting = await getYesCounting();
     noCounting = await getNoCounting();
@@ -215,7 +229,11 @@
     await getLocalAbroadStats();
     resultMax = sanitizeInput(result.resultMax);
     resultMin = sanitizeInput(result.resultMin);
-    // const pathParts = window.location.pathname.split("/");
+  }
+
+  // onMount will fetch and assign:
+  onMount(async () => {
+    await refresh();
   });
 </script>
 

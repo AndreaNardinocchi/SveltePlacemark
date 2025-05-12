@@ -7,11 +7,16 @@
   import imageService from "./services/image-service";
   import { fly } from "svelte/transition";
   import DOMPurify from "dompurify";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   // Use Svelte's reactive assignment here
   let title = $state("");
+  // The variable img is a list of strings
   let img: string[] = [];
-  let placemark: Placemark | null = $state(null); // Reactive variable
+  // Declares a reactive state variable
+  let placemark: Placemark | null = $state(null);
 
   /**
    * The below variables will enable me to retrieve tha category and placemark ids
@@ -22,8 +27,8 @@
   const categoryId = pathParts[pathParts.indexOf("category") + 1];
   const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
 
-  // Fetch placemark data
-  async function getPlacemarkTitle() {
+  // Fetching placemark data
+  async function getPlacemarkTitleAndImages() {
     const email = loggedInUser.email;
     const token = loggedInUser.token;
 
@@ -33,7 +38,8 @@
     }
 
     const users = await placemarkService.getAllUsers(token);
-    const matchedUser = users.find((user) => user.email === email);
+    // const matchedUser = users.find((user) => user.email === email);
+    const matchedUser = loggedInUser;
 
     if (matchedUser) {
       const category = await placemarkService.getCategoryById(categoryId);
@@ -41,14 +47,18 @@
         console.error("Category or placemarks not found.");
         return;
       }
-      const placemarkData = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+      const placemarkData = await placemarkService.getPlacemarkById(placemarkId);
       if (placemarkData) {
         placemark = placemarkData; // Reactive update
         if (placemark) {
           title = DOMPurify.sanitize(placemark.title);
           // img = placemark.img.map((url: string) => DOMPurify.sanitize(url));
-          // title = placemark.title;
-          img = placemark.img; // Ensure this is an array
+          //  title = placemark.title;
+          /** For some reason, using 'img' as a simple string will ensure a deletion with
+          /* automatic refresh on the page
+          */
+          //  img = placemark.img;
+          img = [...placemark.img]; // This forces a reactive update
         }
       } else {
         console.error("Placemark not found.");
@@ -67,6 +77,8 @@
       // Call the deleteImage function in placemarkService
       const result = await imageService.deleteImage(categoryId, placemarkId, index);
       if (result) {
+        // Refreshing image gallery after deletion
+        await refreshImages();
         // If the deletion is successful, remove the image from the UI (local state)
         img.splice(index, 1); // Remove image from the img array
       } else {
@@ -77,11 +89,15 @@
     }
   }
 
-  // Run on component mount
+  async function refreshImages() {
+    await getPlacemarkTitleAndImages(); // this will update the `placemark` and `img` variables
+  }
+
+  // Running on component mount
   onMount(async () => {
-    await getPlacemarkTitle();
+    await getPlacemarkTitleAndImages();
+    await refreshImages();
   });
-  // let visible = $state(true);
 </script>
 
 <section class="section">
@@ -132,6 +148,12 @@
       </div>
       <div class="column is-4 has-text-centered"></div>
     </div>
-    <PlacemarkImage />
+    <!-- The uploaded event will get caught and the refreshImages() function will run -->
+    <PlacemarkImage
+      on:uploaded={() => {
+        console.log("Parent caught uploaded event");
+        refreshImages();
+      }}
+    />
   </div>
 </section>

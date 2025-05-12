@@ -4,90 +4,54 @@
   import { onMount } from "svelte";
   import { loggedInUser } from "$lib/runes.svelte";
   import { goto } from "$app/navigation";
-  import { currentCategories } from "$lib/runes.svelte";
+  import { currentCategories, currentPlacemarks } from "$lib/runes.svelte";
   import DOMPurify from "dompurify";
+  import LeafletMapMulti from "./LeafletMapMulti.svelte";
+  import type { Placemark } from "./types/placemark-types";
 
-  // ############### REMEMBER THAT THE NEW MAPS BRING ABOUT THE REFRESH ISSUE 500 (Internal Server Error) ############//
+  export let placemarkDeletedEvent: (placemark: Placemark) => void;
 
-  // Using the below enables me to retrieve the categoryId
-  // https://stackoverflow.com/questions/23690234/getting-last-segment-of-url-in-javascript?
-  // https://www.geeksforgeeks.org/how-to-get-url-and-url-parts-in-javascript/
+  /**
+   * The below variables will enable me to retrieve tha category and placemark ids
+   * https://css-tricks.com/snippets/javascript/get-url-and-url-parts-in-javascript/
+   * https://www.slingacademy.com/article/isolating-file-paths-and-directories-using-javascript-string-methods-without-extracting-filename-extension/
+   */
   const url = window.location.pathname;
   const categoryId = url.split("/").pop();
   let category = currentCategories.categories.find((cat) => cat._id === categoryId);
-  import { currentPlacemarks } from "$lib/runes.svelte";
-  import { refreshPlacemarkMap } from "./services/placemark-utils";
 
-  let map: any;
-  import LeafletMapMulti from "./LeafletMapMulti.svelte";
-
-  // let user: User;
-
-  console.log("These are the placemarks :", currentPlacemarks.placemarks);
-
-  /**
-   * This is to sanitize any inputs where needed
-   * https://github.com/cure53/DOMPurify?tab=readme-ov-file#running-dompurify-on-the-server
-   */
   function sanitizeInput(input: string): string {
-    return DOMPurify.sanitize(input); // Use DOMPurify to clean the input
+    return DOMPurify.sanitize(input);
   }
 
   onMount(async () => {
-   // await refreshPlacemarkMap(map);
     await placemarkService.refreshPlacemarksInfo();
-  });
-
-  onMount(async () => {
-    // This is the control the 'window is not defined' error (typeOf' is prompted by VsCode itself)
+    // Confirming we're running in the browser
     if (typeof window !== "undefined") {
-      const url = window.location.pathname;
-      const categoryId = url.split("/").pop();
+      const categoryId = window.location.pathname.split("/").pop();
       console.log("Category ID:", categoryId);
     }
 
-    // categoryId = url.split("/").pop();
     const token = loggedInUser.token;
-    const email = loggedInUser.email;
-
-    // if (token && email) {
-    //   try {
-    //     const users = await placemarkService.getAllUsers(token);
-    //     const matchedUser = users.find((user) => user.email === email);
-    //     if (matchedUser) {
-    //       user = matchedUser;
-    //       console.log("Matched user:", user);
-    //       console.log("This is the timestamp: ", user.createdTimeStamp);
-    //     } else {
-    //       console.log("No user found matching email.");
-    //     }
-    //   } catch (error) {
-    //     console.error("Failed to fetch or filter user:", error);
-    //   }
-    // } else {
-    //   console.error("Missing token or email.");
-    // }
 
     if (token && categoryId) {
       const result = await placemarkService.getCategoryById(categoryId);
       if (result) {
-        let category = result;
-        // Fetch full category
-        currentPlacemarks.placemarks = category.placemarks;
-        console.log("Our placemarks: ", category.placemarks);
-        // Make sure placemarks are part of the category object
+        category = result;
+        // Retrieving all category placemarks and reassigning to 'currentPlacemarks.placemarks'
+        currentPlacemarks.placemarks = result.placemarks;
+        console.log("Our placemarks: ", result.placemarks);
       } else {
         console.warn("Category not found.");
       }
     } else {
       console.warn("Invalid category ID or token.");
     }
-    return "";
   });
 
+  // Function to delete a placemark
   async function deletePlacemark(placemarkId: string) {
-    console.log("This is the placemarkId: ", placemarkId);
-
+    const placemark = currentPlacemarks.placemarks.find((p) => p._id === placemarkId);
     if (!placemarkId) {
       console.warn("No placemark ID provided.");
       return;
@@ -95,10 +59,56 @@
 
     const success = await placemarkService.deletePlacemark(placemarkId);
     if (success) {
+      await placemarkService.refreshPlacemarksInfo();
       console.log(`Placemark with ID ${placemarkId} was successfully deleted.`);
-      goto(`/category/${category?._id}`); // Or refresh the current route/list as needed
+
+      if (placemark && placemarkDeletedEvent) {
+        placemarkDeletedEvent(placemark);
+      }
+
+      goto(`/category/${category?._id}`);
     } else {
       console.warn("Failed to delete placemark.");
+    }
+  }
+
+  // Navigate to the specific placemark landing page
+  async function onPlacemarkSelect(categoryId: string, placemarkId: string, event: Event) {
+    event.preventDefault();
+
+    const validCategory = currentCategories.categories.find((cat) => cat._id === categoryId);
+    if (!validCategory) {
+      console.warn("Selected category not found.");
+      return;
+    }
+
+    try {
+      const updatedPlacemark = await placemarkService.getPlacemarkById(placemarkId);
+      if (!updatedPlacemark) {
+        console.warn("Could not fetch updated placemark.");
+        return;
+      }
+
+      // Saving the placemark ID for persistence
+      localStorage.setItem("placemarkId", placemarkId); // Save for refresh
+
+      /** To make sure the local Svelte store contains the most recent data for the selected placemark,
+       * and then navigate to its detail page, we search the current list of placemarks for one with the matching _id
+       * Returns the index if found, or -1 if not found.
+       * */
+      const index = currentPlacemarks.placemarks.findIndex((p) => p._id === placemarkId);
+      if (index !== -1) {
+        // If the placemark is already in the store, it updates that item with fresh data, which is
+        // 'updatedPlacemark'
+        currentPlacemarks.placemarks[index] = updatedPlacemark;
+      } else {
+        // If the placemark isn’t found in the store (maybe it’s new), it adds it to the array
+        currentPlacemarks.placemarks.push(updatedPlacemark);
+      }
+
+      goto(`/category/${categoryId}/placemark/${placemarkId}`);
+    } catch (err) {
+      console.error("Error in onPlacemarkSelect:", err);
     }
   }
 </script>
@@ -108,7 +118,12 @@
   <div class="card has-text-dark-grey" in:fly={{ y: 200, duration: 3000 }}>
     <header class="card-header has-text-centered">
       <p class="card-header-title">
-        <a href={`/category/${category._id}/placemark/${placemark._id}`} class="has-text-grey">
+        <!-- svelte-ignore a11y_invalid_attribute -->
+        <a
+          href="#"
+          class="has-text-grey"
+          on:click={(e) => onPlacemarkSelect(category._id, placemark._id, e)}
+        >
           {placemark.title}
         </a>
       </p>
@@ -124,9 +139,8 @@
         <div class="columns">
           <div class="column is-3">
             <p>
-              <span class="has-text-weight-bold">Placemark Name:</span><br />{sanitizeInput(
-                placemark.title
-              )}
+              <span class="has-text-weight-bold">Placemark Name:</span><br />
+              {sanitizeInput(placemark.title)}
             </p>
             <p>
               <span class="has-text-weight-bold">Geolocation (lat/long):</span><br />
@@ -149,9 +163,9 @@
             <p>
               <span class="has-text-weight-bold">Website:</span><br />
               <span style="word-wrap: break-word;">
-                <a href={sanitizeInput(placemark.website)} target="_blank" class="has-text-grey"
-                  >{sanitizeInput(placemark.website)}</a
-                >
+                <a href={sanitizeInput(placemark.website)} target="_blank" class="has-text-grey">
+                  {sanitizeInput(placemark.website)}
+                </a>
               </span>
             </p>
             <p>
@@ -164,30 +178,18 @@
             </p>
           </div>
           <div class="column is-4">
-            <p><span class="has-text-weight-bold">Map:</span><br /></p>
+            <p><span class="has-text-weight-bold">{placemark.title}'s Map</span><br /></p>
             <LeafletMapMulti
               lat={parseFloat(placemark.lat)}
               lng={parseFloat(placemark.long)}
-              popupText={`${placemark.title}, ${placemark.country} `}
-              height={30}
+              popupText={`${placemark.title}, ${placemark.country}`}
+              height={22}
             />
-
-
-            <!-- <iframe
-              class="mt-2"
-              title={sanitizeInput(placemark.title)}
-              src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19694.431967599397!2d-8.4167813!3d51.901040949999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48449bee2f866ab1%3A0x4b0e792b7b212ab7!2sDistrict%20Health%20%26%20Leisure!5e0!3m2!1sen!2sie!4v1739290933254!5m2!1sen!2sie`}
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              height="200"
-              style="border:0; white; box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);border-radius: 15px;"
-            ></iframe> -->
           </div>
         </div>
       </div>
     </div>
     <footer class="card-footer">
-      <!-- placemark._id -->
       <a
         href={`/category/${category._id}/editplacemark/${placemark._id}`}
         class="button card-footer-item"
@@ -197,12 +199,7 @@
           <i class="fas fa-solid fa-edit"></i>
         </span>
       </a>
-      <!-- svelte-ignore event_directive_deprecated -->
       <!-- svelte-ignore a11y_invalid_attribute -->
-      <!-- https://dev.to/umanghome/event-handlers-and-svelte-4f5k
-      https://stackoverflow.com/questions/77594143/svelte-how-to-prevent-default-action-of-reusable-button-component
-      https://github.com/bestguy/sveltestrap/blob/master/src/Button.svelte
-      https://svelte.dev/docs/svelte/legacy-on -->
       <a
         href="#"
         on:click|preventDefault={() => deletePlacemark(placemark._id)}

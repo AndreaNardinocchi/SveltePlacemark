@@ -22,6 +22,11 @@
   async function getTitle() {
     const email = loggedInUser.email;
     const token = loggedInUser.token;
+    /**
+     * The below variables will enable me to retrieve tha category and placemark ids
+     * https://css-tricks.com/snippets/javascript/get-url-and-url-parts-in-javascript/
+     * https://www.slingacademy.com/article/isolating-file-paths-and-directories-using-javascript-string-methods-without-extracting-filename-extension/
+     */
     const pathParts = window.location.pathname.split("/");
     const categoryId = pathParts[pathParts.indexOf("category") + 1];
     const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
@@ -37,7 +42,8 @@
       const categoryId = pathParts[pathParts.indexOf("category") + 1];
       const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
       const users = await placemarkService.getAllUsers(token);
-      const matchedUser = users.find((user) => user.email === email);
+      // const matchedUser = users.find((user) => user.email === email);
+      const matchedUser = loggedInUser;
 
       if (matchedUser) {
         const userDetails = matchedUser;
@@ -50,7 +56,7 @@
           return sanitizeInput(titleShort);
         }
         console.log("This is the placemarkId 2 in Title: ", placemarkId);
-        const placemark = await placemarkService.getPlacemarkById(categoryId, placemarkId);
+        const placemark = await placemarkService.getPlacemarkById(placemarkId);
         console.log("Placemark in Title: ", placemark);
         if (!placemark) {
           console.error("Placemark not found for id:", placemarkId);

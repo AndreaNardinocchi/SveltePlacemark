@@ -1,13 +1,31 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import imageService from "./services/image-service"; // adjust the path if needed
+  import { placemarkService } from "./services/placemark-service";
+  /**A dispatcher is a function created inside a Svelte component using createEventDispatcher.
+   * It lets the component send custom events upward to its parent instGrid.svelte.
+   * I am using it to let the instGrid.svelte component know that an image has been uploaded.
+   * https://levelup.video/posts/sending-events-up-the-svelte-component-tree-with-createeventdispatcher
+   * https://svelte.dev/docs/svelte/svelte#createEventDispatcher
+   * */
+  import { createEventDispatcher } from "svelte";
+
+  /**Let's say an Outer component contains an Inner component, and we want an event from the Inner component
+   * to be propagated to the Outer component.
+   * Method: Event forwarding using dispatcher
+   * https://stackoverflow.com/questions/61569655/svelte-event-forwarding-with-dispatcher-vs-passing-in-handling-function-which
+   * */
+  const dispatch = createEventDispatcher();
 
   let categoryId = "";
   let placemarkId = "";
+  // Holds the file selected by the user (or null if no file is selected)
   let selectedFile: File | null = null;
+  // Stores a preview URL of the selected image for displaying before upload
   let previewUrl: string | null = null;
   let fileName = "";
   let isUploading = false; // To handle upload state
+  // let message = "";
 
   onMount(() => {
     /**
@@ -20,6 +38,8 @@
     placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
   });
 
+  // Called when the user selects a file
+  // https://www.webdevtutor.net/blog/typescript-etargetfiles
   function handleFileChange(event: Event) {
     const target = event.target as HTMLInputElement;
     const files = target.files;
@@ -28,6 +48,9 @@
       selectedFile = files[0];
       fileName = selectedFile.name;
 
+      // Generating a preview using FileReader
+      // https://stackoverflow.com/questions/27254735/filereader-onload-with-result-and-parameter
+      // https://www.javascripttutorial.net/web-apis/javascript-filereader/
       const reader = new FileReader();
       reader.onload = () => {
         previewUrl = reader.result as string;
@@ -37,19 +60,22 @@
     }
   }
 
+  // Called when the user clicks "Upload Image"
   async function handleUpload() {
     if (!selectedFile) {
       alert("Please select a file first.");
       return;
     }
-
-    isUploading = true; // Set uploading state
+    // Indicate that the upload is in progress
+    isUploading = true;
+    // Calling the uploadImage() function and passing in ids and selected file.
     const success = await imageService.uploadImage(categoryId, placemarkId, selectedFile);
     console.log("Upload success: ", success, categoryId, placemarkId, selectedFile);
 
     if (success) {
-      alert("Image uploaded successfully!");
-      // Reset form after successful upload
+      await placemarkService.refreshPlacemarksInfo();
+      // Dispatching the event to the InstaGrid.svelte component that the image upload is successfull
+      dispatch("uploaded");
       selectedFile = null;
       fileName = "";
       previewUrl = null;

@@ -8,20 +8,55 @@
    *  https://www.npmjs.com/package/dompurify
    * */
   import DOMPurify from "dompurify";
+  import { goto } from "$app/navigation";
 
-  let categories: any[] = [];
-  let placemarks: any[] = [];
+  // let categories: any[] = [];
+  // let placemarks: any[] = [];
   let user: User;
   let categoryPlacemarks: never[] = [];
   console.log("These are the categoryPlacemarks: ", categoryPlacemarks);
 
   const token = loggedInUser.token;
   const email = loggedInUser.email;
-  const loggedInUserId = loggedInUser._id;
+  // const loggedInUserId = loggedInUser._id;
 
   // Sanitize function using DOMPurify
   function sanitize(input: string): string {
     return DOMPurify.sanitize(input);
+  }
+
+  /**
+   * Function to handle category selection
+   * The preventDefault() method of the Event interface tells the user agent that if the event does not get explicitly handled,
+   * its default action should not be taken as it normally would be.
+   * https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault
+   * */
+  function onCategorySelect(categoryId: string, event: Event) {
+    event.preventDefault(); // Prevent the default link navigation
+
+    const validCategory = currentCategories.categories.find(
+      (category) => category._id === categoryId
+    );
+
+    if (!validCategory) {
+      console.warn("Selected category not found.");
+      return;
+    }
+
+    // Ensure _id is a valid string before using it, and I am using it since the localStorage.setItem("categoryId", categoryIdString);
+    // throws me an error 'Type 'undefined' is not assignable to type 'string'.''
+    const categoryIdString = validCategory._id || "DefaultCategoryId";
+
+    // Sanitize categoryTitle and categoryId before storing in localStorage
+    const sanitizedCategoryTitle = DOMPurify.sanitize(validCategory.title);
+    const sanitizedCategoryId = DOMPurify.sanitize(categoryIdString);
+
+    // Store the categoryId and categoryTitle in localStorage
+    localStorage.setItem("categoryTitle", sanitizedCategoryTitle);
+    localStorage.setItem("categoryId", sanitizedCategoryId);
+    console.log("Sending the categoryTitle:", sanitizedCategoryTitle, sanitizedCategoryId);
+
+    goto(`/category/${sanitizedCategoryId}`);
   }
 
   onMount(async () => {
@@ -57,7 +92,11 @@
       <div class="column">
         {#each currentCategories.categories as category}
           <p class="is-size-4 mb-2">
-            <a href={`/category/${category._id}`} class="has-text-grey-light">
+            <a
+              href={`/category/${category._id}`}
+              class="has-text-grey-light"
+              on:click={(event) => onCategorySelect(category._id!, event)}
+            >
               <!-- Sanitized output -->
               {@html sanitize(category.title)}
             </a>

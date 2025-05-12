@@ -1,6 +1,4 @@
 <script lang="ts">
-  // https://dev.to/maciekgrzybek/animate-on-scroll-with-svel
-  // https://www.npmjs.com/package/svelte-inview
   import UserDetails from "$lib/ui/UserDetails.svelte";
   import StatsAccount from "$lib/ui/StatsAccount.svelte";
 </script>

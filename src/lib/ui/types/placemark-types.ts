@@ -22,13 +22,10 @@ export interface User {
 }
 
 export interface Category {
-  // thisUserCategory: Placemark;
   thisUserCategory: Placemark[];
   placemarks: Placemark[];
-  // placemarks?: Placemark[];
   title: string;
   notes: string;
-  // img: string;
   image: string;
   userid: string;
   _id?: string;
