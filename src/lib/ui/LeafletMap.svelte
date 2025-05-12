@@ -1,4 +1,6 @@
 <script lang="ts">
+  import icon from "leaflet/dist/images/marker-icon.png";
+  import iconShadow from "leaflet/dist/images/marker-shadow.png";
   import "leaflet/dist/leaflet.css";
   import { onMount } from "svelte";
   import type { Control, Map as LeafletMap } from "leaflet";
