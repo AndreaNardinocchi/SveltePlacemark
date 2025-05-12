@@ -3,11 +3,13 @@ import type { Placemark, Session, User } from "../types/placemark-types";
 import type { Category } from "../types/placemark-types";
 import { category, currentCategories, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 import { computeByCountry, computeByVisited } from "./placemark-utils";
+import { navigate } from "svelte-routing";
 
 axios.defaults.withCredentials = true;
 
 export const placemarkService = {
-  baseUrl: "http://localhost:3000",
+  // baseUrl: "http://localhost:3000",
+  baseUrl: "https://placemark-v63d.onrender.com",
 
   // Signing up a new user by sending their details to the server
   async signup(user: User): Promise<User | null> {

@@ -23,8 +23,6 @@
       message = "Invalid Credentials";
     }
   }
-
-  // let isInView: boolean = false;
 </script>
 
 <section class="hero is-small is-dark mt-6 px-6">

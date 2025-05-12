@@ -3,10 +3,11 @@
 
   /** Input sanitizing 
   * https://stackoverflow.com/questions/62426548/how-do-i-make-svelte-update-input-components-like-react-does#62431731
+  * https://stackoverflow.com/questions/67912524/is-it-reasonable-to-mutate-the-event-target-value
   /**
    * @param {{ target: { value: string; }; }} e
    */
-  function sanitizeEmail(e) {
+  function sanitizeEmail(e: { target: { value: string } }) {
     e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
     email = e.target.value;
   }
@@ -14,7 +15,7 @@
   /**
    * @param {{ target: { value: string; }; }} e
    */
-  function sanitizePassword(e) {
+  function sanitizePassword(e: { target: { value: string } }) {
     e.target.value = e.target.value.replace(/ /g, ""); // remove spaces
     password = e.target.value;
   }
