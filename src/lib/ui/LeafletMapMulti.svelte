@@ -47,6 +47,18 @@
   afterUpdate(() => {
     initializeMap(); // Reinitialize map when props change
   });
+
+  // Fix icon paths
+  const DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+  L.Marker.prototype.options.icon = DefaultIcon;
 </script>
 
 <div bind:this={mapContainer} class="map-container" style="height: {height}vh;"></div>
