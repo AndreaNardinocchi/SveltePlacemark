@@ -7,6 +7,9 @@
   import imageService from "./services/image-service";
   import { fly } from "svelte/transition";
   import DOMPurify from "dompurify";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   // Use Svelte's reactive assignment here
   let title = $state("");
@@ -25,7 +28,7 @@
   const placemarkId = pathParts[pathParts.indexOf("placemark") + 1];
 
   // Fetching placemark data
-  async function getPlacemarkTitle() {
+  async function getPlacemarkTitleAndImages() {
     const email = loggedInUser.email;
     const token = loggedInUser.token;
 
@@ -54,7 +57,8 @@
           /** For some reason, using 'img' as a simple string will ensure a deletion with
           /* automatic refresh on the page
           */
-          img = placemark.img;
+          //  img = placemark.img;
+          img = [...placemark.img]; // This forces a reactive update
         }
       } else {
         console.error("Placemark not found.");
@@ -73,6 +77,8 @@
       // Call the deleteImage function in placemarkService
       const result = await imageService.deleteImage(categoryId, placemarkId, index);
       if (result) {
+        // Refreshing image gallery after deletion
+        await refreshImages();
         // If the deletion is successful, remove the image from the UI (local state)
         img.splice(index, 1); // Remove image from the img array
       } else {
@@ -83,11 +89,15 @@
     }
   }
 
-  // Run on component mount
+  async function refreshImages() {
+    await getPlacemarkTitleAndImages(); // this will update the `placemark` and `img` variables
+  }
+
+  // Running on component mount
   onMount(async () => {
-    await getPlacemarkTitle();
+    await getPlacemarkTitleAndImages();
+    await refreshImages();
   });
-  // let visible = $state(true);
 </script>
 
 <section class="section">
@@ -138,6 +148,12 @@
       </div>
       <div class="column is-4 has-text-centered"></div>
     </div>
-    <PlacemarkImage />
+    <!-- The uploaded event will get caught and the refreshImages() function will run -->
+    <PlacemarkImage
+      on:uploaded={() => {
+        console.log("Parent caught uploaded event");
+        refreshImages();
+      }}
+    />
   </div>
 </section>

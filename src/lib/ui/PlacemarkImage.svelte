@@ -2,6 +2,20 @@
   import { onMount } from "svelte";
   import imageService from "./services/image-service"; // adjust the path if needed
   import { placemarkService } from "./services/placemark-service";
+  /**A dispatcher is a function created inside a Svelte component using createEventDispatcher.
+   * It lets the component send custom events upward to its parent instGrid.svelte.
+   * I am using it to let the instGrid.svelte component know that an image has been uploaded.
+   * https://levelup.video/posts/sending-events-up-the-svelte-component-tree-with-createeventdispatcher
+   * https://svelte.dev/docs/svelte/svelte#createEventDispatcher
+   * */
+  import { createEventDispatcher } from "svelte";
+
+  /**Let's say an Outer component contains an Inner component, and we want an event from the Inner component
+   * to be propagated to the Outer component.
+   * Method: Event forwarding using dispatcher
+   * https://stackoverflow.com/questions/61569655/svelte-event-forwarding-with-dispatcher-vs-passing-in-handling-function-which
+   * */
+  const dispatch = createEventDispatcher();
 
   let categoryId = "";
   let placemarkId = "";
@@ -11,6 +25,7 @@
   let previewUrl: string | null = null;
   let fileName = "";
   let isUploading = false; // To handle upload state
+  // let message = "";
 
   onMount(() => {
     /**
@@ -59,8 +74,8 @@
 
     if (success) {
       await placemarkService.refreshPlacemarksInfo();
-      alert("Image uploaded successfully!");
-      // Reset form after successful upload
+      // Dispatching the event to the InstaGrid.svelte component that the image upload is successfull
+      dispatch("uploaded");
       selectedFile = null;
       fileName = "";
       previewUrl = null;
