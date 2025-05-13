@@ -38,7 +38,8 @@
       )
     };
 
-    // Fix icon paths
+    // Fixing icon paths to make them work live
+    // https://github.com/PaulLeCam/react-leaflet/issues/808
     const DefaultIcon = L.icon({
       iconUrl: icon,
       shadowUrl: iconShadow,
