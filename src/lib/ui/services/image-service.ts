@@ -134,13 +134,13 @@ const imageService = {
         return false;
       }
 
-      let token = axios.defaults.headers.common["Authorization"];
-      if (!token) {
-        console.warn("No Authorization token set.");
+      const token = axios.defaults.headers.common["Authorization"] as string | undefined;
+
+      if (!token || typeof token !== "string") {
+        console.warn("No Authorization token set or not a valid string.");
         return false;
       }
 
-      // Check token expiration
       const rawToken = token.replace("Bearer ", "");
       if (isTokenExpired(rawToken)) {
         console.warn("Token expired. Please log in again.");
