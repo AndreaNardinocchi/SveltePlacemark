@@ -76,6 +76,8 @@
     });
   }
 
+  // This function is used to format time
+  // https://www.geeksforgeeks.org/how-to-convert-unix-timestamp-to-time-in-javascript/?
   function formatTime(unix: number): string {
     const date = new Date(unix * 1000);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -109,7 +111,7 @@
       </div>
     </section>
 
-    <section class="columns has-background-white-bis">
+    <section class="columns has-background-info-light">
       {#if errorMessage}
         <p style="color: red;">{errorMessage}</p>
       {/if}
