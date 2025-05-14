@@ -79,6 +79,12 @@
       selectedFile = null;
       fileName = "";
       previewUrl = null;
+
+      // Reset the file input element so the same file can be selected again
+      const fileInput = document.querySelector(".file-input") as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = "";
+      }
     } else {
       alert("We could not upload your image! ");
     }

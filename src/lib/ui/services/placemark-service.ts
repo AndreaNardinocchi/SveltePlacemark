@@ -3,7 +3,6 @@ import type { Placemark, Session, User } from "../types/placemark-types";
 import type { Category } from "../types/placemark-types";
 import { category, currentCategories, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 import { computeByCountry, computeByVisited } from "./placemark-utils";
-// import { navigate } from "svelte-routing";
 
 axios.defaults.withCredentials = true;
 
