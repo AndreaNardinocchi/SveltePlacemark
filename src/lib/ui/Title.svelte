@@ -75,6 +75,11 @@
       const date = new Date(forecast.dt_txt).toLocaleDateString();
     });
   }
+
+  function formatTime(unix: number): string {
+    const date = new Date(unix * 1000);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
 </script>
 
 <section class="has-background-white container">
@@ -124,7 +129,35 @@
         <!-- Column for displaying the weather condition -->
         <div class="column has-text-centered is-4">
           <p class="has-text-weight-bold">Condition</p>
-          <p>{weatherData.weather[0].description}</p>
+          <p>
+            {weatherData.weather[0].description}
+          </p>
+        </div>
+      {/if}
+    </section>
+
+    <section class="columns has-background-white">
+      <!-- This block is only displayed if both weather data and the city are available -->
+      {#if weatherData && city}
+        <!-- Column for displaying the weather condition and icon -->
+        <div class="column has-text-centered is-4">
+          <p class="has-text-weight-bold">Wind</p>
+          <p>{weatherData.wind.speed} m/s, {weatherData.wind.deg}°</p>
+        </div>
+        <!-- Column for Sunrise and Sunset -->
+        <div class="column has-text-centered is-4">
+          <p class="has-text-weight-bold">Sunrise / Sunset</p>
+          <p>{formatTime(weatherData.sys.sunrise)} / {formatTime(weatherData.sys.sunset)}</p>
+        </div>
+        <!-- Column for displaying the weather condition -->
+        <div class="column has-text-centered is-4">
+          <!-- <p class="has-text-weight-bold">Condition</p> -->
+
+          <img
+            src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
+            alt="Weather icon"
+            style="width: 60px; height: 60px;"
+          />
         </div>
       {/if}
     </section>
