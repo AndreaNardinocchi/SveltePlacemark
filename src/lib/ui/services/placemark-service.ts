@@ -7,7 +7,7 @@ import { computeByCountry, computeByVisited } from "./placemark-utils";
 axios.defaults.withCredentials = true;
 
 export const placemarkService = {
-  // baseUrl: "http://localhost:3000",
+  //  baseUrl: "http://localhost:3000",
   baseUrl: "https://placemark-v63d.onrender.com",
 
   // Signing up a new user by sending their details to the server

@@ -1,38 +1,84 @@
-# sv
+# Placemark Your Journey
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+**Placemark Your Journey** is a full-stack travel journaling app that allows users to record meaningful locations on a map. Users can upload images, write notes, and create list of destinations filtered in based upon their category. All API requests are authenticated using tokens stored securely in the browser's **localStorage**.
 
-## Creating a project
+## Architecture Overview
 
-If you're seeing this, you've probably already done this step. Congrats!
+This is a SvelteKit application that provides a responsive, modern frontend for managing travel experiences. The app communicates with a Hapi.js backend API that handles authentication, data persistence, and image storage.
 
-```bash
-# create a new project in the current directory
-npx sv create
+**Frontend:** Built with SvelteKit, leveraging reactive components and built-in routing.
 
-# create a new project in my-app
-npx sv create my-app
-```
+**Backend:** Powered by Hapi.js, handling RESTful endpoints and JWT authentication.
 
-## Developing
+**Auth:** JWT tokens are stored in localStorage and included in Authorization headers.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+**Storage:** MongoDB for database operations, and Cloudinary cloud service for image hosting.
 
-```bash
-npm run dev
+## Live Demo
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+**Front End:**
+https://placemarkyourjourney.netlify.app/
+**Back End:** https://placemark-v63d.onrender.com/ / https://github.com/AndreaNardinocchi/placemark
 
-## Building
+---
 
-To create a production version of your app:
+## Features
 
-```bash
-npm run build
-```
+- Interactive map with placemarks
+- Upload and manage images for each location
+- Group placemarks by categories (e.g., "Restaurants", "Museums", and so on)
+- Token-based user authentication stored in `localStorage`
+- Mobile-friendly responsive design Bulma framework
 
-You can preview the production build with `npm run preview`.
+---
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Screenshots
+
+![alt text](image.png)
+https://placemarkyourjourney.netlify.app/
+
+![alt text](image-1.png)
+https://placemarkyourjourney.netlify.app/signup
+
+![alt text](image-2.png)
+https://placemarkyourjourney.netlify.app/login
+
+![alt text](image-3.png)
+https://placemarkyourjourney.netlify.app/dashboard
+
+![alt text](image-4.png)
+
+![alt text](image-5.png)
+
+![alt text](image-6.png)
+https://placemarkyourjourney.netlify.app/category/6825b88fb705faef462ca2e4
+
+![alt text](image-7.png)
+![alt text](image-8.png)
+https://placemarkyourjourney.netlify.app/category/6825b88fb705faef462ca2e4/placemark/6825b9ba32886ba4277c1e2d
+
+## Tech Stack
+
+| Layer      | Tech                                 |
+| ---------- | ------------------------------------ |
+| Frontend   | Svelte kit Vite                      |
+| State/Auth | JWT in `localStorage`                |
+| Backend    | Hapi.js                              |
+| Database   | MongoDB                              |
+| Maps       | Leaflet.js                           |
+| Hosting    | Netlify (frontend), Render (backend) |
+
+---
+
+## Authentication
+
+Users log in with email and password.
+
+Then, the JWT token returned from the server is stored in localStorage.
+
+API requests use the token via the Authorization: Bearer <token> header.
+
+## Contact
+
+Got feedback or bugs? Reach out please on:
+https://www.linkedin.com/in/andrea-nardinocchi-53084056/
