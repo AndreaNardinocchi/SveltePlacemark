@@ -21,7 +21,7 @@
   {#if loggedInUser.email}
     <Header />
   {:else}
-    <WelcomeMenu />
+    <!-- <WelcomeMenu /> -->
   {/if}
   <slot />
 </div>

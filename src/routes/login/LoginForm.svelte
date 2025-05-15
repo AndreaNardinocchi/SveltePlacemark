@@ -48,7 +48,10 @@
         <p class="is-pulled-right">
           Don't have an account? <a href="/signup" data-cy="login-redirect" class="has-text-grey"
             >Sign up</a
-          > now!
+          >
+          now or go back <a href="/" data-cy="login-redirect" class="has-text-grey">home</a>
+
+          !
         </p>
       </div>
     </section>

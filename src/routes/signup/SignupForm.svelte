@@ -114,7 +114,8 @@
           <p class="is-pulled-right">
             Already have an account? <a href="/login" data-cy="login-redirect" class="has-text-grey"
               >Log in</a
-            > here
+            >
+            here or go back <a href="/" data-cy="login-redirect" class="has-text-grey">home</a>
           </p>
         </div>
       </section>
