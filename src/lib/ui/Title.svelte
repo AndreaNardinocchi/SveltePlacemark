@@ -120,18 +120,18 @@
       {#if weatherData && city}
         <!-- Column for displaying the name of the country or city -->
         <div class="column has-text-centered is-4">
-          <p class="has-text-weight-bold">Country or City</p>
-          <p>{weatherData.name}</p>
+          <p class="has-text-weight-bold" in:fly={{ y: -100, duration: 2000 }}>Country or City</p>
+          <p in:fly={{ y: -200, duration: 2000 }}>{weatherData.name}</p>
         </div>
         <!-- Column for displaying the temperature -->
         <div class="column has-text-centered is-4">
-          <p class="has-text-weight-bold">Temperature</p>
-          <p>{weatherData.main.temp}°C</p>
+          <p class="has-text-weight-bold" in:fly={{ y: -100, duration: 2000 }}>Temperature</p>
+          <p in:fly={{ y: -200, duration: 2000 }}>{weatherData.main.temp}°C</p>
         </div>
         <!-- Column for displaying the weather condition -->
         <div class="column has-text-centered is-4">
-          <p class="has-text-weight-bold">Condition</p>
-          <p>
+          <p class="has-text-weight-bold" in:fly={{ y: -100, duration: 2000 }}>Condition</p>
+          <p in:fly={{ y: -200, duration: 2000 }}>
             {weatherData.weather[0].description}
           </p>
         </div>
@@ -143,19 +143,24 @@
       {#if weatherData && city}
         <!-- Column for displaying the weather condition and icon -->
         <div class="column has-text-centered is-4">
-          <p class="has-text-weight-bold">Wind</p>
-          <p>{weatherData.wind.speed} m/s, {weatherData.wind.deg}°</p>
+          <p class="has-text-weight-bold" in:fly={{ y: 200, duration: 2000 }}>Wind</p>
+          <p in:fly={{ y: 100, duration: 2000 }}>
+            {weatherData.wind.speed} m/s, {weatherData.wind.deg}°
+          </p>
         </div>
         <!-- Column for Sunrise and Sunset -->
         <div class="column has-text-centered is-4">
-          <p class="has-text-weight-bold">Sunrise / Sunset</p>
-          <p>{formatTime(weatherData.sys.sunrise)} / {formatTime(weatherData.sys.sunset)}</p>
+          <p class="has-text-weight-bold" in:fly={{ y: 200, duration: 2000 }}>Sunrise / Sunset</p>
+          <p in:fly={{ y: 100, duration: 2000 }}>
+            {formatTime(weatherData.sys.sunrise)} / {formatTime(weatherData.sys.sunset)}
+          </p>
         </div>
         <!-- Column for displaying the weather condition -->
-        <div class="column has-text-centered is-4">
+        <div class="column has-text-centered is-4" in:fly={{ y: 200, duration: 2000 }}>
           <!-- <p class="has-text-weight-bold">Condition</p> -->
 
           <img
+            in:fly={{ y: 100, duration: 2000 }}
             src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
             alt="Weather icon"
             style="width: 60px; height: 60px;"
