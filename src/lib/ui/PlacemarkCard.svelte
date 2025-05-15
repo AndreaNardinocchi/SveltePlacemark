@@ -87,7 +87,10 @@
             console.log("userCountry:", userCountry);
 
             // Determine travel means after both destination and userCountry are available
-            if (destination.toLowerCase().includes(userCountry.toLowerCase())) {
+            if (
+              destination.toLowerCase().includes(userCountry.toLowerCase()) &&
+              !destination.toLowerCase().includes("ireland")
+            ) {
               travelMeans = "car, bus, or train";
             } else {
               travelMeans = "plane";

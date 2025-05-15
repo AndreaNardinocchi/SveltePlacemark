@@ -20,8 +20,8 @@
   function sanitizeTitle(e: { target: { value: string } }) {
     e.target.value = e.target.value.trim(); // removes leading & trailing whitespace
     title = e.target.value;
-    if (title.length < 3 || title.length > 20) {
-      message = "Title should be between more than 3 and less than 20 characters";
+    if (title.length < 3 || title.length > 30) {
+      message = "Title should be between more than 3 and less than 30 characters";
     }
   }
 

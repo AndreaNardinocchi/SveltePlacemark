@@ -5,8 +5,8 @@
  */
 import axios from "axios";
 
-// const baseUrl = "http://localhost:3000";
-const baseUrl = "https://placemark-v63d.onrender.com";
+const baseUrl = "http://localhost:3000";
+// const baseUrl = "https://placemark-v63d.onrender.com";
 
 const imageService = {
   async uploadImage(categoryId: string, placemarkId: string, imageFile: File): Promise<boolean> {
