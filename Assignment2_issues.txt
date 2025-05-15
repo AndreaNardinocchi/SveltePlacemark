@@ -1,14 +1,9 @@
-Donate
-loggedinUser.token issue
-
-
 Assignment 2
 ===================
 
 - chart showing data when no data has been added yet
 - Issues updating placemarks
-- Delete user not 
-- Hashing and salting
+- Delete user not working
 
 
       ##########################  Version 1 CORS ERROR ##########################################  
