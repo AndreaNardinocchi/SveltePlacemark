@@ -7,8 +7,15 @@ import { computeByCountry, computeByVisited } from "./placemark-utils";
 axios.defaults.withCredentials = true;
 
 export const placemarkService = {
-  //  baseUrl: "http://localhost:3000",
-  baseUrl: "https://placemark-v63d.onrender.com",
+  // baseUrl: "http://localhost:3000",
+  // baseUrl: "https://placemark-v63d.onrender.com",
+
+  // Just use the first URL in this list (change order as needed)
+  baseUrl: "http://3.75.158.163",
+
+  // ||
+  // "http://3.125.183.140" ||
+  // "http://35.157.117.28";
 
   // Signing up a new user by sending their details to the server
   async signup(user: User): Promise<User | null> {
