@@ -89,7 +89,7 @@
             // Determine travel means after both destination and userCountry are available
             if (
               destination.toLowerCase().includes(userCountry.toLowerCase()) &&
-              !destination.toLowerCase().includes("ireland")
+              !destination.toLowerCase().includes(" ireland")
             ) {
               travelMeans = "car, bus, or train";
             } else {
