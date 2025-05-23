@@ -5,16 +5,37 @@
   import type { User } from "./types/placemark-types";
   import { goto } from "$app/navigation";
   import { fly } from "svelte/transition";
+  /** SvelteKit provides a built-in store called $app/env that includes a browser boolean,
+   * which is true when the code is running in the browser and false during SSR.
+   * You can utilize this to conditionally access localStorage only on the client side.
+   *
+   * Source: ChatGPT
+   * */
+  import { browser } from "$app/environment";
 
   // Local user object that will be edited or deleted
   let user: User;
   let showModal = false; // Controls modal visibility
 
+  /** If statement which checks whether there is a token or email available.
+   * If NOT, then it will retrieve the 'placemark' value from the local storage, and if
+   * 'placemark' does exist, all the loggedInUser values wll be reassigned and the session
+   * re-established
+   * */
+  if (browser && (!loggedInUser.token || !loggedInUser.email)) {
+    const stored = localStorage.getItem("placemark");
+    if (stored) {
+      const session = JSON.parse(stored);
+      loggedInUser.email = session.email;
+      loggedInUser.name = session.name;
+      loggedInUser.token = session.token;
+      loggedInUser._id = session._id;
+    }
+  }
+
   const token = loggedInUser.token;
   const email = loggedInUser.email;
-  const loggedInUserId = loggedInUser._id;
-
-  console.log("This is the loggedInuserId: ", loggedInUserId);
+  // const loggedInUserId = loggedInUser._id;
 
   onMount(async () => {
     if (token && email) {
@@ -28,9 +49,13 @@
           console.log("No user found matching email.");
         }
       } catch (error) {
+        placemarkService.restoreSession();
+        placemarkService.refreshPlacemarksInfo();
         console.error("Failed to fetch or filter user:", error);
       }
     } else {
+      placemarkService.restoreSession();
+      placemarkService.refreshPlacemarksInfo();
       console.error("Missing token or email.");
     }
   });

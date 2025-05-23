@@ -72,6 +72,8 @@
           console.log("No user found matching email.");
         }
       } catch (error) {
+        placemarkService.restoreSession();
+        placemarkService.refreshPlacemarksInfo();
         console.error("Failed to fetch or filter user:", error);
       }
     } else {
