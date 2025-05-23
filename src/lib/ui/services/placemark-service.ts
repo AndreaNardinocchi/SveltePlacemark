@@ -7,8 +7,8 @@ import { computeByCountry, computeByVisited } from "./placemark-utils";
 axios.defaults.withCredentials = true;
 
 export const placemarkService = {
-  // baseUrl: "http://localhost:3000",
-  baseUrl: "https://placemark-v63d.onrender.com",
+  baseUrl: "http://localhost:3000",
+  // baseUrl: "https://placemark-v63d.onrender.com",
 
   // Signing up a new user by sending their details to the server
   async signup(user: User): Promise<User | null> {
@@ -305,6 +305,12 @@ export const placemarkService = {
   // This is to fetch all users
   async getAllUsers(token: string): Promise<User[]> {
     try {
+      if (!token) {
+        //   token = axios.defaults.headers.common["Authorization"];
+        this.restoreSession();
+        token = axios.defaults.headers.common["Authorization"];
+        await this.refreshPlacemarksInfo();
+      }
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
       const response = await axios.get(this.baseUrl + "/api/users");
       return response.data;
