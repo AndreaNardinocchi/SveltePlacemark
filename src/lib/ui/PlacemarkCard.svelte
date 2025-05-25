@@ -266,8 +266,10 @@
       </p>
       <p>
         {sanitizeInput(placemark.description)} Find out more on
-        <a href={sanitizeInput(placemark.website)} target="_blank" class="has-text-grey"
-          >{sanitizeInput(placemark.website)}</a
+        <span style="word-wrap: break-word;"
+          ><a href={sanitizeInput(placemark.website)} target="_blank" class="has-text-grey"
+            >{sanitizeInput(placemark.website)}</a
+          ></span
         >.
       </p>
       <p class="mt-4">
