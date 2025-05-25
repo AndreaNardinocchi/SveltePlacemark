@@ -111,10 +111,17 @@
           <div class="column is-4">
             <div class="card">
               <div class="card-image">
-                <figure class="image">
-                  <!-- svelte-ignore a11y_img_redundant_alt -->
-                  <img src={image} style="" alt="Placemark Image" />
-                </figure>
+                <a href={image} target="_blank">
+                  <figure class="image is-4by3">
+                    <!-- svelte-ignore a11y_img_redundant_alt -->
+                    <!-- https://www.w3schools.com/csS/css3_object-fit.asp -->
+                    <img
+                      src={image}
+                      alt="Placemark Image"
+                      style="width: 100%; height: 100%; object-fit: cover;"
+                    />
+                  </figure>
+                </a>
                 <footer class="card-footer">
                   <!-- svelte-ignore event_directive_deprecated -->
                   <!-- svelte-ignore a11y_invalid_attribute -->
